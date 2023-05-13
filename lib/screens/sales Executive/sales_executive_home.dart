@@ -19,7 +19,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
   var salesExecutive;
   @override
   Widget build(BuildContext context) {
-
+    FocusManager.instance.primaryFocus?.unfocus();
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
@@ -109,7 +109,6 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           color: Color(0xff4d47c3),
                         ),
                         padding: const EdgeInsets.only(
-                          left: 10,
                           top: 9,
                         ),
                         child: Row(
@@ -118,7 +117,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: 100,
+                              width: 130,
                               height: 25,
                               child: Text(
                                 "Call Details",
@@ -166,7 +165,6 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           color: Color(0xff4d47c3),
                         ),
                         padding: const EdgeInsets.only(
-                          left: 10,
                           top: 9,
                         ),
                         child: Row(
@@ -175,7 +173,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: 100,
+                              width: 150,
                               height: 25,
                               child: Text(
                                 "Sales Details",
@@ -221,7 +219,6 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           color: Color(0xff4d47c3),
                         ),
                         padding: const EdgeInsets.only(
-                          left: 10,
                           top: 9,
                         ),
                         child: Row(
@@ -230,10 +227,10 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: 110,
+                              width: 170,
                               height: 25,
                               child: Text(
-                                "Pending order",
+                                "Pending orders",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
@@ -276,7 +273,6 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           color: Color(0xff4d47c3),
                         ),
                         padding: const EdgeInsets.only(
-                          left: 10,
                           top: 9,
                         ),
                         child: Row(
@@ -285,7 +281,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: 170,
+                              width: 210,
                               height: 30,
                               child: Text(
                                 "Pending complaints",
@@ -316,7 +312,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                         children:[
                             ElevatedButton(
                               onPressed: () async {
-                                
+                                Navigator.pushNamed(context, 'customerRegistration');
                               },
                               style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3),),
                               child: Container(
@@ -346,7 +342,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: Colors.white,
-                                                      fontSize: 16,
+                                                      fontSize: 14,
                                                       fontFamily: "Poppins",
                                                       fontWeight: FontWeight.w500,
                                                   ),
@@ -388,7 +384,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: Colors.white,
-                                                      fontSize: 16,
+                                                      fontSize: 14,
                                                       fontFamily: "Poppins",
                                                       fontWeight: FontWeight.w500,
                                                   ),

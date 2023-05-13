@@ -35,20 +35,53 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
 
   String error = '';
   bool _passwordVisible = false;
-
+  late FocusNode myFocusNode;
+ 
+ @override
   void initState() {
+     super.initState();
     _passwordVisible = false;
+     myFocusNode = FocusNode();
   }
+
+   @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
 
   var snackBar = SnackBar(
   content: Text('Registered Successfully!!!'),
   );
 
+    void showConfirmation() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Please enter valid email.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Ok'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit) {
+        // user pressed Yes button
+        myFocusNode.requestFocus();
+        return;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? const Loading()
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
@@ -229,6 +262,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                           ),
                         )),
                     TextFormField(
+                      focusNode: myFocusNode,
                       validator: (value) =>
                           RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                   .hasMatch(email)
@@ -382,24 +416,23 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          ElevatedButton(
+                          loading ? const Loading() : ElevatedButton(
                             onPressed: () async {
                               if (_formkey.currentState!.validate()) {
                                 setState(() {
                                   loading = true;
                                 });
-                                dynamic result =
-                                    await _auth.registerWithEmailAndPassword(
-                                        email, password);
+                                dynamic result = await _auth.registerWithEmailAndPassword(email, password);
                                 if (result == null) {
                                   setState(() {
-                                    error = 'please supply a valid email';
+                                    // error = 'please supply a valid email';
                                     loading = false;
                                   });
+                                  showConfirmation();
                                 } else {
                                   if (result?.uid != null) {
-                                    await SalesPersonDatabase(uid: result!.uid)
-                                        .updateUserData(
+                                    await SalesPersonDatabase(docid: '')
+                                        .setUserData(
                                             result?.uid,
                                             name,
                                             education,

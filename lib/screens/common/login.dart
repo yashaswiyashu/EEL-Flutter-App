@@ -53,6 +53,7 @@ class _LoginState extends State<Login> {
                         color: const Color(0xffefefff),
                       ),
                       child: TextFormField(
+                        autofocus: true,
                         validator: (value) => RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email) ? null : 'Enter valid email',
                         decoration:
                             textInputDecoration.copyWith(hintText: 'Email'),
@@ -143,6 +144,7 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         onPressed: () async {
+                          FocusManager.instance.primaryFocus?.unfocus();
                           if(_formkey.currentState!.validate()){
                             setState(() {
                               loading = true;

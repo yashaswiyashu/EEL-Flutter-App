@@ -3,13 +3,13 @@ import 'package:flutter_app/models/customer_model.dart';
 
 class CustomerDatabaseService {
 
-  final String uid;
-  CustomerDatabaseService({ required this.uid});
+  final String docid;
+  CustomerDatabaseService({ required this.docid});
 
   //collection reference 
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('CustomerTable');
 
-  Future<void> updateUserData(
+  Future<void> setUserData(
     String uid,
     String customerName, 
     String mobileNumber, 
@@ -49,6 +49,52 @@ class CustomerDatabaseService {
       'place3': place3,
       'place4': place4,
     });
+  }
+  
+  Future<void> updateUserData(
+    String customerName, 
+    String mobileNumber, 
+    String email, 
+    String password, 
+    String address1, 
+    String address2, 
+    String city, 
+    String state, 
+    String pincode,
+    String product1,
+    String product2,
+    String product3,
+    String product4,
+    String place1,
+    String place2,
+    String place3,
+    String place4,
+    ) async {
+    return await userCollection.doc(docid).set({
+      'uid': docid,
+      'customerName': customerName,
+      'mobileNumber': mobileNumber,
+      'email': email,
+      'password': password,
+      'address1': address1,
+      'address2': address2,
+      'city': city,
+      'state': state,
+      'pincode': pincode,
+      'product1': product1,
+      'product2': product2,
+      'product3': product3,
+      'product4': product4,
+      'place1': place1,
+      'place2': place2,
+      'place3': place3,
+      'place4': place4,
+    });
+  }
+
+  Future<void> deleteUserData(
+    ) async {
+    return await userCollection.doc(docid).delete();
   }
 
   List<CustomerModel?> _userListFromSnapshot(QuerySnapshot snapshot) {

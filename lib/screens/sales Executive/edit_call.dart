@@ -36,7 +36,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
 
   String status = '';
   String customerName = '';
-  String customerType = 'Interested';
+  String customerType = 'Individual';
   String customerNumber = '';
   String callDate = '';
   String date = '';
@@ -102,7 +102,8 @@ class _EditCallDetailsState extends State<EditCallDetails>
         Navigator.pushNamed(context, 'callDetailsList');
       } else {
         // user pressed No button
-        Navigator.pop(context);
+        // Navigator.pop(context);
+        return;
       }
     });
   }
@@ -158,6 +159,11 @@ class _EditCallDetailsState extends State<EditCallDetails>
       });
     }
   }
+
+  var snackBar = SnackBar(
+  content: Text('Call Details added Successfully!!!'),
+  );
+
 
   @override
   Widget build(BuildContext context) {
@@ -327,15 +333,16 @@ class _EditCallDetailsState extends State<EditCallDetails>
                         ),
                         dropdownColor: const Color(0xffefefff),
                         value:
-                            customerType == 'Interested' ? type : customerType,
+                            customerType == 'Individual' ? type : customerType,
                         onChanged: (String? newValue) {
                           setState(() {
                             customerType = newValue!;
                           });
                         },
                         items: <String>[
-                          'Interested',
-                          'Not-Interested',
+                          'Individual',
+                          'Dealer',
+                          'Distributor'
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -430,14 +437,14 @@ class _EditCallDetailsState extends State<EditCallDetails>
                           fillColor: Color(0xffefefff),
                         ),
                         dropdownColor: const Color(0xffefefff),
-                        value: callResult == 'Converted' ? result : callResult,
+                        value: callResult == 'Interested' ? result : callResult,
                         onChanged: (String? newValue) {
                           setState(() {
                             callResult = newValue!;
                           });
                         },
                         items: <String>[
-                          'Interedted',
+                          'Interested',
                           'Later',
                           'Not-Interested',
                         ].map<DropdownMenuItem<String>>((String value) {
@@ -490,7 +497,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                       ),
                       Container(
                         // followupdetailsjeX (32:1762)
-                        margin: EdgeInsets.fromLTRB(6, 0, 0, 12),
+                        margin: EdgeInsets.fromLTRB(1, 0, 0, 12),
                         child: Text(
                           'Follow Up Details:',
                           style: TextStyle(
@@ -555,12 +562,12 @@ class _EditCallDetailsState extends State<EditCallDetails>
                                         .updateUserData(
                                           currentUser!.uid,
                                           customerName,
-                                          customerType == ''
+                                          customerType == type
                                               ? type
                                               : customerType,
                                           customerNumber,
                                           callDate == '' ? date : callDate,
-                                          callResult == ''
+                                          callResult == result
                                               ? result
                                               : callResult,
                                           followUp,
@@ -568,8 +575,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                                         )
                                         .then((value) => setState(() {
                                               loading = false;
-                                              status =
-                                                  'Call details updated successfully';
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                             }));
                                   }
                                 },

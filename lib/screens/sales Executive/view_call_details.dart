@@ -322,6 +322,7 @@ class _ViewCallDetailsState extends State<ViewCallDetails> {
                           color: Color(0xfff0efff),
                         ),
                         child: TextFormField(
+                          readOnly: true,
                           initialValue: obj.followUpdetails,
                           validator: (value) =>
                               value!.isEmpty ? 'Missing Field' : null,

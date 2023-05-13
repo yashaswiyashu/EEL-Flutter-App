@@ -5,6 +5,8 @@ import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/common/home.dart';
+import 'package:flutter_app/screens/customer/customer_home.dart';
+import 'package:flutter_app/screens/customer/customer_registration.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/add_call_details.dart';
@@ -32,8 +34,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-      StreamProvider<List<SalesPersonModel?>?>.value(value: SalesPersonDatabase(uid: '').salesPersonTable, initialData: null),
-      StreamProvider<List<CustomerModel?>?>.value(value: CustomerDatabaseService(uid: '').customerTable, initialData: null),
+      StreamProvider<List<SalesPersonModel?>?>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: []),
+      StreamProvider<List<CustomerModel?>?>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: []),
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
@@ -42,12 +44,17 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           'home': (context) => const Home(),
+          //Sales Executive
           'salesPersonRegistration':(context) => const SalesPersonRegistration(),
           'salesExecutiveHome': (context) => const SalesExecutiveHome(),
           'addCallDetails':(context) => const AddCallDetails(restorationId: 'main',),
           'callDetailsList':(context) => const CallDetailsList(),
           EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
           ViewCallDetails.routeName:(context) => ViewCallDetails(),
+          //Customer 
+          'customerRegistration':(context) => const CustomerRegistration(),
+          'customerHomePage':(context) => const CustomerHome(),
+
         },
       ),
     );

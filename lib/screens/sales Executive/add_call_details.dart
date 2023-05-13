@@ -25,7 +25,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
   final _formkey = GlobalKey<FormState>();
   bool followUp = false;
   bool loading = false;
-  String customerType = 'Interested';
+  String customerType = 'Individual';
   String customerName = '';
   String customerNumber = '';
   String callDate = 'Select Date';
@@ -106,9 +106,12 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
       });
     }
 
-    return loading
-        ? const Loading()
-        : Scaffold(
+      var snackBar = SnackBar(
+  content: Text('Call Details added Successfully!!!'),
+  );
+
+
+    return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
@@ -162,16 +165,6 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                       child: Image.asset('assets/logotm.jpg'),
                     ),
                     const SizedBox(height: 20.0),
-                    const SizedBox(height: 5.0),
-                      Container(
-                        margin: const EdgeInsets.only(left: 110),
-                        child: Text(
-                          status,
-                          style:
-                              const TextStyle(color: Colors.red, fontSize: 14.0),
-                        ),
-                      ),
-                      const SizedBox(height: 5.0),
                     const SizedBox(
                       height: 20.0,
                       child: Text(
@@ -231,8 +224,9 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                         });
                       },
                       items: <String>[
-                        'Interested',
-                        'Not-Interested',
+                        'Individual',
+                        'Dealer',
+                        'Distributor',
                       ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -286,17 +280,19 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                     Container(
                       width: 440,
                       height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xffe3e4e5)),
-                        onPressed: () {
-                          _restorableDatePickerRouteFuture
-                              .present();
-                        },
-                        child: Text(
-                          callDate,
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        ),
+                      child: Row(
+                        children: [ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xffe3e4e5)),
+                          onPressed: () {
+                            _restorableDatePickerRouteFuture
+                                .present();
+                          },
+                          child: Text(
+                            callDate,
+                            style: TextStyle(color: Colors.black, fontSize: 16,),
+                          ),
+                        ),]
                       ),
                     ),
                     const SizedBox(height: 20.0),
@@ -383,7 +379,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                     SizedBox(height: 40,),
                      Container(
                               // followupdetailsjeX (32:1762)
-                              margin: EdgeInsets.fromLTRB(6, 0, 0, 12),
+                              margin: EdgeInsets.fromLTRB(1, 0, 0, 12),
                               child: Text(
                                 'Follow Up Details:',
                                 style: TextStyle(
@@ -420,10 +416,20 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                 ),
                               ),
                             ),
+                      const SizedBox(height: 5.0),
+                      Container(
+                        margin: const EdgeInsets.only(left: 110),
+                        child: Text(
+                          status,
+                          style:
+                              const TextStyle(color: Colors.red, fontSize: 14.0),
+                        ),
+                      ),
+                      const SizedBox(height: 5.0),
                     const SizedBox(
                       height: 20.0,
                     ),
-                    SizedBox(
+                    loading ? Loading() : SizedBox(
                       height: 59,
                       width: 420,
                       child: Row(
@@ -433,7 +439,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              if (_formkey.currentState!.validate()) {
+                              if (_formkey.currentState!.validate() && callDate != 'Select Date') {
                                     setState(() {
                                       loading = true;
                                     });
@@ -450,8 +456,14 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                       )
                                       .then((value) => setState(() {
                                         loading = false;
-                                        status = 'Call details added successfully';
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                        Navigator.pop(context);
                                       }));
+                                  } else {
+                                    setState(() {
+                                      loading = false;
+                                      status = 'Please fill all the fields';
+                                    });
                                   }
                             },
                             style: ElevatedButton.styleFrom(
