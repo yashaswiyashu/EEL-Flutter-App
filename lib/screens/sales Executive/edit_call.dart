@@ -44,6 +44,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
   String callResult = 'Interested';
   String followUpDetails = '';
   String type = '';
+  bool followUp = false;
 
   @override
   initState() {
@@ -173,7 +174,6 @@ class _EditCallDetailsState extends State<EditCallDetails>
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
     var obj;
     String salesExecutiveName = '';
-    bool followUp = false;
     var salesExecutive;
     final AuthService _auth = AuthService();
     if (callDetails != null) {

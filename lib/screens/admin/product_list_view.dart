@@ -5,7 +5,6 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/services/auth.dart';
-import 'package:flutter_app/screens/admin/view_product_admin.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 
@@ -25,18 +24,14 @@ enum SingingCharacter { lafayette, jefferson, yash }
 class _ProductListViewAdminState extends State<ProductListViewAdmin> {
   bool loading = false;
   String status = '';
-  String character = '';
+  String? select = '';
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
-    // final callDetails = Provider.of<List<ProductDetailsModel>>(context);
-    // final currentUser = Provider.of<UserModel?>(context);
-    var details = [];
+    FocusManager.instance.primaryFocus?.unfocus();
+    final productDetails = Provider.of<List<ProductDetailsModel?>?>(context);
+    final currentUser = Provider.of<UserModel?>(context);
     var obj;
-
-
-    // callDetails.forEach(
-    //     (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
 
 
     Widget _verticalDivider = const VerticalDivider(
@@ -51,21 +46,17 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Unit price')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Quantity')),
-        DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Select')),
       ];
     }
 
 
     List<DataRow> _createRows() {
-      return details
+      return productDetails!
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.productName)),
+                DataCell(Text(element!.name)),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.unitPrice)),
-                DataCell(_verticalDivider),
-                DataCell(Text(element.Quantity)),
+                DataCell(Text(element.price)),
                 DataCell(_verticalDivider),
                 DataCell(
                   RadioListTile(
@@ -73,12 +64,12 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                       bottom: 30,
                     ),
                     value: element.uid,
-                    groupValue: character,
+                    groupValue: select,
                     onChanged: (value) {
                       setState(() {
-                        character = value;
-                        details.forEach((element) {
-                          if (element.uid == character) {
+                        select = value;
+                        productDetails.forEach((element) {
+                          if (element?.uid == select) {
                             obj = element;
                           }
                         });
@@ -96,7 +87,7 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: callDetails.isNotEmpty ? _createRows() : []);
+          rows: productDetails!.isNotEmpty ? _createRows() : []);
     }
 
 
@@ -148,7 +139,7 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xff4d47c3)),
                         onPressed: () {
-                          Navigator.pushNamed(context, 'addNewCallDetails');
+                          Navigator.pushNamed(context, 'addNewProduct');
                         },
                         child: Text('Add New +'),
                       ),
@@ -175,7 +166,7 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                           child: TextButton(
                             onPressed: () async {
                               // showSettingsPanel(character);
-                              if (character == '') {
+                              if (select == '') {
                                 setState(() {
                                   status = 'Please select an option';
                                 });
@@ -229,7 +220,7 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                           child: TextButton(
                             onPressed: () {
                               // showSettingsPanel(character);
-                              if (character == '') {
+                              if (select == '') {
                                 setState(() {
                                   status = 'Please select an option';
                                 });

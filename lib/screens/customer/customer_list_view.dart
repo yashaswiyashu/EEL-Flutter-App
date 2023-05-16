@@ -51,10 +51,6 @@ class _CustomerListViewState extends State<CustomerListView> {
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust Mob.', style: TextStyle(fontSize: 13),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Container(width: 67,child: Text('Intrested In', style: TextStyle(fontSize: 13),))),
-        DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Uses At', style: TextStyle(fontSize: 13),)),
-        DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Select', style: TextStyle(fontSize: 13),)),
       ];
     }
@@ -65,10 +61,6 @@ class _CustomerListViewState extends State<CustomerListView> {
                 DataCell(Text(element.customerName, style: TextStyle(fontSize: 13),)),
                 DataCell(_verticalDivider),
                 DataCell(Text(element.mobileNumber, style: TextStyle(fontSize: 13),)),
-                DataCell(_verticalDivider),
-                DataCell(Text(element.product1, style: TextStyle(fontSize: 13),)),
-                DataCell(_verticalDivider),
-                DataCell(Text(element.place1, style: TextStyle(fontSize: 13),)),
                 DataCell(_verticalDivider),
                 DataCell(
                   RadioListTile(

@@ -1,11 +1,12 @@
 import 'dart:io';
 
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+
 
 
 class AddProductAdmin extends StatefulWidget {
@@ -18,46 +19,18 @@ class AddProductAdmin extends StatefulWidget {
 
 
 class _AddProductAdminState extends State<AddProductAdmin> {
+  final _formkey = GlobalKey<FormState>();
   bool loading = false;
   File? _image;
-  final picker = ImagePicker();
-
-
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-
-
-    setState(() {
-      _image = File(pickedFile!.path);
-    });
-
-
-    saveImage(_image!);
-  }
-
-
-  Future saveImage(File image) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final imagePath = '${directory.path}/image.jpg';
-    final newImage = await image.copy(imagePath);
-
-
-    setState(() {
-      _image = newImage;
-    });
-  }
-
+  String path = '';
+  late String fileName = '';
+  bool imgupload = false;
 
   @override
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
 
-
-    if (_image != null) {
-      imageProvider = FileImage(_image!);
-    } else {
-      imageProvider = AssetImage('assets/upload.png');
-    }
+    final StorageService storage = StorageService(); 
 
 
     return loading
@@ -74,6 +47,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                 top: 18,
               ),
               child: Form(
+                key: _formkey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -99,6 +73,8 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
+                      validator: (value) =>
+                          value!.isEmpty ? 'Missing Field' : null,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Your Name',
                           fillColor: const Color(0xfff0efff)),
@@ -139,21 +115,57 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                     // ),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       TextButton(
-                        onPressed: () {
-                          getImage();
+                        onPressed: () async {
+                          final result = await FilePicker.platform.pickFiles(
+                            allowMultiple: false,
+                            type: FileType.custom,
+                            allowedExtensions: ['png', 'jpg'],
+                          );
+
+                          if(result == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No image selected!!'))
+                            );
+                            return null;
+                          }
+
+                          path = result.files.single.path!;
+                          fileName = result.files.single.name;
+                          setState(() {
+                            imgupload = true;
+                          });
+                          storage.uploadFile(path, fileName).then((value) {
+                            setState(() {
+                              imgupload = false;
+                            });
+                          });
+
                         },
                         child: SizedBox(
-                          width: 100,
-                          height: 100,
+                          width: 150,
+                          height: 150,
                           child: Stack(
                             children: [
                               // Default image
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
+                              imgupload ? CircularProgressIndicator() : Container(
+                                child: FutureBuilder(
+                                  future: storage.downloadURL(fileName),
+                                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                                    if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+                                      return Image.network(
+                                        snapshot.data!,
+                                        fit: BoxFit.cover,
+                                      );
+                                    } 
+                                    return Container(
+                                      decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage('assets/upload.png'),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
 
@@ -249,7 +261,9 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                            onPressed: () async {},
+                            onPressed: () async {
+
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff4d47c3),
                             ),

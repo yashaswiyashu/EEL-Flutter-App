@@ -397,6 +397,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                       ),
                     const SizedBox(height: 10.0),
                     TextFormField(
+                      keyboardType: TextInputType.phone,
                       validator: (value) =>
                           value?.length == 6 ? null : 'Enter valid Pincode',
                       decoration:

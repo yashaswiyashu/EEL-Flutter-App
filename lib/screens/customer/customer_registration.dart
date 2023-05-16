@@ -61,9 +61,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     final currentUser = Provider.of<UserModel?>(context);
     final customerTable = Provider.of<List<CustomerModel?>?>(context);
 
-    return loading
-        ? const Loading()
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
@@ -820,7 +818,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    SizedBox(
+                    loading
+                    ? const Loading()
+                    : SizedBox(
                       height: 59,
                       width: 420,
                       child: Row(
@@ -872,6 +872,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         content: Text(
                                             'New Customer Details Added Successfully!!!'),
                                       ));
+                                      Navigator.pop(context);
                                     }));
                                     
                                     if (customerTable != null) {
@@ -948,7 +949,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, 'home');
+                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff4d47c3),

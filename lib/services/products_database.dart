@@ -13,7 +13,6 @@ class ProductDatabaseService {
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('ProductDetailsTable');
 
   Future<void> setUserData(
-   String uid,
    String name,
    String imageUrl,
    String price,
@@ -21,8 +20,9 @@ class ProductDatabaseService {
    String description,
 
     ) async {
-    return await userCollection.doc(uid).set({
-      'uid': uid,
+      var uniqid = userCollection.doc().id;
+    return await userCollection.doc(uniqid).set({
+      'uid': uniqid,
       'name': name,
       'imageUrl': imageUrl,
       'price': price,
@@ -70,7 +70,7 @@ class ProductDatabaseService {
   }
 
   // get user table stream
-  Stream<List<ProductDetailsModel>> get callDetailsTable {
+  Stream<List<ProductDetailsModel>> get productDetailsTable {
     return userCollection.snapshots().map(_userListFromSnapshot);
   }
 }

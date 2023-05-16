@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/admin/add_new_product.dart';
+import 'package:flutter_app/screens/admin/product_list_view.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
 import 'package:flutter_app/screens/customer/customer_list_view.dart';
@@ -20,6 +23,7 @@ import 'package:flutter_app/screens/sales%20Executive/view_call_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/call_details_database.dart';
 import 'package:flutter_app/services/customer_database.dart';
+import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/services/sales_database.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +44,7 @@ class MyApp extends StatelessWidget {
       StreamProvider<List<SalesPersonModel?>?>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: const []),
       StreamProvider<List<CustomerModel?>?>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: const []),
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
+      StreamProvider<List<ProductDetailsModel>>.value(value: ProductDatabaseService(docid: '').productDetailsTable, initialData: const []),
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
       child: MaterialApp(
@@ -47,6 +52,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           'home': (context) => const Home(),
+          
           //Sales Executive
           'salesPersonRegistration':(context) => const SalesPersonRegistration(),
           'salesExecutiveHome': (context) => const SalesExecutiveHome(),
@@ -54,12 +60,17 @@ class MyApp extends StatelessWidget {
           'callDetailsList':(context) => const CallDetailsList(),
           EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
           ViewCallDetails.routeName:(context) => ViewCallDetails(),
+          
           //Customer 
           'customerRegistration':(context) => const CustomerRegistration(),
           'customerHomePage':(context) => const CustomerHome(),
           'customerList':(context) => const CustomerListView(),
           EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
           ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
+
+          //Admin
+          'addNewProduct':(context) => const AddProductAdmin(),
+          'productListView':(context) =>  const ProductListViewAdmin(),
         },
       ),
     );

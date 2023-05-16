@@ -176,7 +176,7 @@ class _LoginState extends State<Login> {
                                         error = '';
                                         loading = false;
                                       });
-                                      Navigator.pushNamed(context, 'salesCoOrdinatorHome');
+                                      Navigator.pushNamed(context, 'productListView');
                                     } 
                                   }
                                 });
