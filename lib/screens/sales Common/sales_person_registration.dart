@@ -102,17 +102,6 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                       child: Image.asset('assets/logotm.jpg'),
                     ),
                     const SizedBox(height: 20.0),
-                    Container(
-                      margin: EdgeInsets.only(left: 120),
-                      child: Text(
-                        error,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 14.0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20.0),
                     const SizedBox(
                       height: 20.0,
                       child: Text(
@@ -265,7 +254,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                       focusNode: myFocusNode,
                       validator: (value) =>
                           RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                  .hasMatch(email)
+                                  .hasMatch(value!)
                               ? null
                               : 'Missing Field',
                       decoration: textInputDecoration.copyWith(
@@ -406,10 +395,21 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                         pincode = val;
                       },
                     ),
+                    const SizedBox(height: 20.0),
+                    Container(
+                      margin: EdgeInsets.only(left: 120),
+                      child: Text(
+                        error,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       height: 20.0,
                     ),
-                    SizedBox(
+                    loading ? CircularProgressIndicator() : SizedBox(
                       height: 59,
                       width: 420,
                       child: Row(
@@ -426,7 +426,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                                 dynamic result = await _auth.registerWithEmailAndPassword(email, password);
                                 if (result == null) {
                                   setState(() {
-                                    // error = 'please supply a valid email';
+                                    error = 'please supply a valid email';
                                     loading = false;
                                   });
                                   showConfirmation();

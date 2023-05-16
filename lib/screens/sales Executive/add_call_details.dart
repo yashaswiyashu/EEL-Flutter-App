@@ -429,7 +429,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    loading ? Loading() : SizedBox(
+                    loading ? CircularProgressIndicator() : SizedBox(
                       height: 59,
                       width: 420,
                       child: Row(

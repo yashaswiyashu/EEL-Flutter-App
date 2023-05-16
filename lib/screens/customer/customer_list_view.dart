@@ -220,7 +220,7 @@ class _CustomerListViewState extends State<CustomerListView> {
                                 });
                                 Navigator.pushNamed(
                                     context, ViewCustomerDetails.routeName,
-                                    arguments: CallDetailsParameter(
+                                    arguments: Parameter(
                                       character,
                                     ));
                               }
@@ -274,7 +274,7 @@ class _CustomerListViewState extends State<CustomerListView> {
                                 });
                                 Navigator.pushNamed(
                                     context, EditCustomerDetails.routeName,
-                                    arguments: CallDetailsParameter(
+                                    arguments: Parameter(
                                       character,
                                     ));
                               }

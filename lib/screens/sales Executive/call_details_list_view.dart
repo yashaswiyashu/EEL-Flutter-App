@@ -114,9 +114,7 @@ class _CallDetailsListState extends State<CallDetailsList> {
 
 
 
-    return loading
-        ? const Loading()
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
@@ -205,7 +203,7 @@ class _CallDetailsListState extends State<CallDetailsList> {
                                 Navigator.pushNamed(
                                   context, 
                                   ViewCallDetails.routeName,
-                                  arguments: CallDetailsParameter(
+                                  arguments: Parameter(
                                     character,
                                   )
                                 );
@@ -261,7 +259,7 @@ class _CallDetailsListState extends State<CallDetailsList> {
                                 Navigator.pushNamed(
                                   context, 
                                   EditCallDetails.routeName,
-                                  arguments: CallDetailsParameter(
+                                  arguments: Parameter(
                                     character,
                                   )
                                 );

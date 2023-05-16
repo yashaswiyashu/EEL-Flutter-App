@@ -3,23 +3,26 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
+import 'package:provider/provider.dart';
 
 
 
-class AddProductAdmin extends StatefulWidget {
-  const AddProductAdmin({super.key});
-
+class EditProductAdmin extends StatefulWidget {
+  const EditProductAdmin({super.key});
+  static const routeName = '/editProductDetails';
 
   @override
-  State<AddProductAdmin> createState() => _AddProductAdminState();
+  State<EditProductAdmin> createState() => _EditProductAdminState();
 }
 
 
-class _AddProductAdminState extends State<AddProductAdmin> {
+class _EditProductAdminState extends State<EditProductAdmin> {
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
   File? _image;
@@ -27,19 +30,112 @@ class _AddProductAdminState extends State<AddProductAdmin> {
   late String fileName = '';
   bool imgupload = false;
 
+  final controllerName = TextEditingController();
+  final controllerPrice = TextEditingController();
+  final controllerOffers = TextEditingController();
+  final controllerDescription = TextEditingController();
+
   String name = '';
   String imageUrl = '';
   String price = '';
   String offers = '';
   String description = '';
   String status = '';
-  
+
+  @override
+  initState() {
+    super.initState();
+
+    // Start listening to changes.
+    controllerName.addListener(_saveName);
+    controllerPrice.addListener(_savePrice);
+    controllerOffers.addListener(_saveOffers);
+    controllerDescription.addListener(_saveDescription);
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    controllerName.dispose();
+    controllerPrice.dispose();
+    controllerOffers.dispose();
+    controllerDescription.dispose();
+    super.dispose();
+  }
+
+  void _saveName() {
+    name = controllerName.text;
+  }
+
+  void _savePrice() {
+    price = controllerPrice.text;
+  }
+
+  void _saveOffers() {
+    offers = controllerOffers.text;
+  }
+
+  void _saveDescription() {
+    description = controllerDescription.text;
+  }
+
+  void showConfirmation(String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Do you want to delete entire document?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        ProductDatabaseService(docid: uid).deleteUserData();
+        Navigator.pop(context);
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
 
     final StorageService storage = StorageService(); 
 
+    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
+    var obj;
+    if (productDetails != null) {
+      productDetails.forEach((element) {
+        if (element.uid == args.uid) {
+          obj = element;
+        }
+      });
+    }
+
+    if (obj != null) {
+      controllerName.text = obj.name;
+      imageUrl = obj.imageUrl;
+      controllerPrice.text = obj.price;
+      controllerOffers.text = obj.offers;
+      controllerDescription.text = obj.description;
+    }
 
     return Scaffold(
             appBar: AppBar(
@@ -79,16 +175,17 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
+                      controller: controllerName,
                       validator: (value) =>
                           value!.isEmpty ? 'Missing Field' : null,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Product Name',
                           fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        setState(() {
-                          name = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     name = val;
+                      //   });
+                      // },
                     ),
                     SizedBox(height: 20),
                     const SizedBox(
@@ -152,29 +249,52 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                           });
 
                         },
-                        child:SizedBox(
+                        child: fileName == '' ? SizedBox(
                           width: 350,
                           height: 150,
-                          child: fileName == '' ? Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage('assets/upload.png'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ) :Stack(
+                          child: Stack(
                             children: [
                               // Default image
                               imgupload ? CircularProgressIndicator() : Container(
                                 child: FutureBuilder(
-                                  future: storage.downloadURL(fileName),
+                                  future: storage.downloadURL(imageUrl),
                                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                                    if(snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData){
+                                      return CircularProgressIndicator();
+                                    }
                                     if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
                                       return Image.network(
                                         snapshot.data!,
                                         fit: BoxFit.cover,
                                       );
                                     } 
+
+                                    return Container();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) : SizedBox(
+                          width: 350,
+                          height: 150,
+                          child: Stack(
+                            children: [
+                              // Default image
+                              imgupload ? CircularProgressIndicator() : Container(
+                                child: FutureBuilder(
+                                  future: storage.downloadURL(fileName),
+                                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                                    if(snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData){
+                                      return CircularProgressIndicator();
+                                    }
+                                    if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+                                      return Image.network(
+                                        snapshot.data!,
+                                        fit: BoxFit.cover,
+                                      );
+                                    } 
+
                                     return Container();
                                   },
                                 ),
@@ -213,17 +333,18 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
+                      controller: controllerPrice,
                       validator: (value) => value!.isEmpty
                         ? 'Enter Product Price'
                             : null,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Product Price',
                           fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        setState(() {
-                          price = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     price = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -239,17 +360,18 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
+                      controller: controllerOffers,
                       validator: (value) => value!.isEmpty
                         ? 'Enter Discount Percentage'
                             : null,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Discount Percentage',
                           fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        setState(() {
-                          offers = '$val%';
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     offers = '$val%';
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -273,6 +395,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                         color: Color(0xfff0efff),
                       ),
                       child: TextFormField(
+                        controller: controllerDescription,
                         validator: (value) =>
                           value!.isEmpty ? 'Missing Field' : null,
                         maxLines: null,
@@ -285,11 +408,11 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
                           ),
-                        onChanged: (val) {
-                          setState(() {
-                            description = val;
-                          });
-                        },
+                        // onChanged: (val) {
+                        //   setState(() {
+                        //     description = val;
+                        //   });
+                        // },
                       ),
                     ),
                     const SizedBox(height: 5.0),
@@ -310,7 +433,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       width: 420,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ElevatedButton(
@@ -326,10 +449,10 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                                     setState(() {
                                       loading = true;
                                     });
-                                    await ProductDatabaseService(docid: '')
-                                      .setUserData(
+                                    await ProductDatabaseService(docid: args.uid)
+                                      .updateUserData(
                                         name,
-                                        imageUrl,
+                                        fileName == '' ? imageUrl : fileName,
                                         price,
                                         offers,
                                         description,
@@ -353,7 +476,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                               backgroundColor: Color(0xff4d47c3),
                             ),
                             child: Container(
-                              width: 100,
+                              width: 80,
                               height: 59,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),
@@ -376,7 +499,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: const [
                                   SizedBox(
-                                    width: 90,
+                                    width: 80,
                                     child: Text(
                                       "Save",
                                       textAlign: TextAlign.center,
@@ -392,9 +515,43 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            width: 85,
-                          ),
+                          ElevatedButton(
+                              // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                              onPressed: () {
+                                showConfirmation(obj!.uid);
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Container(
+                                width: 110,
+                                height: 59,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff4d47c3),
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      offset: Offset(0, 4),
+                                      blurRadius: 30.5,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Delete',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.5,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -403,7 +560,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                               backgroundColor: Color(0xff4d47c3),
                             ),
                             child: Container(
-                              width: 100,
+                              width: 80,
                               height: 59,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),

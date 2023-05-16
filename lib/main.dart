@@ -6,7 +6,9 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/admin/add_new_product.dart';
+import 'package:flutter_app/screens/admin/edit_product_details.dart';
 import 'package:flutter_app/screens/admin/product_list_view.dart';
+import 'package:flutter_app/screens/admin/view_product_details.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
 import 'package:flutter_app/screens/customer/customer_list_view.dart';
@@ -71,6 +73,8 @@ class MyApp extends StatelessWidget {
           //Admin
           'addNewProduct':(context) => const AddProductAdmin(),
           'productListView':(context) =>  const ProductListViewAdmin(),
+          EditProductAdmin.routeName:(context) => const EditProductAdmin(),
+          ViewProductAdmin.routeName:(context) => const ViewProductAdmin(),
         },
       ),
     );

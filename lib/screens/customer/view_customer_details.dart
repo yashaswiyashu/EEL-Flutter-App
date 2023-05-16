@@ -51,7 +51,7 @@ class _ViewCustomerDetailsState extends State<ViewCustomerDetails> {
   @override
   Widget build(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as CallDetailsParameter;
+        ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final customerTable = Provider.of<List<CustomerModel?>?>(context);
     var obj;

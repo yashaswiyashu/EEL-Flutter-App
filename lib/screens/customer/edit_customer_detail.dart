@@ -151,7 +151,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
   @override
   Widget build(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as CallDetailsParameter;
+        ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final customerTable = Provider.of<List<CustomerModel?>?>(context);
     var obj;
@@ -194,9 +194,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
       uses4 = obj.place4;
     }
 
-    return loading
-        ? const Loading()
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
@@ -966,12 +964,13 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    SizedBox(
+                    loading ? const CircularProgressIndicator()
+                    : SizedBox(
                       height: 59,
                       width: 420,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ElevatedButton(
@@ -1071,9 +1070,43 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            width: 55,
-                          ),
+                          ElevatedButton(
+                              // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                              onPressed: () {
+                                showConfirmation(obj!.uid);
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Container(
+                                width: 95.63,
+                                height: 59,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff4d47c3),
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      offset: Offset(0, 4),
+                                      blurRadius: 30.5,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Delete',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.5,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);

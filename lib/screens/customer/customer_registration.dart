@@ -163,7 +163,10 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         hintText: 'Enter Customer Email',
                       ),
                       validator: (value) =>
-                          value!.isEmpty ? 'Enter Customer Email' : null,
+                          RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value!)
+                              ? null
+                              : 'Enter Valid Email',
                       onChanged: (val) {
                         setState(() {
                           email = val;
@@ -819,7 +822,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       height: 10.0,
                     ),
                     loading
-                    ? const Loading()
+                    ? const CircularProgressIndicator()
                     : SizedBox(
                       height: 59,
                       width: 420,

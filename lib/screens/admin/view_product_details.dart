@@ -3,23 +3,26 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
+import 'package:provider/provider.dart';
 
 
 
-class AddProductAdmin extends StatefulWidget {
-  const AddProductAdmin({super.key});
-
+class ViewProductAdmin extends StatefulWidget {
+  const ViewProductAdmin({super.key});
+  static const routeName = '/viewProductDetails';
 
   @override
-  State<AddProductAdmin> createState() => _AddProductAdminState();
+  State<ViewProductAdmin> createState() => _ViewProductAdminState();
 }
 
 
-class _AddProductAdminState extends State<AddProductAdmin> {
+class _ViewProductAdminState extends State<ViewProductAdmin> {
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
   File? _image;
@@ -33,13 +36,33 @@ class _AddProductAdminState extends State<AddProductAdmin> {
   String offers = '';
   String description = '';
   String status = '';
-  
+
+
+
   @override
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
 
     final StorageService storage = StorageService(); 
 
+    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
+    var obj;
+    if (productDetails != null) {
+      productDetails.forEach((element) {
+        if (element.uid == args.uid) {
+          obj = element;
+        }
+      });
+    }
+
+    if (obj != null) {
+      name = obj.name;
+      imageUrl = obj.imageUrl;
+      price = obj.price;
+      offers = obj.offers;
+      description = obj.description;
+    }
 
     return Scaffold(
             appBar: AppBar(
@@ -79,16 +102,18 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
+                      initialValue: name,
+                      readOnly: true,
                       validator: (value) =>
                           value!.isEmpty ? 'Missing Field' : null,
                       decoration: textInputDecoration.copyWith(
-                          hintText: 'Enter Product Name',
+                          hintText: 'Enter Your Name',
                           fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        setState(() {
-                          name = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     name = val;
+                      //   });
+                      // },
                     ),
                     SizedBox(height: 20),
                     const SizedBox(
@@ -152,29 +177,34 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                           });
 
                         },
-                        child:SizedBox(
-                          width: 350,
-                          height: 150,
-                          child: fileName == '' ? Container(
+                        child: imageUrl == '' ? Container(
                                       decoration: const BoxDecoration(
                                         image: DecorationImage(
                                           image: AssetImage('assets/upload.png'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
-                                    ) :Stack(
+                                    ) : SizedBox(
+                          width: 350,
+                          height: 150,
+                          child: Stack(
                             children: [
                               // Default image
                               imgupload ? CircularProgressIndicator() : Container(
                                 child: FutureBuilder(
-                                  future: storage.downloadURL(fileName),
+                                  future: storage.downloadURL(imageUrl),
                                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                                    if(snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData){
+                                      return CircularProgressIndicator();
+                                    }
+
                                     if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
                                       return Image.network(
                                         snapshot.data!,
                                         fit: BoxFit.cover,
                                       );
                                     } 
+
                                     return Container();
                                   },
                                 ),
@@ -213,17 +243,19 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
+                      initialValue: price,
+                      readOnly: true,
                       validator: (value) => value!.isEmpty
                         ? 'Enter Product Price'
                             : null,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Product Price',
                           fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        setState(() {
-                          price = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     price = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -239,17 +271,19 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
+                      initialValue: offers,
+                      readOnly: true,
                       validator: (value) => value!.isEmpty
                         ? 'Enter Discount Percentage'
                             : null,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Discount Percentage',
                           fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        setState(() {
-                          offers = '$val%';
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     offers = '$val%';
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -273,6 +307,8 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                         color: Color(0xfff0efff),
                       ),
                       child: TextFormField(
+                      initialValue: description,
+                      readOnly: true,
                         validator: (value) =>
                           value!.isEmpty ? 'Missing Field' : null,
                         maxLines: null,
@@ -285,11 +321,11 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
                           ),
-                        onChanged: (val) {
-                          setState(() {
-                            description = val;
-                          });
-                        },
+                        // onChanged: (val) {
+                        //   setState(() {
+                        //     description = val;
+                        //   });
+                        // },
                       ),
                     ),
                     const SizedBox(height: 5.0),
@@ -314,88 +350,6 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                            onPressed: () async {
-                              if (_formkey.currentState!.validate()) {
-                                    if(imageUrl == ''){
-                                      setState(() {
-                                        loading = false;
-                                        status = 'Please select an image';
-                                      });
-                                      return;
-                                    }
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    await ProductDatabaseService(docid: '')
-                                      .setUserData(
-                                        name,
-                                        imageUrl,
-                                        price,
-                                        offers,
-                                        description,
-                                      )
-                                      .then((value) => setState(() {
-                                        loading = false;
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Product details added successfully!!'))
-                                        );
-                                        Navigator.pop(context);
-                                      }));
-                                  } else {
-                                    setState(() {
-                                      loading = false;
-                                      status = 'Please fill all the fields';
-                                    });
-                                  }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff4d47c3),
-                            ),
-                            child: Container(
-                              width: 100,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    blurRadius: 61,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                                color: const Color(0xff4d47c3),
-                              ),
-                              padding: const EdgeInsets.only(
-                                top: 18,
-                                bottom: 17,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  SizedBox(
-                                    width: 90,
-                                    child: Text(
-                                      "Save",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: "Poppins",
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 85,
-                          ),
-                          ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
@@ -403,7 +357,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                               backgroundColor: Color(0xff4d47c3),
                             ),
                             child: Container(
-                              width: 100,
+                              width: 80,
                               height: 59,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),
@@ -428,7 +382,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                                   SizedBox(
                                     width: 70,
                                     child: Text(
-                                      "Cancel",
+                                      "Back",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,

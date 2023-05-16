@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/screens/admin/edit_product_details.dart';
+import 'package:flutter_app/screens/admin/view_product_details.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -29,9 +32,11 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
   @override
   Widget build(BuildContext context) {
     FocusManager.instance.primaryFocus?.unfocus();
-    final productDetails = Provider.of<List<ProductDetailsModel?>?>(context);
+    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var obj;
+
+    
 
 
     Widget _verticalDivider = const VerticalDivider(
@@ -52,9 +57,9 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
 
 
     List<DataRow> _createRows() {
-      return productDetails!
+      return productDetails
           .map((element) => DataRow(cells: [
-                DataCell(Text(element!.name)),
+                DataCell(Text(element.name)),
                 DataCell(_verticalDivider),
                 DataCell(Text(element.price)),
                 DataCell(_verticalDivider),
@@ -69,7 +74,7 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                       setState(() {
                         select = value;
                         productDetails.forEach((element) {
-                          if (element?.uid == select) {
+                          if (element.uid == select) {
                             obj = element;
                           }
                         });
@@ -87,7 +92,7 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: productDetails!.isNotEmpty ? _createRows() : []);
+          rows: productDetails.isNotEmpty ? _createRows() : []);
     }
 
 
@@ -145,6 +150,7 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                       ),
                     ),
                     SizedBox(height: 10),
+                    _createDataTable(),
                     SizedBox(
                       height: 20,
                     ),
@@ -174,11 +180,11 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                                 setState(() {
                                   status = '';
                                 });
-                                // Navigator.pushNamed(
-                                //     context, ViewProductAdmin.routeName,
-                                //     arguments: ViewProductAdmin(
-                                //       character,
-                                //     ));
+                                Navigator.pushNamed(
+                                    context, ViewProductAdmin.routeName,
+                                    arguments: Parameter(
+                                      select!,
+                                    ));
                               }
                             },
                             style: TextButton.styleFrom(
@@ -228,11 +234,11 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                                 setState(() {
                                   status = '';
                                 });
-                                // Navigator.pushNamed(
-                                //     context, EditCallDetails.routeName,
-                                //     arguments: CallDetailsName(
-                                //       character,
-                                //     ));
+                                Navigator.pushNamed(
+                                    context, EditProductAdmin.routeName,
+                                    arguments: Parameter(
+                                      select!,
+                                    ));
                               }
                             },
                             style: TextButton.styleFrom(

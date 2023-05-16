@@ -162,13 +162,13 @@ class _EditCallDetailsState extends State<EditCallDetails>
   }
 
   var snackBar = SnackBar(
-  content: Text('Call Details added Successfully!!!'),
+  content: Text('Call Details Updated Successfully!!!'),
   );
 
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as CallDetailsParameter;
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final callDetails = Provider.of<List<CallDetailsModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
@@ -203,9 +203,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
       date = obj?.callDate;
     }
 
-    return loading
-        ? const Loading()
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
@@ -548,7 +546,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
+                            loading ? CircularProgressIndicator() : Container(
                               // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
                               margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
                               child: TextButton(
@@ -576,6 +574,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                                         .then((value) => setState(() {
                                               loading = false;
                                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              Navigator.pop(context);
                                             }));
                                   }
                                 },

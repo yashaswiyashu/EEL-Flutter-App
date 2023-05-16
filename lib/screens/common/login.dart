@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
                       ),
                       child: TextFormField(
                         autofocus: true,
-                        validator: (value) => RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email) ? null : 'Enter valid email',
+                        validator: (value) => RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!) ? null : 'Enter valid email',
                         decoration:
                             textInputDecoration.copyWith(hintText: 'Email'),
                         onChanged: (val) {
