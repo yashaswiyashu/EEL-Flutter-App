@@ -311,8 +311,8 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children:[
                             ElevatedButton(
-                              onPressed: () async {
-                                Navigator.pushNamed(context, 'customerRegistration');
+                              onPressed: () {
+                                Navigator.pushNamed(context, 'customerList');
                               },
                               style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3),),
                               child: Container(

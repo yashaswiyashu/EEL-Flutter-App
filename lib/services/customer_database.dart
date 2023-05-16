@@ -11,6 +11,7 @@ class CustomerDatabaseService {
 
   Future<void> setUserData(
     String uid,
+    String salesExecutiveId,
     String customerName, 
     String mobileNumber, 
     String email, 
@@ -31,6 +32,7 @@ class CustomerDatabaseService {
     ) async {
     return await userCollection.doc(uid).set({
       'uid': uid,
+      'salesExecutiveId': salesExecutiveId,
       'customerName': customerName,
       'mobileNumber': mobileNumber,
       'email': email,
@@ -52,6 +54,7 @@ class CustomerDatabaseService {
   }
   
   Future<void> updateUserData(
+    String salesExecutiveId,
     String customerName, 
     String mobileNumber, 
     String email, 
@@ -72,6 +75,7 @@ class CustomerDatabaseService {
     ) async {
     return await userCollection.doc(docid).set({
       'uid': docid,
+      'salesExecutiveId': salesExecutiveId,
       'customerName': customerName,
       'mobileNumber': mobileNumber,
       'email': email,
@@ -101,6 +105,7 @@ class CustomerDatabaseService {
     return snapshot.docs.map((DocumentSnapshot doc) {
         return CustomerModel(
           uid: (doc.data() as Map<String, dynamic>)['uid']?.toString() ?? '',
+          salesExecutiveId: (doc.data() as Map<String, dynamic>)['salesExecutiveId']?.toString() ?? '',
           customerName: (doc.data() as Map<String, dynamic>)['customerName']?.toString() ?? '',
           mobileNumber: (doc.data() as Map<String, dynamic>)['mobileNumber']?.toString() ?? '',
           email: (doc.data() as Map<String, dynamic>)['email']?.toString() ?? '',

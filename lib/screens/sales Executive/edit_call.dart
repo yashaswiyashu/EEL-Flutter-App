@@ -99,7 +99,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
       if (exit) {
         // user pressed Yes button
         CallDetailsDatabaseService(docid: uid).deleteUserData();
-        Navigator.pushNamed(context, 'callDetailsList');
+        Navigator.pop(context);
       } else {
         // user pressed No button
         // Navigator.pop(context);
@@ -167,7 +167,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as CallDetailsName;
+    final args = ModalRoute.of(context)!.settings.arguments as CallDetailsParameter;
     final currentUser = Provider.of<UserModel?>(context);
     final callDetails = Provider.of<List<CallDetailsModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
@@ -562,12 +562,12 @@ class _EditCallDetailsState extends State<EditCallDetails>
                                         .updateUserData(
                                           currentUser!.uid,
                                           customerName,
-                                          customerType == type
+                                          customerType == 'Individual'
                                               ? type
                                               : customerType,
                                           customerNumber,
                                           callDate == '' ? date : callDate,
-                                          callResult == result
+                                          callResult == 'Interested'
                                               ? result
                                               : callResult,
                                           followUp,

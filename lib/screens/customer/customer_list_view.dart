@@ -3,24 +3,25 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/customer/edit_customer_detail.dart';
+import 'package:flutter_app/screens/customer/view_customer_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/view_call_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class CallDetailsList extends StatefulWidget {
-  const CallDetailsList({super.key});
+class CustomerListView extends StatefulWidget {
+  const CustomerListView({super.key});
 
   @override
-  State<CallDetailsList> createState() => _CallDetailsListState();
+  State<CustomerListView> createState() => _CustomerListViewState();
 }
 
-
-
-class _CallDetailsListState extends State<CallDetailsList> {
+class _CustomerListViewState extends State<CustomerListView> {
   bool loading = false;
   String status = '';
 
@@ -31,67 +32,78 @@ class _CallDetailsListState extends State<CallDetailsList> {
 
   @override
   Widget build(BuildContext context) {
-    final callDetails = Provider.of<List<CallDetailsModel>>(context);
+    final customerList = Provider.of<List<CustomerModel?>?>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var details = [];
     var obj;
 
-    callDetails.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    customerList!.forEach(
+        (e) => e?.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
 
     Widget _verticalDivider = const VerticalDivider(
-        color: Colors.black,
-        thickness: 0.5,
+      color: Colors.black,
+      thickness: 0.5,
     );
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Call Date')),
+        DataColumn(label: Container(width: 65,child: Text('Cust Name', style: TextStyle(fontSize: 13, ),))),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: Text('Cust Mob.', style: TextStyle(fontSize: 13),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Mob.')),
+        DataColumn(label: Container(width: 67,child: Text('Intrested In', style: TextStyle(fontSize: 13),))),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Select')),
+        DataColumn(label: Text('Uses At', style: TextStyle(fontSize: 13),)),
+        DataColumn(label: _verticalDivider),
+        DataColumn(label: Text('Select', style: TextStyle(fontSize: 13),)),
       ];
     }
+
     List<DataRow> _createRows() {
-        return details.map((element) => DataRow(cells: [
-          DataCell(Text(element.callDate)),
-          DataCell(_verticalDivider),          
-          DataCell(Text(element.customerName)),
-          DataCell(_verticalDivider),
-          DataCell(Text(element.mobileNumber)),
-          DataCell(_verticalDivider),
-          DataCell(RadioListTile(
-            contentPadding: EdgeInsets.only(bottom: 30, ),
-            value: element.uid,
-            groupValue: character,
-            onChanged: (value) {
-              setState(() {
-                character = value;
-                details.forEach((element) {
-                  if(element.uid == character){
-                    obj = element;
-                  }
-                });
-              });
-            },
-          ),),
-        ]))
-        .toList();
+      return details
+          .map((element) => DataRow(cells: [
+                DataCell(Text(element.customerName, style: TextStyle(fontSize: 13),)),
+                DataCell(_verticalDivider),
+                DataCell(Text(element.mobileNumber, style: TextStyle(fontSize: 13),)),
+                DataCell(_verticalDivider),
+                DataCell(Text(element.product1, style: TextStyle(fontSize: 13),)),
+                DataCell(_verticalDivider),
+                DataCell(Text(element.place1, style: TextStyle(fontSize: 13),)),
+                DataCell(_verticalDivider),
+                DataCell(
+                  RadioListTile(
+                    contentPadding: EdgeInsets.only(
+                      bottom: 30,
+                    ),
+                    value: element.uid,
+                    groupValue: character,
+                    onChanged: (value) {
+                      setState(() {
+                        character = value;
+                        details.forEach((element) {
+                          if (element.uid == character) {
+                            obj = element;
+                          }
+                        });
+                      });
+                    },
+                  ),
+                ),
+              ]))
+          .toList();
     }
+
     DataTable _createDataTable() {
       return DataTable(
-        columnSpacing: 0.0,
-        dataRowHeight: 40.0,
-        columns: _createColumns(), 
-        rows: callDetails.isNotEmpty ? _createRows() : []
-      );
+          columnSpacing: 0.0,
+          dataRowHeight: 50.0,
+          columns: _createColumns(),
+          rows: customerList.isNotEmpty ? _createRows() : []);
     }
 
     // void showSettingsPanel(String name) {
     //   showModalBottomSheet(
-    //     context: context, 
+    //     context: context,
     //     builder: (context) {
     //       return Container(
     //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
@@ -101,7 +113,6 @@ class _CallDetailsListState extends State<CallDetailsList> {
     //   );
     // }
 
-    
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
     if (salesTable != null) {
@@ -112,8 +123,6 @@ class _CallDetailsListState extends State<CallDetailsList> {
       });
     }
 
-
-
     return loading
         ? const Loading()
         : Scaffold(
@@ -122,42 +131,48 @@ class _CallDetailsListState extends State<CallDetailsList> {
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
-                  onPressed: () async {
-                    await _auth.signout();
-                    Navigator.pushNamed(context, 'home');
-                  }, 
-                  icon: const Icon(Icons.person, color: Colors.white,), 
-                  label: const Text('logout', style: TextStyle(color: Colors.white),)
-                ),
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.pushNamed(context, 'home');
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
               ],
             ),
             body: SingleChildScrollView(
               child: Container(
-                width: 440,
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 0.4,
-                ),
-                child: Column(
+              width: 440,
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 0.4,
+              ),
+              margin: EdgeInsets.only(left: 0 , right: 0),
+              child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                padding: EdgeInsets.only(right: 15, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                  Text(
-                    'Name: ${salesExecutive.name}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                      padding: EdgeInsets.only(right: 15, top: 10),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Name: ${salesExecutive.name}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ]),
                     ),
-                    ),
-                ]),
-              ),
                     Container(
                       width: 270,
                       height: 60,
@@ -169,21 +184,30 @@ class _CallDetailsListState extends State<CallDetailsList> {
                     Container(
                       margin: EdgeInsets.only(left: 250),
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
-                        onPressed: (){
-                          Navigator.pushNamed(context, 'addCallDetails');
-                        }, 
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff4d47c3)),
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'customerRegistration');
+                        },
                         child: Text('Add New +'),
                       ),
                     ),
                     SizedBox(height: 10),
-                    _createDataTable(),
-                    SizedBox(height: 20,),
+                    Container(
+                      margin: EdgeInsets.only(left: 0, right: 0),
+                      child: _createDataTable()
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text(
                       status,
-                      style: const TextStyle(color: Colors.pink, fontSize: 14.0),
+                      style:
+                          const TextStyle(color: Colors.pink, fontSize: 14.0),
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,21 +218,19 @@ class _CallDetailsListState extends State<CallDetailsList> {
                           child: TextButton(
                             onPressed: () async {
                               // showSettingsPanel(character);
-                              if(character == ''){
-                                setState(() {  
-                                  status ='Please select an option';
-                                });
-                              }else{
+                              if (character == '') {
                                 setState(() {
-                                  status ='';
+                                  status = 'Please select an option';
+                                });
+                              } else {
+                                setState(() {
+                                  status = '';
                                 });
                                 Navigator.pushNamed(
-                                  context, 
-                                  ViewCallDetails.routeName,
-                                  arguments: CallDetailsParameter(
-                                    character,
-                                  )
-                                );
+                                    context, ViewCustomerDetails.routeName,
+                                    arguments: CallDetailsParameter(
+                                      character,
+                                    ));
                               }
                             },
                             style: TextButton.styleFrom(
@@ -248,23 +270,21 @@ class _CallDetailsListState extends State<CallDetailsList> {
                           // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
                           margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
                           child: TextButton(
-                            onPressed: ()  {
+                            onPressed: () {
                               // showSettingsPanel(character);
-                              if(character == ''){
+                              if (character == '') {
                                 setState(() {
-                                  status ='Please select an option';
+                                  status = 'Please select an option';
                                 });
-                              }else{
+                              } else {
                                 setState(() {
-                                  status ='';
+                                  status = '';
                                 });
                                 Navigator.pushNamed(
-                                  context, 
-                                  EditCallDetails.routeName,
-                                  arguments: CallDetailsParameter(
-                                    character,
-                                  )
-                                );
+                                    context, EditCustomerDetails.routeName,
+                                    arguments: CallDetailsParameter(
+                                      character,
+                                    ));
                               }
                             },
                             style: TextButton.styleFrom(
@@ -339,11 +359,10 @@ class _CallDetailsListState extends State<CallDetailsList> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20,),
-                  ]
-                ),
-              )
-        )
-    );
+                    SizedBox(
+                      height: 20,
+                    ),
+                  ]),
+            )));
   }
 }

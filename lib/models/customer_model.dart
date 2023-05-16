@@ -1,6 +1,7 @@
 class CustomerModel {
   final String uid;
-    final String customerName;
+  final String? salesExecutiveId;
+  final String customerName;
   final String mobileNumber;
   final String email;
   final String password;
@@ -20,6 +21,7 @@ class CustomerModel {
 
   CustomerModel({
     required this.uid,
+    required this.salesExecutiveId,
     required this.customerName,
     required this.mobileNumber,
     required this.email,

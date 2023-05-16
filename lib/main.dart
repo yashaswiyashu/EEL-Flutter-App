@@ -6,7 +6,10 @@ import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
+import 'package:flutter_app/screens/customer/customer_list_view.dart';
 import 'package:flutter_app/screens/customer/customer_registration.dart';
+import 'package:flutter_app/screens/customer/edit_customer_detail.dart';
+import 'package:flutter_app/screens/customer/view_customer_details.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/add_call_details.dart';
@@ -34,8 +37,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-      StreamProvider<List<SalesPersonModel?>?>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: []),
-      StreamProvider<List<CustomerModel?>?>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: []),
+      StreamProvider<List<SalesPersonModel?>?>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: const []),
+      StreamProvider<List<CustomerModel?>?>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: const []),
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
@@ -54,7 +57,9 @@ class MyApp extends StatelessWidget {
           //Customer 
           'customerRegistration':(context) => const CustomerRegistration(),
           'customerHomePage':(context) => const CustomerHome(),
-
+          'customerList':(context) => const CustomerListView(),
+          EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
+          ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
         },
       ),
     );

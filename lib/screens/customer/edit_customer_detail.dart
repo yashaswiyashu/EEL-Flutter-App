@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -8,17 +9,15 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 
-
-class CustomerRegistration extends StatefulWidget {
-  const CustomerRegistration({super.key});
-
+class EditCustomerDetails extends StatefulWidget {
+  const EditCustomerDetails({super.key});
+  static const routeName = '/editCustomerDetails';
 
   @override
-  State<CustomerRegistration> createState() => _CustomerRegistrationState();
+  State<EditCustomerDetails> createState() => _EditCustomerDetailsState();
 }
 
-
-class _CustomerRegistrationState extends State<CustomerRegistration> {
+class _EditCustomerDetailsState extends State<EditCustomerDetails> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
@@ -31,7 +30,15 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   String dropdownUses3 = 'House';
   String dropdownUses4 = 'House';
 
-
+  //controllers
+  final controllerName = TextEditingController();
+  final controllerNumber = TextEditingController();
+  final controllerEmail = TextEditingController();
+  final controllerPassword = TextEditingController();
+  final controllerAddress1 = TextEditingController();
+  final controllerAddress2 = TextEditingController();
+  final controllerCity = TextEditingController();
+  final controllerPincode = TextEditingController();
   // text field state
   String customerName = '';
   String mobileNumber = '';
@@ -43,23 +50,149 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   String state = 'Select State';
   String pincode = '';
 
-
   String error = '';
   bool _passwordVisible = false;
 
-
   void initState() {
     _passwordVisible = false;
+    super.initState();
+
+    // Start listening to changes.
+    controllerName.addListener(_saveName);
+    controllerNumber.addListener(_saveNumber);
+    controllerEmail.addListener(_saveEmail);
+    controllerPassword.addListener(_savePassword);
+    controllerAddress1.addListener(_saveAddress1);
+    controllerAddress2.addListener(_saveAddress2);
+    controllerCity.addListener(_saveCity);
+    controllerPincode.addListener(_savePincode);
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    controllerName.dispose();
+    controllerNumber.dispose();
+    controllerEmail.dispose();
+    controllerPassword.dispose();
+    controllerAddress1.dispose();
+    controllerAddress2.dispose();
+    controllerCity.dispose();
+    controllerPincode.dispose();
+    super.dispose();
   }
 
   var customer;
 
+  void _saveName() {
+    customerName = controllerName.text;
+  }
+
+  void _saveNumber() {
+    mobileNumber = controllerNumber.text;
+  }
+
+  void _saveEmail() {
+    email = controllerEmail.text;
+  }
+
+  void _savePassword() {
+    password = controllerPassword.text;
+  }
+
+  void _saveAddress1() {
+    address1 = controllerAddress1.text;
+  }
+
+  void _saveAddress2() {
+    address2 = controllerAddress2.text;
+  }
+
+  void _saveCity() {
+    city = controllerCity.text;
+  }
+
+  void _savePincode() {
+    pincode = controllerPincode.text;
+  }
+
+  void showConfirmation(String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Do you want to delete entire document?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        CustomerDatabaseService(docid: uid).deleteUserData();
+        Navigator.pop(context);
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
+    final args =
+        ModalRoute.of(context)!.settings.arguments as CallDetailsParameter;
     final currentUser = Provider.of<UserModel?>(context);
     final customerTable = Provider.of<List<CustomerModel?>?>(context);
+    var obj;
+
+    if (customerTable != null) {
+      customerTable.forEach((element) {
+        if (element?.uid == args.uid) {
+          obj = element;
+        }
+      });
+    }
+
+    String st = '';
+    String int1 = '';
+    String int2 = '';
+    String int3 = '';
+    String int4 = '';
+    String uses1 = '';
+    String uses2 = '';
+    String uses3 = '';
+    String uses4 = '';
+
+    if (obj != null) {
+      controllerName.text = obj.customerName;
+      controllerNumber.text = obj.mobileNumber;
+      controllerEmail.text = obj.email;
+      controllerPassword.text = obj.password;
+      controllerAddress1.text = obj.address1;
+      controllerAddress2.text = obj.address2;
+      controllerCity.text = obj.city;
+      controllerPincode.text = obj.pincode;
+      st = obj.state;
+      int1 = obj.product1;
+      int2 = obj.product2;
+      int3 = obj.product3;
+      int4 = obj.product4;
+      uses1 = obj.place1;
+      uses2 = obj.place2;
+      uses3 = obj.place3;
+      uses4 = obj.place4;
+    }
 
     return loading
         ? const Loading()
@@ -67,16 +200,23 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
-              actions: currentUser?.uid != null ? [
-                TextButton.icon(
-                  onPressed: () async {
-                    await _auth.signout();
-                    Navigator.pushNamed(context, 'home');
-                  }, 
-                  icon: const Icon(Icons.person, color: Colors.white,), 
-                  label: const Text('logout', style: TextStyle(color: Colors.white),)
-                ),
-              ] : null,
+              actions: currentUser?.uid != null
+                  ? [
+                      TextButton.icon(
+                          onPressed: () async {
+                            await _auth.signout();
+                            Navigator.pushNamed(context, 'home');
+                          },
+                          icon: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            'logout',
+                            style: TextStyle(color: Colors.white),
+                          )),
+                    ]
+                  : null,
             ),
             body: SingleChildScrollView(
               padding: EdgeInsets.only(right: 10, left: 10),
@@ -93,14 +233,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       height: 60,
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    const SizedBox(height: 12.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text(
-                        error,
-                        style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),]
-                    ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
                       height: 20.0,
@@ -115,14 +247,15 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       ),
                     ),
                     TextFormField(
+                      controller: controllerName,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Customer Name',
                           fillColor: const Color(0xfff0efff)),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter Customer Name' : null,
-                      onChanged: (val) {
-                        customerName = val;
-                      },
+                      // onChanged: (val) {
+                      //   customerName = val;
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -137,6 +270,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           ),
                         )),
                     TextFormField(
+                      controller: controllerNumber,
                       keyboardType: TextInputType.phone,
                       decoration: textInputDecoration.copyWith(
                         hintText: 'Enter Customer Mobile Number',
@@ -144,9 +278,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       validator: (value) => value!.length < 10
                           ? 'Enter Customer Mobile Number'
                           : null,
-                      onChanged: (val) {
-                        mobileNumber = val;
-                      },
+                      // onChanged: (val) {
+                      //   mobileNumber = val;
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -161,16 +295,17 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           ),
                         )),
                     TextFormField(
+                      controller: controllerEmail,
                       decoration: textInputDecoration.copyWith(
                         hintText: 'Enter Customer Email',
                       ),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter Customer Email' : null,
-                      onChanged: (val) {
-                        setState(() {
-                          email = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     email = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -185,6 +320,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           ),
                         )),
                     TextFormField(
+                      controller: controllerPassword,
                       keyboardType: TextInputType.text,
                       obscureText: !_passwordVisible,
                       decoration: textInputDecoration.copyWith(
@@ -208,11 +344,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       validator: (value) => value!.length < 6
                           ? 'Enter a password of more than 6 characters'
                           : null,
-                      onChanged: (val) {
-                        setState(() {
-                          password = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     password = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -228,39 +364,42 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         )),
                     const SizedBox(height: 10.0),
                     TextFormField(
+                      controller: controllerAddress1,
                       decoration: textInputDecoration.copyWith(
                           hintText: 'house#, area'),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter Customer Full Address' : null,
-                      onChanged: (val) {
-                        setState(() {
-                          address1 = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     address1 = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 10.0),
                     TextFormField(
+                      controller: controllerAddress2,
                       decoration:
                           textInputDecoration.copyWith(hintText: 'town, taluk'),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter Customer Full Address' : null,
-                      onChanged: (val) {
-                        setState(() {
-                          address2 = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     address2 = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 10.0),
                     TextFormField(
+                      controller: controllerCity,
                       decoration:
                           textInputDecoration.copyWith(hintText: 'city'),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter Customer Full Address' : null,
-                      onChanged: (val) {
-                        setState(() {
-                          city = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     city = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 10.0),
                     DropdownButtonFormField(
@@ -277,7 +416,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         fillColor: Color(0xffefefff),
                       ),
                       dropdownColor: const Color(0xffefefff),
-                      value: state,
+                      value: state == 'Select State' ? st : state,
                       onChanged: (String? newValue) {
                         setState(() {
                           state = newValue!;
@@ -300,18 +439,18 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     ),
                     const SizedBox(height: 10.0),
                     TextFormField(
+                      controller: controllerPincode,
                       keyboardType: TextInputType.phone,
                       decoration:
                           textInputDecoration.copyWith(hintText: 'pincode'),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter Customer Full Address' : null,
-                      onChanged: (val) {
-                        setState(() {
-                          pincode = val;
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     pincode = val;
+                      //   });
+                      // },
                     ),
-
 
                     const SizedBox(height: 10.0),
                     const SizedBox(
@@ -329,7 +468,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     const SizedBox(
                       height: 10.0,
                     ),
-
 
                     //curousel
                     SizedBox(
@@ -365,7 +503,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownInt1,
+                                        value: dropdownInt1 == 'Suraksha'
+                                            ? int1
+                                            : dropdownInt1,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownInt1 = newValue!;
@@ -409,7 +549,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownInt2,
+                                        value: dropdownInt2 == 'Suraksha'
+                                            ? int2
+                                            : dropdownInt2,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownInt2 = newValue!;
@@ -432,7 +574,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    
                                   ],
                                 ),
                               ),
@@ -464,7 +605,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownInt3,
+                                        value: dropdownInt3 == 'Suraksha'
+                                            ? int3
+                                            : dropdownInt3,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownInt3 = newValue!;
@@ -508,7 +651,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownInt4,
+                                        value: dropdownInt4 == 'Suraksha'
+                                            ? int4
+                                            : dropdownInt4,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownInt4 = newValue!;
@@ -531,7 +676,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    
                                   ],
                                 ),
                               ),
@@ -568,7 +712,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       height: 20.0,
                     ),
 
-
                     //curousel
                     SizedBox(
                       height: 100,
@@ -603,7 +746,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownUses1,
+                                        value: dropdownUses1 == 'House'
+                                            ? uses1
+                                            : dropdownUses1,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownUses1 = newValue!;
@@ -646,15 +791,15 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                                 color: Colors.black, width: 0),
                                           ),
 
-
                                           //<-- SEE HERE
-
 
                                           filled: true,
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownUses2,
+                                        value: dropdownUses2 == 'House'
+                                            ? uses2
+                                            : dropdownUses2,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownUses2 = newValue!;
@@ -715,7 +860,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownUses3,
+                                        value: dropdownUses3 == 'House'
+                                            ? uses3
+                                            : dropdownUses3,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownUses3 = newValue!;
@@ -758,15 +905,15 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                                 color: Colors.black, width: 0),
                                           ),
 
-
                                           //<-- SEE HERE
-
 
                                           filled: true,
                                           fillColor: Color(0xffefefff),
                                         ),
                                         dropdownColor: const Color(0xffefefff),
-                                        value: dropdownUses4,
+                                        value: dropdownUses4 == 'House'
+                                            ? uses4
+                                            : dropdownUses4,
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             dropdownUses4 = newValue!;
@@ -816,7 +963,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       ]),
                     ),
 
-
                     const SizedBox(
                       height: 10.0,
                     ),
@@ -834,19 +980,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                 setState(() {
                                   loading = true;
                                 });
-                                dynamic result =
-                                    await _auth.registerWithEmailAndPassword(
-                                        email, password);
-                                if (result == null) {
-                                  setState(() {
-                                    error = 'please supply a valid email';
-                                    loading = false;
-                                  });
-                                } else {
-                                  if (result?.uid != null && state != 'Select State') {
-                                    await CustomerDatabaseService(docid: result.uid)
-                                        .setUserData(
-                                      result?.uid,
+                                await CustomerDatabaseService(docid: args.uid)
+                                    .updateUserData(
                                       currentUser!.uid,
                                       customerName,
                                       mobileNumber,
@@ -855,49 +990,42 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                       address1,
                                       address2,
                                       city,
-                                      state,
+                                      state == st ? st : state,
                                       pincode,
-                                      dropdownInt1,
-                                      dropdownInt2,
-                                      dropdownInt3,
-                                      dropdownInt4,
-                                      dropdownUses1,
-                                      dropdownUses2,
-                                      dropdownUses3,
-                                      dropdownUses4,
-                                    ).then((value) => setState(() {
-                                      loading = false;
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            'New Customer Details Added Successfully!!!'),
-                                      ));
-                                    }));
-                                    
-                                    if (customerTable != null) {
-                                      customerTable.forEach((element) {
-                                        if (element?.uid == result?.uid) {
-                                          if(currentUser.uid == ''){
-                                            setState(() {
-                                              loading = false;
-                                            });              
-                                            Navigator.pushNamed(context, 'customerHomePage');                            
-                                          } else {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                            Navigator.pushNamed(context, 'salesExecutiveHome');
-                                          }
-                                        }
-                                      });
-                                    }
-                                  } else {
-                                    setState(() {
-                                      loading = false;
-                                      error = 'Please select all the fields';
-                                    });
-                                  }
-                                }
+                                      dropdownInt1 == 'Suraksha'
+                                          ? int1
+                                          : dropdownInt1,
+                                      dropdownInt2 == 'Suraksha'
+                                          ? int2
+                                          : dropdownInt2,
+                                      dropdownInt3 == 'Suraksha'
+                                          ? int3
+                                          : dropdownInt3,
+                                      dropdownInt4 == 'Suraksha'
+                                          ? int4
+                                          : dropdownInt4,
+                                      dropdownUses1 == 'House'
+                                          ? uses1
+                                          : dropdownUses1,
+                                      dropdownUses2 == 'House'
+                                          ? uses2
+                                          : dropdownUses2,
+                                      dropdownUses3 == 'House'
+                                          ? uses3
+                                          : dropdownUses3,
+                                      dropdownUses4 == 'House'
+                                          ? uses4
+                                          : dropdownUses4,
+                                    )
+                                    .then((value) => setState(() {
+                                          loading = false;
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                'Customer Details edited Successfully!!!'),
+                                          ));
+                                          Navigator.pop(context);
+                                        }));
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -948,7 +1076,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, 'home');
+                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xff4d47c3),
@@ -996,34 +1124,12 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 12.0),
+                    Text(
+                      error,
+                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
                     const SizedBox(height: 20.0),
-                    // ElevatedButton(
-                    //   style:
-                    //       ElevatedButton.styleFrom(backgroundColor: Colors.pink[400]),
-                    //   onPressed: () async {
-                    //     // if(_formkey.currentState!.validate()){
-                    //     //   setState(() {
-                    //     //     loading = true;
-                    //     //   });
-                    //     //   dynamic result = await _auth.signInWithEmailAndPassword(email, password);
-                    //     //   if(result == null){
-                    //     //     setState(() {
-                    //     //       error = 'unknown user please register';
-                    //     //       loading = false;
-                    //     //     });
-                    //     //   }
-                    //     // }
-                    //   },
-                    //   child: const Text(
-                    //     'Sign In',
-                    //     style: TextStyle(color: Colors.white),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 12.0),
-                    // Text(
-                    //   error,
-                    //   style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                    // )
                   ],
                 ),
               ),

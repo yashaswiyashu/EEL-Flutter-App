@@ -39,7 +39,7 @@ class _ViewCallDetailsState extends State<ViewCallDetails> {
   String status = '';
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as CallDetailsName;
+    final args = ModalRoute.of(context)!.settings.arguments as CallDetailsParameter;
     final currentUser = Provider.of<UserModel>(context);
     final callDetails = Provider.of<List<CallDetailsModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);

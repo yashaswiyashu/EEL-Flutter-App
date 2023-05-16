@@ -1,5 +1,5 @@
-class CallDetailsName {
+class CallDetailsParameter {
   final String uid;
 
-  CallDetailsName(this.uid);
+  CallDetailsParameter(this.uid);
 }

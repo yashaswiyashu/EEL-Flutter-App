@@ -1,117 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_app/models/call_details_forward_model.dart';
-import 'package:flutter_app/models/call_details_model.dart';
-import 'package:flutter_app/models/sales_person_model.dart';
-import 'package:flutter_app/models/user_model.dart';
-import 'package:flutter_app/screens/sales%20Executive/edit_call.dart';
-import 'package:flutter_app/screens/sales%20Executive/view_call_details.dart';
-import 'package:flutter_app/services/auth.dart';
+import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_app/services/auth.dart';
+import 'package:flutter_app/screens/admin/view_product_admin.dart';
+import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/models/user_model.dart';
 
-class CallDetailsList extends StatefulWidget {
-  const CallDetailsList({super.key});
+
+class ProductListViewAdmin extends StatefulWidget {
+  const ProductListViewAdmin({super.key});
+
 
   @override
-  State<CallDetailsList> createState() => _CallDetailsListState();
+  State<ProductListViewAdmin> createState() => _ProductListViewAdminState();
 }
 
 
+enum SingingCharacter { lafayette, jefferson, yash }
 
-class _CallDetailsListState extends State<CallDetailsList> {
+
+class _ProductListViewAdminState extends State<ProductListViewAdmin> {
   bool loading = false;
   String status = '';
-
   String character = '';
   final AuthService _auth = AuthService();
-
-  var salesExecutive;
-
   @override
   Widget build(BuildContext context) {
-    final callDetails = Provider.of<List<CallDetailsModel>>(context);
-    final currentUser = Provider.of<UserModel?>(context);
+    // final callDetails = Provider.of<List<ProductDetailsModel>>(context);
+    // final currentUser = Provider.of<UserModel?>(context);
     var details = [];
     var obj;
 
-    callDetails.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+
+    // callDetails.forEach(
+    //     (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+
 
     Widget _verticalDivider = const VerticalDivider(
-        color: Colors.black,
-        thickness: 0.5,
+      color: Colors.black,
+      thickness: 0.5,
     );
+
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Call Date')),
+        DataColumn(label: Text('Product Name')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: Text('Unit price')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Mob.')),
+        DataColumn(label: Text('Quantity')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Select')),
       ];
     }
+
+
     List<DataRow> _createRows() {
-        return details.map((element) => DataRow(cells: [
-          DataCell(Text(element.callDate)),
-          DataCell(_verticalDivider),          
-          DataCell(Text(element.customerName)),
-          DataCell(_verticalDivider),
-          DataCell(Text(element.mobileNumber)),
-          DataCell(_verticalDivider),
-          DataCell(RadioListTile(
-            contentPadding: EdgeInsets.only(bottom: 30, ),
-            value: element.uid,
-            groupValue: character,
-            onChanged: (value) {
-              setState(() {
-                character = value;
-                details.forEach((element) {
-                  if(element.uid == character){
-                    obj = element;
-                  }
-                });
-              });
-            },
-          ),),
-        ]))
-        .toList();
+      return details
+          .map((element) => DataRow(cells: [
+                DataCell(Text(element.productName)),
+                DataCell(_verticalDivider),
+                DataCell(Text(element.unitPrice)),
+                DataCell(_verticalDivider),
+                DataCell(Text(element.Quantity)),
+                DataCell(_verticalDivider),
+                DataCell(
+                  RadioListTile(
+                    contentPadding: EdgeInsets.only(
+                      bottom: 30,
+                    ),
+                    value: element.uid,
+                    groupValue: character,
+                    onChanged: (value) {
+                      setState(() {
+                        character = value;
+                        details.forEach((element) {
+                          if (element.uid == character) {
+                            obj = element;
+                          }
+                        });
+                      });
+                    },
+                  ),
+                ),
+              ]))
+          .toList();
     }
+
+
     DataTable _createDataTable() {
       return DataTable(
-        columnSpacing: 0.0,
-        dataRowHeight: 40.0,
-        columns: _createColumns(), 
-        rows: callDetails.isNotEmpty ? _createRows() : []
-      );
+          columnSpacing: 0.0,
+          dataRowHeight: 40.0,
+          columns: _createColumns(),
+          rows: callDetails.isNotEmpty ? _createRows() : []);
     }
-
-    // void showSettingsPanel(String name) {
-    //   showModalBottomSheet(
-    //     context: context, 
-    //     builder: (context) {
-    //       return Container(
-    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-    //         child: SingleCallDetailsView(name: name),
-    //       );
-    //     }
-    //   );
-    // }
-
-    
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
-
-    if (salesTable != null) {
-      salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    }
-
 
 
     return loading
@@ -122,42 +108,32 @@ class _CallDetailsListState extends State<CallDetailsList> {
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
-                  onPressed: () async {
-                    await _auth.signout();
-                    Navigator.pushNamed(context, 'home');
-                  }, 
-                  icon: const Icon(Icons.person, color: Colors.white,), 
-                  label: const Text('logout', style: TextStyle(color: Colors.white),)
-                ),
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.pushNamed(context, 'home');
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
               ],
             ),
             body: SingleChildScrollView(
-              child: Container(
-                width: 440,
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 0.4,
-                ),
-                child: Column(
+                child: Container(
+              width: 440,
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 0.4,
+              ),
+              child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                padding: EdgeInsets.only(right: 15, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                  Text(
-                    'Name: ${salesExecutive.name}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    ),
-                ]),
-              ),
                     Container(
                       width: 270,
                       height: 60,
@@ -169,21 +145,26 @@ class _CallDetailsListState extends State<CallDetailsList> {
                     Container(
                       margin: EdgeInsets.only(left: 250),
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
-                        onPressed: (){
-                          Navigator.pushNamed(context, 'addCallDetails');
-                        }, 
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff4d47c3)),
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'addNewCallDetails');
+                        },
                         child: Text('Add New +'),
                       ),
                     ),
                     SizedBox(height: 10),
-                    _createDataTable(),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text(
                       status,
-                      style: const TextStyle(color: Colors.pink, fontSize: 14.0),
+                      style:
+                          const TextStyle(color: Colors.pink, fontSize: 14.0),
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,21 +175,19 @@ class _CallDetailsListState extends State<CallDetailsList> {
                           child: TextButton(
                             onPressed: () async {
                               // showSettingsPanel(character);
-                              if(character == ''){
-                                setState(() {  
-                                  status ='Please select an option';
-                                });
-                              }else{
+                              if (character == '') {
                                 setState(() {
-                                  status ='';
+                                  status = 'Please select an option';
                                 });
-                                Navigator.pushNamed(
-                                  context, 
-                                  ViewCallDetails.routeName,
-                                  arguments: CallDetailsParameter(
-                                    character,
-                                  )
-                                );
+                              } else {
+                                setState(() {
+                                  status = '';
+                                });
+                                // Navigator.pushNamed(
+                                //     context, ViewProductAdmin.routeName,
+                                //     arguments: ViewProductAdmin(
+                                //       character,
+                                //     ));
                               }
                             },
                             style: TextButton.styleFrom(
@@ -248,23 +227,21 @@ class _CallDetailsListState extends State<CallDetailsList> {
                           // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
                           margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
                           child: TextButton(
-                            onPressed: ()  {
+                            onPressed: () {
                               // showSettingsPanel(character);
-                              if(character == ''){
+                              if (character == '') {
                                 setState(() {
-                                  status ='Please select an option';
+                                  status = 'Please select an option';
                                 });
-                              }else{
+                              } else {
                                 setState(() {
-                                  status ='';
+                                  status = '';
                                 });
-                                Navigator.pushNamed(
-                                  context, 
-                                  EditCallDetails.routeName,
-                                  arguments: CallDetailsParameter(
-                                    character,
-                                  )
-                                );
+                                // Navigator.pushNamed(
+                                //     context, EditCallDetails.routeName,
+                                //     arguments: CallDetailsName(
+                                //       character,
+                                //     ));
                               }
                             },
                             style: TextButton.styleFrom(
@@ -339,11 +316,10 @@ class _CallDetailsListState extends State<CallDetailsList> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20,),
-                  ]
-                ),
-              )
-        )
-    );
+                    SizedBox(
+                      height: 20,
+                    ),
+                  ]),
+            )));
   }
 }
