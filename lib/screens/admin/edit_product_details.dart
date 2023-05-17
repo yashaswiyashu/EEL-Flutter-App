@@ -250,7 +250,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
 
                         },
                         child: fileName == '' ? SizedBox(
-                          width: 350,
+                          width: 280,
                           height: 150,
                           child: Stack(
                             children: [

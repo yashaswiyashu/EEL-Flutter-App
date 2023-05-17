@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_app/screens/customer/view_customer_details.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/add_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/add_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/call_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales_executive_home.dart';
@@ -25,6 +27,7 @@ import 'package:flutter_app/screens/sales%20Executive/view_call_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/call_details_database.dart';
 import 'package:flutter_app/services/customer_database.dart';
+import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/services/sales_database.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +50,7 @@ class MyApp extends StatelessWidget {
       StreamProvider<List<CustomerModel?>?>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: const []),
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
       StreamProvider<List<ProductDetailsModel>>.value(value: ProductDatabaseService(docid: '').productDetailsTable, initialData: const []),
+      StreamProvider<List<OrderDetailsModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderDetailsTable, initialData: const []),
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
       child: MaterialApp(
@@ -62,6 +66,7 @@ class MyApp extends StatelessWidget {
           'callDetailsList':(context) => const CallDetailsList(),
           EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
           ViewCallDetails.routeName:(context) => ViewCallDetails(),
+          'addOrderDetails':(context) => const NewOrder(),
           
           //Customer 
           'customerRegistration':(context) => const CustomerRegistration(),
@@ -75,6 +80,7 @@ class MyApp extends StatelessWidget {
           'productListView':(context) =>  const ProductListViewAdmin(),
           EditProductAdmin.routeName:(context) => const EditProductAdmin(),
           ViewProductAdmin.routeName:(context) => const ViewProductAdmin(),
+
         },
       ),
     );

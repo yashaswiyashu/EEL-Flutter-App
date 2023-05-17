@@ -395,16 +395,18 @@ class _EditCallDetailsState extends State<EditCallDetails>
                       Container(
                         width: 440,
                         height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xffe3e4e5)),
-                          onPressed: () {
-                            _restorableDatePickerRouteFuture.present();
-                          },
-                          child: Text(
-                            callDate == '' ? date : callDate,
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                          ),
+                        child: Row(
+                          children: [ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xffe3e4e5)),
+                            onPressed: () {
+                              _restorableDatePickerRouteFuture.present();
+                            },
+                            child: Text(
+                              callDate == '' ? date : callDate,
+                              style: TextStyle(color: Colors.black, fontSize: 16),
+                            ),
+                          ),]
                         ),
                       ),
                       const SizedBox(height: 20.0),
@@ -510,6 +512,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                       Container(
                         width: 440,
                         height: 83,
+                        padding: EdgeInsets.only(left: 5, right: 5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Color(0xffe3e4e5)),

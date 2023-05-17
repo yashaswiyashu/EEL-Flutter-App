@@ -301,7 +301,7 @@ class _ViewCallDetailsState extends State<ViewCallDetails> {
                       ),
                       Container(
                         // followupdetailsjeX (32:1762)
-                        margin: EdgeInsets.fromLTRB(6, 0, 0, 12),
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
                         child: Text(
                           'Follow Up Details:',
                           style: TextStyle(
@@ -316,6 +316,7 @@ class _ViewCallDetailsState extends State<ViewCallDetails> {
                       Container(
                         width: 440,
                         height: 83,
+                        padding: EdgeInsets.only(left: 5, right: 5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Color(0xffe3e4e5)),

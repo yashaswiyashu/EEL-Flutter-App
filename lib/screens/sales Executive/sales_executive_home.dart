@@ -281,7 +281,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: 210,
+                              width: 200,
                               height: 30,
                               child: Text(
                                 "Pending complaints",
@@ -355,6 +355,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             const SizedBox(width: 55,),
                             ElevatedButton(
                               onPressed: () {
+                                Navigator.pushNamed(context, 'addOrderDetails');
                               },
                               style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3),),
                               child: Container(

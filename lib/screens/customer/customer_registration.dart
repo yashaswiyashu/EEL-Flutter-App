@@ -91,14 +91,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       height: 60,
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    const SizedBox(height: 12.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text(
-                        error,
-                        style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),]
-                    ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
                       height: 20.0,
@@ -335,7 +327,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     //curousel
                     SizedBox(
                       height: 100,
-                      width: 440,
+                      width: 350,
                       child: ListView(children: [
                         CarouselSlider(
                           items: [
@@ -345,11 +337,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: SizedBox(
-                                width: 440,
+                                width: 350,
                                 child: Row(
                                   children: <Widget>[
                                     SizedBox(
-                                      width: 140,
+                                      width: 130,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -390,7 +382,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                       ),
                                     ),
                                     const SizedBox(
-                                      width: 25.0,
+                                      width: 20.0,
                                     ),
                                     SizedBox(
                                       width: 140,
@@ -816,7 +808,14 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         ),
                       ]),
                     ),
-
+                    const SizedBox(height: 12.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text(
+                        error,
+                        style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                      ),]
+                    ),
 
                     const SizedBox(
                       height: 10.0,
@@ -875,7 +874,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         content: Text(
                                             'New Customer Details Added Successfully!!!'),
                                       ));
-                                      Navigator.pop(context);
                                     }));
                                     
                                     if (customerTable != null) {

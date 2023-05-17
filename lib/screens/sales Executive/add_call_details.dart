@@ -394,6 +394,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                             Container(
                               width: 440,
                               height: 83,
+                              padding: EdgeInsets.only(left: 5, right: 5),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(color: Color(0xffe3e4e5)),

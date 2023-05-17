@@ -128,8 +128,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                         onPressed: () async {
                           final result = await FilePicker.platform.pickFiles(
                             allowMultiple: false,
-                            type: FileType.custom,
-                            allowedExtensions: ['png', 'jpg'],
+                            type: FileType.image,
                           );
 
                           if(result == null) {
@@ -153,7 +152,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
 
                         },
                         child:SizedBox(
-                          width: 350,
+                          width: 280,
                           height: 150,
                           child: fileName == '' ? Container(
                                       decoration: const BoxDecoration(

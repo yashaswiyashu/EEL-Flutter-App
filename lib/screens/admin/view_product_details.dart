@@ -185,7 +185,7 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
                                         ),
                                       ),
                                     ) : SizedBox(
-                          width: 350,
+                          width: 280,
                           height: 150,
                           child: Stack(
                             children: [
