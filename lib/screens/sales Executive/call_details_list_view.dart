@@ -122,7 +122,9 @@ class _CallDetailsListState extends State<CallDetailsList> {
                 TextButton.icon(
                   onPressed: () async {
                     await _auth.signout();
-                    Navigator.pushNamed(context, 'home');
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                      'authWrapper',
+                      (Route<dynamic> route) => false);
                   }, 
                   icon: const Icon(Icons.person, color: Colors.white,), 
                   label: const Text('logout', style: TextStyle(color: Colors.white),)

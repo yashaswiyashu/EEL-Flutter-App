@@ -98,225 +98,228 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
 
     return loading
         ? const Loading()
-        : Scaffold(
-            appBar: AppBar(
-              title: const Text('Energy Efficient Lights'),
-              backgroundColor: const Color(0xff4d47c3),
-              actions: [
-                TextButton.icon(
-                    onPressed: () async {
-                      await _auth.signout();
-                      Navigator.pushNamed(context, 'home');
-                    },
-                    icon: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      'logout',
-                      style: TextStyle(color: Colors.white),
-                    )),
-              ],
-            ),
-            body: SingleChildScrollView(
-                child: Container(
-              width: 440,
-              padding: const EdgeInsets.only(
-                top: 10,
-                bottom: 0.4,
+        : WillPopScope(
+          onWillPop: () async => false,
+          child: Scaffold(
+              appBar: AppBar(
+                title: const Text('Energy Efficient Lights'),
+                backgroundColor: const Color(0xff4d47c3),
+                actions: [
+                  TextButton.icon(
+                      onPressed: () async {
+                        await _auth.signout();
+                        Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
+                      },
+                      icon: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        'logout',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ],
               ),
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 270,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Image.asset('assets/logotm.jpg'),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 250),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff4d47c3)),
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'addNewProduct');
-                        },
-                        child: Text('Add New +'),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    _createDataTable(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      status,
-                      style:
-                          const TextStyle(color: Colors.pink, fontSize: 14.0),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
-                          margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
-                          child: TextButton(
-                            onPressed: () async {
-                              // showSettingsPanel(character);
-                              if (select == '') {
-                                setState(() {
-                                  status = 'Please select an option';
-                                });
-                              } else {
-                                setState(() {
-                                  status = '';
-                                });
-                                Navigator.pushNamed(
-                                    context, ViewProductAdmin.routeName,
-                                    arguments: Parameter(
-                                      select!,
-                                    ));
-                              }
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            child: Container(
-                              width: 95.63,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                color: Color(0xff4d47c3),
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    offset: Offset(0, 4),
-                                    blurRadius: 30.5,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'View',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.5,
-                                    color: Color(0xffffffff),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+              body: SingleChildScrollView(
+                  child: Container(
+                width: 440,
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 0.4,
+                ),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: 270,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        Container(
-                          // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
-                          margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
-                          child: TextButton(
-                            onPressed: () {
-                              // showSettingsPanel(character);
-                              if (select == '') {
-                                setState(() {
-                                  status = 'Please select an option';
-                                });
-                              } else {
-                                setState(() {
-                                  status = '';
-                                });
-                                Navigator.pushNamed(
-                                    context, EditProductAdmin.routeName,
-                                    arguments: Parameter(
-                                      select!,
-                                    ));
-                              }
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            child: Container(
-                              width: 95.63,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                color: Color(0xff4d47c3),
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    offset: Offset(0, 4),
-                                    blurRadius: 30.5,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Edit',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.5,
-                                    color: Color(0xffffffff),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                        child: Image.asset('assets/logotm.jpg'),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 250),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xff4d47c3)),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pushNamed(context, 'addNewProduct');
                           },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                          ),
-                          child: Container(
-                            width: 95.63,
-                            height: 59,
-                            decoration: BoxDecoration(
-                              color: Color(0xff4d47c3),
-                              borderRadius: BorderRadius.circular(9),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x664d47c3),
-                                  offset: Offset(0, 4),
-                                  blurRadius: 30.5,
+                          child: Text('Add New +'),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      _createDataTable(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        status,
+                        style:
+                            const TextStyle(color: Colors.pink, fontSize: 14.0),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
+                            margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
+                            child: TextButton(
+                              onPressed: () async {
+                                // showSettingsPanel(character);
+                                if (select == '') {
+                                  setState(() {
+                                    status = 'Please select an option';
+                                  });
+                                } else {
+                                  setState(() {
+                                    status = '';
+                                  });
+                                  Navigator.pushNamed(
+                                      context, ViewProductAdmin.routeName,
+                                      arguments: Parameter(
+                                        select!,
+                                      ));
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Container(
+                                width: 95.63,
+                                height: 59,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff4d47c3),
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      offset: Offset(0, 4),
+                                      blurRadius: 30.5,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Back',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: "Poppins",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.5,
-                                  color: Color(0xffffffff),
+                                child: Center(
+                                  child: Text(
+                                    'View',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.5,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ]),
-            )));
+                          Container(
+                            // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
+                            margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
+                            child: TextButton(
+                              onPressed: () {
+                                // showSettingsPanel(character);
+                                if (select == '') {
+                                  setState(() {
+                                    status = 'Please select an option';
+                                  });
+                                } else {
+                                  setState(() {
+                                    status = '';
+                                  });
+                                  Navigator.pushNamed(
+                                      context, EditProductAdmin.routeName,
+                                      arguments: Parameter(
+                                        select!,
+                                      ));
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Container(
+                                width: 95.63,
+                                height: 59,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff4d47c3),
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      offset: Offset(0, 4),
+                                      blurRadius: 30.5,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Edit',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.5,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: Container(
+                              width: 95.63,
+                              height: 59,
+                              decoration: BoxDecoration(
+                                color: Color(0xff4d47c3),
+                                borderRadius: BorderRadius.circular(9),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x664d47c3),
+                                    offset: Offset(0, 4),
+                                    blurRadius: 30.5,
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Back',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.5,
+                                    color: Color(0xffffffff),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ]),
+              ))),
+        );
   }
 }

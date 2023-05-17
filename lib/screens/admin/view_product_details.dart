@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -41,6 +42,7 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
 
   @override
   Widget build(BuildContext context) {
+      final AuthService _auth = AuthService();
     ImageProvider imageProvider;
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
 
@@ -68,6 +70,21 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
+              actions: [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ],
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.only(
@@ -149,48 +166,12 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
                     //   child: Image.asset('assets/logotm.jpg'),
                     // ),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      TextButton(
-                        onPressed: () async {
-                          final result = await FilePicker.platform.pickFiles(
-                            allowMultiple: false,
-                            type: FileType.custom,
-                            allowedExtensions: ['png', 'jpg'],
-                          );
-
-                          if(result == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('No image selected!!'))
-                            );
-                            return null;
-                          }
-
-                          path = result.files.single.path!;
-                          fileName = result.files.single.name;
-                          setState(() {
-                            imgupload = true;
-                            imageUrl = fileName;
-                          });
-                          storage.uploadFile(path, fileName).then((value) {
-                            setState(() {
-                              imgupload = false;
-                            });
-                          });
-
-                        },
-                        child: imageUrl == '' ? Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage('assets/upload.png'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ) : SizedBox(
+                      SizedBox(
                           width: 280,
                           height: 150,
                           child: Stack(
                             children: [
-                              // Default image
-                              imgupload ? CircularProgressIndicator() : Container(
+                              Container(
                                 child: FutureBuilder(
                                   future: storage.downloadURL(imageUrl),
                                   builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -209,25 +190,9 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
                                   },
                                 ),
                               ),
-
-
-                              // // Edit button
-                              // Positioned(
-                              //   bottom: 0,
-                              //   right: 0,
-                              //   child: IconButton(
-                              //     style: IconButton.styleFrom(
-                              //         backgroundColor: Colors.white),
-                              //     icon: Icon(
-                              //       Icons.edit,
-                              //     ),
-                              //     onPressed: getImage,
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
-                      ),
                     ]),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -301,6 +266,7 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
                     Container(
                       width: 440,
                       height: 100.0,
+                      padding: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Color(0xffe3e4e5)),
@@ -313,7 +279,7 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
                           value!.isEmpty ? 'Missing Field' : null,
                         maxLines: null,
                         decoration: const InputDecoration(
-                          hintText: '   Enter Product Description',
+                          hintText: 'Enter Product Description',
                           fillColor: const Color(0xfff0efff),
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,

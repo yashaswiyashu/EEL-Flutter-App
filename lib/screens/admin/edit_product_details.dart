@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -114,6 +115,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
 
   @override
   Widget build(BuildContext context) {
+      final AuthService _auth = AuthService();
     ImageProvider imageProvider;
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
 
@@ -141,6 +143,21 @@ class _EditProductAdminState extends State<EditProductAdmin> {
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
+              actions: [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ],
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.only(
@@ -389,6 +406,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                     Container(
                       width: 440,
                       height: 100.0,
+                      padding: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Color(0xffe3e4e5)),
@@ -400,7 +418,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                           value!.isEmpty ? 'Missing Field' : null,
                         maxLines: null,
                         decoration: const InputDecoration(
-                          hintText: '   Enter Product Description',
+                          hintText: 'Enter Product Description',
                           fillColor: const Color(0xfff0efff),
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,

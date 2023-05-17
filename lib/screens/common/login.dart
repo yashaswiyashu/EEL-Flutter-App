@@ -156,53 +156,7 @@ class _LoginState extends State<Login> {
                                 loading = false;
                               });
                             } else {
-                              if(salesTable != null){
-                                salesTable.forEach((e) {
-                                  if(e?.uid == result.uid){
-                                    if(e?.role == 'Sales Executive'){
-                                      setState(() {
-                                        error = '';
-                                        loading = false;
-                                      });
-                                      Navigator.pushNamed(context, 'salesExecutiveHome');
-                                    } else if(e?.role == 'Sales Co-Ordinator'){
-                                      setState(() {
-                                        error = '';
-                                        loading = false;
-                                      });
-                                      Navigator.pushNamed(context, 'salesCoOrdinatorHome');
-                                    } else if(e?.role == 'Admin'){
-                                      setState(() {
-                                        error = '';
-                                        loading = false;
-                                      });
-                                      Navigator.pushNamed(context, 'productListView');
-                                    } 
-                                  }
-                                });
-                              } else if(customerTable != null){
-                                customerTable.forEach((e) {
-                                  if(e?.uid == result.uid){
-                                    setState(() {
-                                      error = '';
-                                      loading = false;
-                                    });
-                                    Navigator.pushNamed(context, 'customerHomePage');
-                                  } else {
-                                    setState(() {
-                                      error = '';
-                                      loading = false;
-                                    });
-                                    Navigator.pushNamed(context, 'home');
-                                  }
-                                });
-                              } else {
-                                setState(() {
-                                  error = '';
-                                  loading = false;
-                                });
-                                Navigator.pushNamed(context, 'home');
-                              }
+                              Navigator.pushNamed(context, 'authWrapper');
                             }
                           }
                         }),

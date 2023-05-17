@@ -61,8 +61,8 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(2022),
-          lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+          firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+          lastDate: DateTime(DateTime.now().year + 1),
         );
       },
     );
@@ -119,7 +119,9 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                 TextButton.icon(
                     onPressed: () async {
                       await _auth.signout();
-                      Navigator.pushNamed(context, 'home');
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                      'authWrapper',
+                      (Route<dynamic> route) => false);
                     },
                     icon: const Icon(
                       Icons.person,

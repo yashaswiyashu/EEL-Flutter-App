@@ -69,7 +69,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 TextButton.icon(
                   onPressed: () async {
                     await _auth.signout();
-                    Navigator.pushNamed(context, 'home');
+                    Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
                   }, 
                   icon: const Icon(Icons.person, color: Colors.white,), 
                   label: const Text('logout', style: TextStyle(color: Colors.white),)
@@ -281,12 +281,13 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         'Karnataka',
                         'Kerala',
                         'Tamil Nadu',
+                        'Andra Pradesh'
                       ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(
                             value,
-                            style: const TextStyle(fontSize: 15),
+                            style: const TextStyle(fontSize: 18),
                           ),
                         );
                       }).toList(),
@@ -297,7 +298,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       decoration:
                           textInputDecoration.copyWith(hintText: 'pincode'),
                       validator: (value) =>
-                          value!.isEmpty ? 'Enter Customer Full Address' : null,
+                          value!.length == 6 ? 'Enter Valid pincode' : null,
                       onChanged: (val) {
                         setState(() {
                           pincode = val;
@@ -339,9 +340,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                               child: SizedBox(
                                 width: 350,
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     SizedBox(
-                                      width: 130,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -381,11 +384,24 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 20.0,
-                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 370,
+                              // margin: const EdgeInsets.only(right: 0.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: SizedBox(
+                                width: 350,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
                                     SizedBox(
-                                      width: 140,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -425,22 +441,24 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    
                                   ],
                                 ),
                               ),
                             ),
                             Container(
+                              width: 370,
                               // margin: const EdgeInsets.only(right: 0.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: SizedBox(
-                                width: 440,
+                                width: 350,
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     SizedBox(
-                                      width: 140,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -480,11 +498,24 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 25.0,
-                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 370,
+                              // margin: const EdgeInsets.only(right: 0.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: SizedBox(
+                                width: 350,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
                                     SizedBox(
-                                      width: 140,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -524,7 +555,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    
                                   ],
                                 ),
                               ),
@@ -575,11 +605,10 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: SizedBox(
-                                width: 440,
                                 child: Row(
                                   children: <Widget>[
                                     SizedBox(
-                                      width: 155,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -626,11 +655,20 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 19.0,
-                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // margin: const EdgeInsets.only(right: 0.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: SizedBox(
+                                child: Row(
+                                  children: <Widget>[
                                     SizedBox(
-                                      width: 155,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -638,11 +676,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                             borderSide: BorderSide(
                                                 color: Colors.black, width: 0),
                                           ),
-
-
-                                          //<-- SEE HERE
-
-
+                                          focusedBorder: OutlineInputBorder(
+                                            //<-- SEE HERE
+                                            borderSide: BorderSide(
+                                                color: Colors.black, width: 0),
+                                          ),
                                           filled: true,
                                           fillColor: Color(0xffefefff),
                                         ),
@@ -687,11 +725,10 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: SizedBox(
-                                width: 415,
                                 child: Row(
                                   children: <Widget>[
                                     SizedBox(
-                                      width: 155,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -738,11 +775,20 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         }).toList(),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 19.0,
-                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // margin: const EdgeInsets.only(right: 0.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: SizedBox(
+                                child: Row(
+                                  children: <Widget>[
                                     SizedBox(
-                                      width: 155,
+                                      width: 250,
                                       child: DropdownButtonFormField(
                                         decoration: const InputDecoration(
                                           enabledBorder: OutlineInputBorder(
@@ -750,11 +796,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                             borderSide: BorderSide(
                                                 color: Colors.black, width: 0),
                                           ),
-
-
-                                          //<-- SEE HERE
-
-
+                                          focusedBorder: OutlineInputBorder(
+                                            //<-- SEE HERE
+                                            borderSide: BorderSide(
+                                                color: Colors.black, width: 0),
+                                          ),
                                           filled: true,
                                           fillColor: Color(0xffefefff),
                                         ),
@@ -845,11 +891,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                     loading = false;
                                   });
                                 } else {
-                                  if (result?.uid != null && state != 'Select State') {
+                                  if (result?.uid != null && state != 'Select State' && currentUser != null ) {
                                     await CustomerDatabaseService(docid: result.uid)
                                         .setUserData(
                                       result?.uid,
-                                      currentUser!.uid,
+                                      currentUser.uid,
                                       customerName,
                                       mobileNumber,
                                       email,
@@ -867,33 +913,83 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                       dropdownUses2,
                                       dropdownUses3,
                                       dropdownUses4,
-                                    ).then((value) => setState(() {
+                                    ).then((value) {setState(() {
                                       loading = false;
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text(
                                             'New Customer Details Added Successfully!!!'),
                                       ));
-                                    }));
-                                    
-                                    if (customerTable != null) {
-                                      customerTable.forEach((element) {
-                                        if (element?.uid == result?.uid) {
-                                          if(currentUser.uid == ''){
-                                            setState(() {
-                                              loading = false;
-                                            });              
-                                            Navigator.pushNamed(context, 'customerHomePage');                            
-                                          } else {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                            Navigator.pushNamed(context, 'salesExecutiveHome');
-                                          }
-                                        }
-                                      });
-                                    }
-                                  } else {
+                                    });
+                                    Navigator.pop(context);
+
+                                    // if (customerTable != null) {
+                                    //   customerTable.forEach((element) {
+                                    //     if (element?.uid == result?.uid) {
+                                    //         setState(() {
+                                    //           loading = false;
+                                    //         });              
+                                    //         Navigator.pushNamed(context, 'customerHomePage');                            
+                                    //       } else {
+                                    //         setState(() {
+                                    //           loading = false;
+                                    //         });
+                                    //         Navigator.pushNamed(context, 'salesExecutiveHome');
+                                    //       }
+                                    //   });
+                                    // }
+                                    });
+                                  } else if(result?.uid != null && state != 'Select State'){
+                                    await CustomerDatabaseService(docid: result.uid)
+                                        .setUserData(
+                                      result?.uid,
+                                      '',
+                                      customerName,
+                                      mobileNumber,
+                                      email,
+                                      password,
+                                      address1,
+                                      address2,
+                                      city,
+                                      state,
+                                      pincode,
+                                      dropdownInt1,
+                                      dropdownInt2,
+                                      dropdownInt3,
+                                      dropdownInt4,
+                                      dropdownUses1,
+                                      dropdownUses2,
+                                      dropdownUses3,
+                                      dropdownUses4,
+                                    ).then((value) {setState(() {
+                                      loading = false;
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            'Logged In Successfully!!!'),
+                                      ));
+
+                                    });
+                                    Navigator.pushNamed(context, 'customerHomePage');
+                                    //  if (customerTable != null) {
+                                    //   customerTable.forEach((element) {
+                                    //     if (element?.uid == result?.uid) {
+                                    //       setState(() {
+                                    //         loading = false;
+                                    //       });              
+                                    //       Navigator.pushNamed(context, 'customerHomePage');                            
+                                    //     } else {
+                                    //       setState(() {
+                                    //         loading = false;
+                                    //       });
+                                    //       Navigator.pushNamed(context, 'salesExecutiveHome');
+                                    //     }
+                                    //   });
+                                    // }
+                                    });
+                                  }
+                                  
+                                   else {
                                     setState(() {
                                       loading = false;
                                       error = 'Please select all the fields';

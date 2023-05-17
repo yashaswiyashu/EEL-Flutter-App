@@ -30,6 +30,7 @@ import 'package:flutter_app/services/customer_database.dart';
 import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/services/sales_database.dart';
+import 'package:flutter_app/wrappers/auth_wrapper.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -46,8 +47,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-      StreamProvider<List<SalesPersonModel?>?>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: const []),
-      StreamProvider<List<CustomerModel?>?>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: const []),
+      StreamProvider<List<SalesPersonModel?>>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: const []),
+      StreamProvider<List<CustomerModel?>>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: const []),
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
       StreamProvider<List<ProductDetailsModel>>.value(value: ProductDatabaseService(docid: '').productDetailsTable, initialData: const []),
       StreamProvider<List<OrderDetailsModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderDetailsTable, initialData: const []),
@@ -58,10 +59,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           'home': (context) => const Home(),
+          'authWrapper':(context) => const AuthWrapper(),
           
           //Sales Executive
           'salesPersonRegistration':(context) => const SalesPersonRegistration(),
-          'salesExecutiveHome': (context) => const SalesExecutiveHome(),
           'addCallDetails':(context) => const AddCallDetails(restorationId: 'main',),
           'callDetailsList':(context) => const CallDetailsList(),
           EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
@@ -70,7 +71,6 @@ class MyApp extends StatelessWidget {
           
           //Customer 
           'customerRegistration':(context) => const CustomerRegistration(),
-          'customerHomePage':(context) => const CustomerHome(),
           'customerList':(context) => const CustomerListView(),
           EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
           ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),

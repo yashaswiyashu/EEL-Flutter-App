@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -37,6 +38,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
   @override
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
+    final AuthService _auth = AuthService();
 
     final StorageService storage = StorageService(); 
 
@@ -45,6 +47,21 @@ class _AddProductAdminState extends State<AddProductAdmin> {
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
+              actions: [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ],
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.only(
@@ -266,6 +283,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                     Container(
                       width: 440,
                       height: 100.0,
+                      padding: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Color(0xffe3e4e5)),
@@ -276,7 +294,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                           value!.isEmpty ? 'Missing Field' : null,
                         maxLines: null,
                         decoration: const InputDecoration(
-                          hintText: '   Enter Product Description',
+                          hintText: 'Enter Product Description',
                           fillColor: const Color(0xfff0efff),
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,
@@ -309,7 +327,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       width: 420,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ElevatedButton(
@@ -391,8 +409,8 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            width: 85,
+                          SizedBox(
+                            width: 20,
                           ),
                           ElevatedButton(
                             onPressed: () {

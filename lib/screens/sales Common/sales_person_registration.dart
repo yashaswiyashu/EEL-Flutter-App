@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -379,7 +380,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                             value: value,
                             child: Text(
                               value,
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 18),
                             ),
                           );
                         }).toList(),
