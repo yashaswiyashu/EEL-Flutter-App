@@ -242,8 +242,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                         onPressed: () async {
                           final result = await FilePicker.platform.pickFiles(
                             allowMultiple: false,
-                            type: FileType.custom,
-                            allowedExtensions: ['png', 'jpg'],
+                            type: FileType.image,
                           );
 
                           if(result == null) {

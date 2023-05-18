@@ -3,24 +3,25 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
-import 'package:flutter_app/screens/sales%20Executive/edit_call.dart';
-import 'package:flutter_app/screens/sales%20Executive/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class CallDetailsList extends StatefulWidget {
-  const CallDetailsList({super.key});
+class OrderDetailsList extends StatefulWidget {
+  const OrderDetailsList({super.key});
 
   @override
-  State<CallDetailsList> createState() => _CallDetailsListState();
+  State<OrderDetailsList> createState() => _OrderDetailsListState();
 }
 
 
 
-class _CallDetailsListState extends State<CallDetailsList> {
+class _OrderDetailsListState extends State<OrderDetailsList> {
   bool loading = false;
   String status = '';
 
@@ -31,12 +32,12 @@ class _CallDetailsListState extends State<CallDetailsList> {
 
   @override
   Widget build(BuildContext context) {
-    final callDetails = Provider.of<List<CallDetailsModel>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var details = [];
     var obj;
 
-    callDetails.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    orderDetails.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
 
     Widget _verticalDivider = const VerticalDivider(
         color: Colors.black,
@@ -45,9 +46,9 @@ class _CallDetailsListState extends State<CallDetailsList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Call Date')),
-        DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: _verticalDivider),
+        DataColumn(label: Text('Shipment Id')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust Mob.')),
         DataColumn(label: _verticalDivider),
@@ -56,9 +57,9 @@ class _CallDetailsListState extends State<CallDetailsList> {
     }
     List<DataRow> _createRows() {
         return details.map((element) => DataRow(cells: [
-          DataCell(Text(element.callDate)),
-          DataCell(_verticalDivider),          
           DataCell(Text(element.customerName)),
+          DataCell(_verticalDivider),          
+          DataCell(Text(element.shipmentID)),
           DataCell(_verticalDivider),
           DataCell(Text(element.mobileNumber)),
           DataCell(_verticalDivider),
@@ -85,7 +86,7 @@ class _CallDetailsListState extends State<CallDetailsList> {
         columnSpacing: 0.0,
         dataRowHeight: 40.0,
         columns: _createColumns(), 
-        rows: callDetails.isNotEmpty ? _createRows() : []
+        rows: orderDetails.isNotEmpty ? _createRows() : []
       );
     }
 
@@ -171,7 +172,7 @@ class _CallDetailsListState extends State<CallDetailsList> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
                         onPressed: (){
-                          Navigator.pushNamed(context, 'addCallDetails');
+                          Navigator.pushNamed(context, 'addOrderDetails');
                         }, 
                         child: Text('Add New +'),
                       ),

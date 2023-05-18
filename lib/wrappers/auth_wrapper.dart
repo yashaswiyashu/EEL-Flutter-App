@@ -25,6 +25,7 @@ class AuthWrapper extends StatelessWidget {
     final customerTable = Provider.of<List<CustomerModel?>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var obj;
+    bool cust = false;
 
 
 
@@ -37,7 +38,7 @@ class AuthWrapper extends StatelessWidget {
     } else if (customerTable.isNotEmpty) {
       customerTable.forEach((e) {
         if (e?.uid == currentUser?.uid) {
-          obj = e;
+          cust = true;
         } 
       });
     } 
@@ -49,7 +50,9 @@ class AuthWrapper extends StatelessWidget {
         return SalesCoOrdinatorHome();
       } else if (obj?.role == 'Admin') {
         return ProductListViewAdmin();
-      } else {
+      } 
+
+      if(cust) {
         return CustomerHome();
       }
     }

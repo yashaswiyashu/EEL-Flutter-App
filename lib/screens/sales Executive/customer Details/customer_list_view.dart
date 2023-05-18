@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
-import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
-import 'package:flutter_app/screens/customer/edit_customer_detail.dart';
-import 'package:flutter_app/screens/customer/view_customer_details.dart';
-import 'package:flutter_app/screens/sales%20Executive/edit_call.dart';
-import 'package:flutter_app/screens/sales%20Executive/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/edit_customer_detail.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/view_customer_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -179,7 +174,7 @@ class _CustomerListViewState extends State<CustomerListView> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xff4d47c3)),
                         onPressed: () {
-                          Navigator.pushNamed(context, 'customerRegistration');
+                          Navigator.pushNamed(context, 'addNewCustomer');
                         },
                         child: Text('Add New +'),
                       ),

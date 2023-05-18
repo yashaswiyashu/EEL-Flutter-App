@@ -136,8 +136,8 @@ class _EditCallDetailsState extends State<EditCallDetails>
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-          lastDate: DateTime(DateTime.now().year + 1),
+          firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1),
+          lastDate: DateTime(2025),
         );
       },
     );

@@ -442,7 +442,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                       decoration:
                           textInputDecoration.copyWith(hintText: 'pincode'),
                       validator: (value) =>
-                          value!.isEmpty ? 'Enter Customer Full Address' : null,
+                          pincode.length == 7 ? 'Enter valid pincode' : null,
                       // onChanged: (val) {
                       //   setState(() {
                       //     pincode = val;

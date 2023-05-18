@@ -1,8 +1,9 @@
 import 'dart:io';
-
+import 'dart:math' as math;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:flutter_app/services/products_database.dart';
@@ -34,11 +35,35 @@ class _AddProductAdminState extends State<AddProductAdmin> {
   String offers = '';
   String description = '';
   String status = '';
+
+    final controllerOffer = TextEditingController();
+
+  @override
+  initState() {
+    super.initState();
+
+    // Start listening to changes.
+    controllerOffer.addListener(_saveOffer);
+  }
+
+    @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+  controllerOffer.dispose();
+    super.dispose();
+  }
+
+  void _saveOffer() {
+    offers = controllerOffer.text;
+  }
+
   
   @override
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
     final AuthService _auth = AuthService();
+    controllerOffer.text = '0';
 
     final StorageService storage = StorageService(); 
 
@@ -229,9 +254,10 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
-                      validator: (value) => value!.isEmpty
-                        ? 'Enter Product Price'
-                            : null,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(price) && price != '0'
+                        ? null
+                            : 'Enter Product Price',
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Product Price',
                           fillColor: const Color(0xfff0efff)),
@@ -255,17 +281,19 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                       ),
                     ),
                     TextFormField(
-                      validator: (value) => value!.isEmpty
-                        ? 'Enter Discount Percentage'
-                            : null,
+                      controller: controllerOffer,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(offers)
+                        ? null
+                            : 'Enter Discount Percentage',
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Discount Percentage',
                           fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        setState(() {
-                          offers = '$val%';
-                        });
-                      },
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     offers = '$val%';
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -472,3 +500,43 @@ class _AddProductAdminState extends State<AddProductAdmin> {
           );
   }
 }
+
+// class DecimalTextInputFormatter extends TextInputFormatter {
+//   DecimalTextInputFormatter({required this.decimalRange})
+//       : assert(decimalRange == null || decimalRange > 0);
+
+//   final int decimalRange;
+
+//   @override
+//   TextEditingValue formatEditUpdate(
+//     TextEditingValue oldValue, // unused.
+//     TextEditingValue newValue,
+//   ) {
+//     TextSelection newSelection = newValue.selection;
+//     String truncated = newValue.text;
+
+//     if (decimalRange != null) {
+//       String value = newValue.text;
+
+//       if (value.contains(".") &&
+//           value.substring(value.indexOf(".") + 1).length > decimalRange) {
+//         truncated = oldValue.text;
+//         newSelection = oldValue.selection;
+//       } else if (value == ".") {
+//         truncated = "0.";
+
+//         newSelection = newValue.selection.copyWith(
+//           baseOffset: math.min(truncated.length, truncated.length + 1),
+//           extentOffset: math.min(truncated.length, truncated.length + 1),
+//         );
+//       }
+
+//       return TextEditingValue(
+//         text: truncated,
+//         selection: newSelection,
+//         composing: TextRange.empty,
+//       );
+//     }
+//     return newValue;
+//   }
+// }

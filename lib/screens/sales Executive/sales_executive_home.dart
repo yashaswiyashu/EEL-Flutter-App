@@ -357,7 +357,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                               const SizedBox(width: 55,),
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, 'addOrderDetails');
+                                  Navigator.pushNamed(context, 'oderDetailsList');
                                 },
                                 style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3),),
                                 child: Container(

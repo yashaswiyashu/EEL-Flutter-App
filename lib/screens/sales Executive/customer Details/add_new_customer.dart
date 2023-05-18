@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/customer_database.dart';
@@ -8,14 +10,14 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 
-class CustomerRegistration extends StatefulWidget {
-  const CustomerRegistration({super.key});
+class AddNewCustomer extends StatefulWidget {
+  const AddNewCustomer({super.key});
 
   @override
-  State<CustomerRegistration> createState() => _CustomerRegistrationState();
+  State<AddNewCustomer> createState() => _AddNewCustomerState();
 }
 
-class _CustomerRegistrationState extends State<CustomerRegistration> {
+class _AddNewCustomerState extends State<AddNewCustomer> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
@@ -46,14 +48,34 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     _passwordVisible = false;
   }
 
-  // var customer;
+  var customer;
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<UserModel?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
         backgroundColor: const Color(0xff4d47c3),
+        actions: currentUser?.uid != null
+            ? [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          'authWrapper', (Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ]
+            : null,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
@@ -274,7 +296,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                 validator: (value) =>
-                    pincode.length == 6 ? 'Enter Valid pincode' : null,
+                    pincode.length == 7 ? 'Enter Valid pincode' : null,
                 onChanged: (val) {
                   setState(() {
                     pincode = val;
@@ -840,61 +862,80 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              if (_formkey.currentState!.validate()) {
+                              if (_formkey.currentState!.validate() &&
+                                      state != 'Select State') {
                                 setState(() {
                                   loading = true;
                                 });
-                                dynamic result =
-                                    await _auth.registerWithEmailAndPassword(
-                                        email, password);
-                                if (result == null) {
-                                  setState(() {
-                                    error = 'please supply a valid email';
-                                    loading = false;
-                                  });
-                                } else {
-                                  if (result?.uid != null &&
-                                      state != 'Select State') {
-                                      await CustomerDatabaseService(
-                                            docid: result.uid)
-                                        .setUserData(
-                                      result?.uid,
-                                      '',
-                                      customerName,
-                                      mobileNumber,
-                                      email,
-                                      password,
-                                      address1,
-                                      address2,
-                                      city,
-                                      state,
-                                      pincode,
-                                      dropdownInt1,
-                                      dropdownInt2,
-                                      dropdownInt3,
-                                      dropdownInt4,
-                                      dropdownUses1,
-                                      dropdownUses2,
-                                      dropdownUses3,
-                                      dropdownUses4,
-                                    ).then((value) {
-                                      setState(() {
-                                        loading = false;
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content:
-                                              Text('Logged In Successfully!!!'),
-                                        ));
-                                      });
-                                      Navigator.pushNamed(
-                                          context, 'customerHomePage');
-                                    });
-                                  } else {
-                                    setState(() {
-                                      loading = false;
-                                      error = 'Please fill all the fields';
+                                try {
+                                  var cred;
+                                  User? currentExistingUser = FirebaseAuth.instance.currentUser;
+                                  
+                                  if (salesTable != null) {
+                                    salesTable.forEach((element) {
+                                      if (element?.uid == currentExistingUser?.uid) {
+                                        cred = element;
+                                      }
                                     });
                                   }
+
+                                  AuthCredential credential = EmailAuthProvider.credential(
+                                    email: cred!.email,
+                                    password: cred.password,
+                                  );
+
+                                  // Register the new user
+                                  UserCredential userCredential =
+                                      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                    email: email,
+                                    password: password,
+                                  );
+
+                                  await FirebaseAuth.instance.signOut();
+                                  await FirebaseAuth.instance.signInWithCredential(credential);
+                                  // Perform any additional actions with the new user
+                                  // ...
+                                  if (userCredential.user?.uid != null) {
+                                      await CustomerDatabaseService(
+                                              docid: userCredential.user!.uid)
+                                          .setUserData(
+                                        userCredential.user!.uid,
+                                        currentUser!.uid,
+                                        customerName,
+                                        mobileNumber,
+                                        email,
+                                        password,
+                                        address1,
+                                        address2,
+                                        city,
+                                        state,
+                                        pincode,
+                                        dropdownInt1,
+                                        dropdownInt2,
+                                        dropdownInt3,
+                                        dropdownInt4,
+                                        dropdownUses1,
+                                        dropdownUses2,
+                                        dropdownUses3,
+                                        dropdownUses4,
+                                      )
+                                          .then((value) {
+                                        setState(() {
+                                          loading = false;
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                'New Customer Details Added Successfully!!!'),
+                                          ));
+                                        });
+                                        Navigator.pop(context);
+                                      });
+                                  }
+                                } catch (e) {
+                                  setState(() {
+                                    error = e.toString();
+                                    loading = false;
+                                  });
                                 }
                               }
                             },

@@ -12,18 +12,21 @@ import 'package:flutter_app/screens/admin/product_list_view.dart';
 import 'package:flutter_app/screens/admin/view_product_details.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
-import 'package:flutter_app/screens/customer/customer_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/edit_customer_detail.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/view_customer_details.dart';
 import 'package:flutter_app/screens/customer/customer_registration.dart';
-import 'package:flutter_app/screens/customer/edit_customer_detail.dart';
-import 'package:flutter_app/screens/customer/view_customer_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/order_data_table.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/order_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
-import 'package:flutter_app/screens/sales%20Executive/add_call_details.dart';
-import 'package:flutter_app/screens/sales%20Executive/add_order_details.dart';
-import 'package:flutter_app/screens/sales%20Executive/call_details_list_view.dart';
-import 'package:flutter_app/screens/sales%20Executive/edit_call.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/add_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/call_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales_executive_home.dart';
-import 'package:flutter_app/screens/sales%20Executive/view_call_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/call_details_database.dart';
 import 'package:flutter_app/services/customer_database.dart';
@@ -55,25 +58,32 @@ class MyApp extends StatelessWidget {
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
       child: MaterialApp(
-        initialRoute: 'home',
+        initialRoute: 'addOrderDetails',
         debugShowCheckedModeBanner: false,
         routes: {
+          // 'dataTable' :(context) => DataTableExample(),
+
           'home': (context) => const Home(),
           'authWrapper':(context) => const AuthWrapper(),
           
           //Sales Executive
           'salesPersonRegistration':(context) => const SalesPersonRegistration(),
-          'addCallDetails':(context) => const AddCallDetails(restorationId: 'main',),
-          'callDetailsList':(context) => const CallDetailsList(),
-          EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
-          ViewCallDetails.routeName:(context) => ViewCallDetails(),
-          'addOrderDetails':(context) => const NewOrder(),
+            //call details  
+            'addCallDetails':(context) => const AddCallDetails(restorationId: 'main',),
+            'callDetailsList':(context) => const CallDetailsList(),
+            EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
+            ViewCallDetails.routeName:(context) => ViewCallDetails(),
+            //customer details
+            'addNewCustomer':(context) => const AddNewCustomer(),
+            'customerList':(context) => const CustomerListView(),
+            EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
+            ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
+            //order details
+            'addOrderDetails':(context) => const NewOrder(),
+            'oderDetailsList':(context) => const OrderDetailsList(),
           
           //Customer 
           'customerRegistration':(context) => const CustomerRegistration(),
-          'customerList':(context) => const CustomerListView(),
-          EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
-          ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
 
           //Admin
           'addNewProduct':(context) => const AddProductAdmin(),
