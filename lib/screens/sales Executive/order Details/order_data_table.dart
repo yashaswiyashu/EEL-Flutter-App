@@ -20,11 +20,6 @@ class _DataTableExampleState extends State<DataTableExample> {
   List<String> options = ['Option 1', 'Option 2', 'Option 3'];
   List<String> selectedOptions = [];
 
-  Widget _verticalDivider = const VerticalDivider(
-        color: Colors.black,
-        thickness: 0.5,
-    );
-
   List<DataColumn> _createColumns() {
     return [
       DataColumn(label: Text('Product')),
@@ -70,64 +65,67 @@ class _DataTableExampleState extends State<DataTableExample> {
   Widget build(BuildContext context) {
     final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     
-    return Column(
-        children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: _createColumns(),
-              rows: List.generate(
-                tableData.length,
-                (int rowIndex) {
-                  return DataRow(
-                    cells: List.generate(
-                      5,
-                      (int cellIndex) {
-                        if (cellIndex == 0) {
-                          return DataCell(
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: selectedOptions[rowIndex],
-                                  items: options
-                                      .map<DropdownMenuItem<String>>(
-                                        (String value) =>
-                                            DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: (String? value) {
-                                    onDropdownChanged(value, rowIndex);
-                                  },
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: _createColumns(),
+                rows: List.generate(
+                  tableData.length,
+                  (int rowIndex) {
+                    return DataRow(
+                      cells: List.generate(
+                        5,
+                        (int cellIndex) {
+                          if (cellIndex == 0) {
+                            return DataCell(
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: selectedOptions[rowIndex],
+                                    items: options
+                                        .map<DropdownMenuItem<String>>(
+                                          (String value) =>
+                                              DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (String? value) {
+                                      onDropdownChanged(value, rowIndex);
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
+                            );
+                          }
+                          return DataCell(
+                            Text(tableData[rowIndex][cellIndex]),
                           );
-                        }
-                        return DataCell(
-                          Text(tableData[rowIndex][cellIndex]),
-                        );
-                      },
-                    ),
-                  );
-                },
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xff4d47c3),
-              ),
-              onPressed: addRow,
-              child: const Text('Add +'),
-            ),]
-          ),
-        ],
-      );
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xff4d47c3),
+                ),
+                onPressed: addRow,
+                child: const Text('Add +'),
+              ),]
+            ),
+          ],
+        ),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_app/products_repository.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/order_details_model.dart';
@@ -39,6 +40,8 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  ProductRepository  productRepository = ProductRepository();
+  await productRepository.fetchProductDocuments();
   runApp(const MyApp());
 }
 
@@ -58,7 +61,7 @@ class MyApp extends StatelessWidget {
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
       child: MaterialApp(
-        initialRoute: 'addOrderDetails',
+        initialRoute: 'addNewOrder',
         debugShowCheckedModeBanner: false,
         routes: {
           // 'dataTable' :(context) => DataTableExample(),
@@ -79,7 +82,7 @@ class MyApp extends StatelessWidget {
             EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
             ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
             //order details
-            'addOrderDetails':(context) => const NewOrder(),
+            'addNewOrder':(context) => const NewOrder(restorationId: 'main'),
             'oderDetailsList':(context) => const OrderDetailsList(),
           
           //Customer 
