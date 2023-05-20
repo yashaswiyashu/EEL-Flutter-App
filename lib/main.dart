@@ -15,6 +15,10 @@ import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
+import 'package:flutter_app/screens/sales%20Executive/complaints/complaint_details_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
+import 'package:flutter_app/screens/sales%20Executive/complaints/view_complaint_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/edit_customer_detail.dart';
@@ -85,7 +89,13 @@ class MyApp extends StatelessWidget {
             'addNewOrder':(context) => const AddNewOrder(restorationId: 'main'),
             'oderDetailsList':(context) => const OrderDetailsList(),
             EditOrder.routeName:(context) => const EditOrder(restorationId: 'main',),
-          
+
+            //complaints
+            'addNewComplaint':(context) => const AddNewComplaint(restorationId: 'main',),
+            'complaintList':(context) => const ComplaintDetailsList(),
+            EditComplaintDetails.routeName:(context) => EditComplaintDetails(),
+            ViewComplaintDetails.routeName:(context) => ViewComplaintDetails(),
+
           //Customer 
           'customerRegistration':(context) => const CustomerRegistration(),
 
