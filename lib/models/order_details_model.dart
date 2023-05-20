@@ -12,6 +12,8 @@ class OrderDetailsModel {
   final String pincode;
   final String deliveryDate;
   final String dropdown;
+  final String subTotal;
+  final String totalAmount;
 
 
 
@@ -29,5 +31,7 @@ class OrderDetailsModel {
     required this.pincode,
     required this.deliveryDate,
     required this.dropdown,
+    required this.subTotal,
+    required this.totalAmount,
   });
 }

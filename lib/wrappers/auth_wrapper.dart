@@ -22,7 +22,7 @@ class AuthWrapper extends StatelessWidget {
     //   return const RegisterAs();
     // }
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
-    final customerTable = Provider.of<List<CustomerModel?>>(context);
+    final customerTable = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var obj;
     bool cust = false;
@@ -37,7 +37,7 @@ class AuthWrapper extends StatelessWidget {
       });
     } else if (customerTable.isNotEmpty) {
       customerTable.forEach((e) {
-        if (e?.uid == currentUser?.uid) {
+        if (e.uid == currentUser?.uid) {
           cust = true;
         } 
       });

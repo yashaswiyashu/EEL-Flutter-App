@@ -369,7 +369,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, 'addNewOrder');
+                          Navigator.pushNamed(context, 'oderDetailsList');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xff4d47c3),

@@ -29,9 +29,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
   bool loading = false;
   final _formkey = GlobalKey<FormState>();
   final controllerName = TextEditingController();
-  final controllerType = TextEditingController();
   final controllerNumber = TextEditingController();
-  final controllerResult = TextEditingController();
   final controllerFolowUpDetails = TextEditingController();
 
   String status = '';

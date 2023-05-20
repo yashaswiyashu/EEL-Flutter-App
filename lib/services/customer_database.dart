@@ -101,7 +101,7 @@ class CustomerDatabaseService {
     return await userCollection.doc(docid).delete();
   }
 
-  List<CustomerModel?> _userListFromSnapshot(QuerySnapshot snapshot) {
+  List<CustomerModel> _userListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((DocumentSnapshot doc) {
         return CustomerModel(
           uid: (doc.data() as Map<String, dynamic>)['uid']?.toString() ?? '',
@@ -128,7 +128,7 @@ class CustomerDatabaseService {
   }
 
   // get user table stream
-  Stream<List<CustomerModel?>> get customerTable {
+  Stream<List<CustomerModel>> get customerTable {
     return userCollection.snapshots().map(_userListFromSnapshot);
   }
 }

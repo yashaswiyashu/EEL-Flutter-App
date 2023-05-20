@@ -1,7 +1,11 @@
 import 'dart:ffi';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
+import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -10,14 +14,16 @@ import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class AddNewOrder extends StatefulWidget {
-  const AddNewOrder({super.key, this.restorationId});
+class EditOrder extends StatefulWidget {
+  const EditOrder({super.key, this.restorationId});
   final String? restorationId;
+  static const routeName = '/editOrderDetails';
+
   @override
-  State<AddNewOrder> createState() => _AddNewOrderState();
+  State<EditOrder> createState() => _EditOrderState();
 }
 
-class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
+class _EditOrderState extends State<EditOrder> with RestorationMixin {
   String callDate = 'Select Date';
   @override
   String? get restorationId => widget.restorationId;
@@ -80,6 +86,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
 
   String dropDown = 'Active';
 
+  final controllerShipmentId = TextEditingController();
   final controllerNumber = TextEditingController();
   final controllerAddress1 = TextEditingController();
   final controllerAddress2 = TextEditingController();
@@ -201,6 +208,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   @override
   void initState() {
     super.initState();
+    controllerShipmentId.addListener(_saveShipmentId);
     controllerNumber.addListener(_saveNumber);
     controllerAddress1.addListener(_saveAddress1);
     controllerAddress2.addListener(_saveAddress2);
@@ -208,6 +216,10 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     controllerPincode.addListener(_savePincode);
     _passwordVisible = false;
     selectedOptions = List.generate(tableData.length, (index) => products[0]);
+  }
+
+  void _saveShipmentId() {
+    shipmentID = controllerShipmentId.text;
   }
 
   void _saveNumber() {
@@ -232,9 +244,14 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
+    final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
+    final orderedProductList = Provider.of<List<OrdersProductModel>>(context);
+
+    var obj;
 
     if (products.length != productDetails.length + 1) {
       productDetails.forEach((element) {
@@ -262,6 +279,24 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
         });
       }
     }
+
+    orderDetailsList.forEach((element) {
+      if(element.uid == args.uid) {
+        controllerShipmentId.text = element.shipmentID;
+        customerName = element.customerName;
+        callDate = element.deliveryDate;
+        dropDown = element.dropdown;
+        setCustomerData();
+      }
+    });
+
+    orderedProductList.forEach((element) {
+      selectedOptions.add(element.productName);
+      quantity.add(int.parse(element.quantity));
+      amountList.add(double.parse(element.amount));
+      tableData.add(List.filled(6, ''));
+      populateTable(productDetails);
+    });
 
     customerList.forEach(
         (e) => e.customerName == customerName ? customerId = e.uid : []);
@@ -376,15 +411,16 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                       ),
                     )),
                 TextFormField(
+                  controller: controllerShipmentId,
                   keyboardType: TextInputType.phone,
                   decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Shipment ID',
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Enter Shipment Id' : null,
-                  onChanged: (val) {
-                    shipmentID = val;
-                  },
+                  // onChanged: (val) {
+                  //   shipmentID = val;
+                  // },
                 ),
                 const SizedBox(height: 20.0),
                 const SizedBox(
@@ -598,9 +634,10 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                         rows: List.generate(
                           tableData.length,
                           (int rowIndex) {
+                            print(tableData.length);
                             return DataRow(
                               cells: List.generate(
-                                6,
+                                orderedProductList.length,
                                 (int cellIndex) {
                                   if (cellIndex == 0) {
                                     return DataCell(
@@ -609,9 +646,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                             horizontal: 16),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton<String>(
-                                            value: select[rowIndex] == ''
-                                                ? selectedOptions[rowIndex]
-                                                : select[rowIndex],
+                                            value: selectedOptions[rowIndex],
                                             items: products
                                                 .map<DropdownMenuItem<String>>(
                                                   (String value) =>

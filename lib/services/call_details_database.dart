@@ -94,7 +94,7 @@ class CallDetailsDatabaseService {
     });
   }
 
-  Future<void> deleteFollowUoDetails(
+  Future<void> deleteFollowUpDetails(
     String uid,
     ) async {
     return await userCollection.doc(docid).collection('followUpDetails').doc(uid).delete();

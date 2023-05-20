@@ -63,7 +63,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
     final AuthService _auth = AuthService();
-    controllerOffer.text = '0';
+    controllerOffer.text = '0.00';
 
     final StorageService storage = StorageService(); 
 
