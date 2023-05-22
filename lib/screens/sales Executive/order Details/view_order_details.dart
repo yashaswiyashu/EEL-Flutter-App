@@ -1,8 +1,13 @@
 import 'dart:ffi';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
+import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/order_database.dart';
@@ -10,81 +15,23 @@ import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class AddNewOrder extends StatefulWidget {
-  const AddNewOrder({super.key, this.restorationId});
-  final String? restorationId;
+class ViewOrder extends StatefulWidget {
+  const ViewOrder({super.key});
+  static const routeName = '/ViewOrderDetails';
+
   @override
-  State<AddNewOrder> createState() => _AddNewOrderState();
+  State<ViewOrder> createState() => _ViewOrderState();
 }
 
-class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
+class _ViewOrderState extends State<ViewOrder>{
   String callDate = 'Select Date';
   @override
-  String? get restorationId => widget.restorationId;
-
-  final RestorableDateTime _selectedDate = RestorableDateTime(
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
-  late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
-      RestorableRouteFuture<DateTime?>(
-    onComplete: _selectDate,
-    onPresent: (NavigatorState navigator, Object? arguments) {
-      return navigator.restorablePush(
-        _datePickerRoute,
-        arguments: _selectedDate.value.millisecondsSinceEpoch,
-      );
-    },
-  );
-
-  static Route<DateTime> _datePickerRoute(
-    BuildContext context,
-    Object? arguments,
-  ) {
-    return DialogRoute<DateTime>(
-      context: context,
-      builder: (BuildContext context) {
-        return DatePickerDialog(
-          restorationId: 'date_picker_dialog',
-          initialEntryMode: DatePickerEntryMode.calendarOnly,
-          initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(2023),
-          lastDate: DateTime(2025),
-        );
-      },
-    );
-  }
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_selectedDate, 'selected_date');
-    registerForRestoration(
-        _restorableDatePickerRouteFuture, 'date_picker_route_future');
-  }
-
-  void _selectDate(DateTime? newSelectedDate) {
-    if (newSelectedDate != null) {
-      setState(() {
-        _selectedDate.value = newSelectedDate;
-        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        //   content: Text(
-        //       'Selected: ${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'),
-        // ));
-        callDate =
-            '${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}';
-      });
-    }
-  }
 
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
 
   String dropDown = 'Active';
-
-  final controllerNumber = TextEditingController();
-  final controllerAddress1 = TextEditingController();
-  final controllerAddress2 = TextEditingController();
-  final controllerCity = TextEditingController();
-  final controllerPincode = TextEditingController();
 
   // text field state
   String customerName = 'Select Name';
@@ -113,7 +60,6 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   List<String> products = ['Select Product'];
   List<String> customerNamesList = ['Select Name'];
 
-  List<String> select = ['Select Product'];
 
   List<String> selectedOptions = [];
   List<int> quantity = [
@@ -124,11 +70,11 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   ];
 
   void populateTable(List<ProductDetailsModel> product) {
+    print(tableData.length);
     setState(() {
       for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
         for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
           product.forEach((element) {
-            select[rowIndex] = selectedOptions[rowIndex];
             if (selectedOptions[rowIndex] == element.name) {
               if (cellIndex == 2) {
                 tableData[rowIndex][cellIndex] = element.price;
@@ -159,6 +105,30 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
           .toStringAsFixed(2);
     });
   }
+  void populateProductTable(List<ProductDetailsModel> product) {
+    setState(() {
+      for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
+        for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
+          product.forEach((element) {
+            if (selectedOptions[rowIndex] == element.name) {
+              if (cellIndex == 2) {
+                tableData[rowIndex][cellIndex] = element.price;
+              } else if (cellIndex == 3) {
+                tableData[rowIndex][cellIndex] = element.offers;
+              } else if (cellIndex == 4) {
+                tableData[rowIndex][cellIndex] = amountList[rowIndex].toString();
+              }
+            }
+          });
+        }
+      }
+      updateSubTotal();
+      total = (double.parse(subTotal) +
+              (double.parse(subTotal) * double.parse(cgst)) +
+              (double.parse(subTotal) * double.parse(sgst)))
+          .toStringAsFixed(2);
+    });
+  }
 
   void updateSubTotal() {
     setState(() {
@@ -169,20 +139,19 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     });
   }
 
+  
   void addRow() {
     setState(() {
-      select.add(products[0]);
-      amountList.add(0.00);
       tableData.add(List.filled(6, ''));
+      amountList.add(0.00);
       selectedOptions.add(products[0]);
       quantity.add(1);
-      print(selectedOptions);
+      removeRow(0);
     });
   }
 
   void removeRow(int rowIndex) {
     setState(() {
-      select.removeAt(rowIndex);
       amountList.removeAt(rowIndex);
       tableData.removeAt(rowIndex);
       selectedOptions.removeAt(rowIndex);
@@ -201,41 +170,29 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   @override
   void initState() {
     super.initState();
-    controllerNumber.addListener(_saveNumber);
-    controllerAddress1.addListener(_saveAddress1);
-    controllerAddress2.addListener(_saveAddress2);
-    controllerCity.addListener(_saveCity);
-    controllerPincode.addListener(_savePincode);
     _passwordVisible = false;
     selectedOptions = List.generate(tableData.length, (index) => products[0]);
   }
 
-  void _saveNumber() {
-    mobileNumber = controllerNumber.text;
-  }
 
-  void _saveAddress1() {
-    address1 = controllerAddress1.text;
-  }
+  List<String> productUidList = [];
 
-  void _saveAddress2() {
-    address2 = controllerAddress2.text;
-  }
+      var salesExecutive;
 
-  void _saveCity() {
-    city = controllerCity.text;
-  }
-
-  void _savePincode() {
-    pincode = controllerPincode.text;
-  }
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
+    final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
+    final orderedProductList = Provider.of<List<OrdersProductModel>>(context);
+        final salesTable = Provider.of<List<SalesPersonModel?>>(context);
 
+    var orderedProductsName = [];
+
+    var obj;
     if (products.length != productDetails.length + 1) {
       productDetails.forEach((element) {
         products.add(element.name);
@@ -252,16 +209,65 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
       if (customerName != 'Select Name') {
         customerList.forEach((element) {
           if (element.customerName == customerName) {
-            controllerNumber.text = element.mobileNumber;
-            controllerAddress1.text = element.address1;
-            controllerAddress2.text = element.address2;
-            controllerCity.text = element.city;
-            state = element.state;
-            controllerPincode.text = element.pincode;
+            setState(() {
+              mobileNumber = element.mobileNumber;
+              address1 = element.address1;
+              address2 = element.address2;
+              city = element.city;
+              state = element.state;
+              pincode = element.pincode;
+            });
           }
         });
       }
     }
+
+    var orders = [];
+
+    orderDetailsList.forEach((element) {
+      if(element.uid == args.uid) {
+        setState(() {
+          orders.add(element);
+          shipmentID = element.shipmentID;
+          customerName = element.customerName;
+          callDate = element.deliveryDate;
+          dropDown = element.dropdown;
+        });
+        setCustomerData();
+      }
+    });
+
+    if(tableData.length < orderedProductList.length){
+      orderedProductList.forEach((element) {
+        if(element.orderId == args.uid){
+          setState(() {
+            orderedProductsName.add(element.productName);
+            productUidList.add(element.uid);
+            selectedOptions.add(element.productName);
+            quantity.add(int.parse(element.quantity));
+            amountList.add(double.parse(element.amount));
+            tableData.add(List.filled(6, ''));
+          });
+        }
+      });
+      if(tableData.length != orderedProductList.length) {
+        removeRow(0);
+      } 
+    }
+
+    if(orderedProductList.isNotEmpty){
+      populateProductTable(productDetails);
+    }
+
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    }
+
+    
 
     customerList.forEach(
         (e) => e.customerName == customerName ? customerId = e.uid : []);
@@ -313,6 +319,19 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
+                  padding: EdgeInsets.only(right: 15, top: 10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Text(
+                      'Name: ${salesExecutive.name}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ]),
+                ),
+                Container(
                   margin: const EdgeInsets.only(left: 100),
                   width: 180,
                   height: 60,
@@ -331,37 +350,18 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                     ),
                   ),
                 ),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 2),
-                    ),
-                    filled: true,
-                    fillColor: Color(0xffefefff),
+                TextFormField(
+                  initialValue: customerName,
+                  readOnly: true,
+                  keyboardType: TextInputType.phone,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Shipment ID',
                   ),
-                  dropdownColor: const Color(0xffefefff),
-                  value: customerName,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      customerName = newValue!;
-                    });
-                    setCustomerData();
-                  },
-                  items: customerNamesList
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    );
-                  }).toList(),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Shipment Id' : null,
+                  // onChanged: (val) {
+                  //   shipmentID = val;
+                  // },
                 ),
                 const SizedBox(height: 20.0),
                 const SizedBox(
@@ -376,15 +376,17 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                       ),
                     )),
                 TextFormField(
+                  initialValue: shipmentID,
+                  readOnly: true,
                   keyboardType: TextInputType.phone,
                   decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Shipment ID',
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Enter Shipment Id' : null,
-                  onChanged: (val) {
-                    shipmentID = val;
-                  },
+                  // onChanged: (val) {
+                  //   shipmentID = val;
+                  // },
                 ),
                 const SizedBox(height: 20.0),
                 const SizedBox(
@@ -400,7 +402,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                     )),
                 TextFormField(
                   keyboardType: TextInputType.phone,
-                  controller: controllerNumber,
+                  initialValue: mobileNumber,
+                  readOnly: true,
                   decoration: textInputDecoration.copyWith(
                     hintText: 'Enter customer mob.num',
                   ),
@@ -424,7 +427,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                     )),
                 const SizedBox(height: 10.0),
                 TextFormField(
-                  controller: controllerAddress1,
+                  initialValue: address1,
+                  readOnly: true,
                   decoration:
                       textInputDecoration.copyWith(hintText: 'house#, area'),
                   validator: (value) =>
@@ -437,7 +441,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
-                  controller: controllerAddress2,
+                  initialValue: address2,
+                  readOnly: true,
                   decoration:
                       textInputDecoration.copyWith(hintText: 'town, taluk'),
                   validator: (value) =>
@@ -450,7 +455,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
-                  controller: controllerCity,
+                  initialValue: city,
+                  readOnly: true,
                   decoration: textInputDecoration.copyWith(hintText: 'city'),
                   validator: (value) =>
                       value!.isEmpty ? 'Enter City name' : null,
@@ -461,45 +467,22 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                   // },
                 ),
                 const SizedBox(height: 10.0),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 0),
-                    ),
-                    filled: true,
-                    fillColor: Color(0xffefefff),
-                  ),
-                  dropdownColor: const Color(0xffefefff),
-                  value: state,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      state = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'Select State',
-                    'Karnataka',
-                    'Kerala',
-                    'Tamil Nadu',
-                    'Andra Pradesh'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    );
-                  }).toList(),
+                TextFormField(
+                  initialValue: state,
+                  readOnly: true,
+                  decoration: textInputDecoration.copyWith(hintText: 'state'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter City name' : null,
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     city = val;
+                  //   });
+                  // },
                 ),
                 const SizedBox(height: 10.0),
                 TextFormField(
-                  controller: controllerPincode,
+                  initialValue: pincode,
+                  readOnly: true,
                   decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                   validator: (value) =>
                       value!.length != 6 ? 'Enter valid Pincode' : null,
@@ -522,16 +505,9 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffe3e4e5)),
-                  onPressed: () {
-                    _restorableDatePickerRouteFuture.present();
-                  },
-                  child: Text(
-                    callDate,
-                    style: TextStyle(color: Colors.black),
-                  ),
+                TextFormField(
+                  initialValue: callDate,
+                  readOnly: true,
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                   Text(
@@ -552,38 +528,9 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                     ),
                   ),
                 ),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 1),
-                    ),
-                    filled: true,
-                    fillColor: Color(0xffefefff),
-                  ),
-                  dropdownColor: const Color(0xffefefff),
-                  value: dropDown,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropDown = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'Active',
-                    'Inactive',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    );
-                  }).toList(),
+                TextFormField(
+                  initialValue: dropDown,
+                  readOnly: true,
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -598,6 +545,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                         rows: List.generate(
                           tableData.length,
                           (int rowIndex) {
+                            // print(tableData.length);
                             return DataRow(
                               cells: List.generate(
                                 6,
@@ -607,27 +555,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 16),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            value: select[rowIndex] == ''
-                                                ? selectedOptions[rowIndex]
-                                                : select[rowIndex],
-                                            items: products
-                                                .map<DropdownMenuItem<String>>(
-                                                  (String value) =>
-                                                      DropdownMenuItem<String>(
-                                                    value: value,
-                                                    child: Text(value),
-                                                  ),
-                                                )
-                                                .toList(),
-                                            onChanged: (String? value) {
-                                              select[rowIndex] = value!;
-                                              onDropdownChanged(value, rowIndex,
-                                                  productDetails);
-                                            },
-                                          ),
-                                        ),
+                                        child: Text(selectedOptions[rowIndex])
                                       ),
                                     );
                                   } else if (cellIndex == 1) {
@@ -639,13 +567,13 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                             height: 40,
                                             child: TextButton(
                                               onPressed: () {
-                                                if (quantity[rowIndex] > 1) {
-                                                  setState(() {
-                                                    quantity[rowIndex]--;
-                                                    populateTable(
-                                                        productDetails);
-                                                  });
-                                                }
+                                                // if (quantity[rowIndex] > 1) {
+                                                //   setState(() {
+                                                //     quantity[rowIndex]--;
+                                                //     populateTable(
+                                                //         productDetails);
+                                                //   });
+                                                // }
                                               },
                                               child: const Text('-',
                                                   style:
@@ -661,13 +589,13 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                             height: 40,
                                             child: TextButton(
                                               onPressed: () {
-                                                if (quantity[rowIndex] > 0) {
-                                                  setState(() {
-                                                    quantity[rowIndex]++;
-                                                    populateTable(
-                                                        productDetails);
-                                                  });
-                                                }
+                                                // if (quantity[rowIndex] > 0) {
+                                                //   setState(() {
+                                                //     quantity[rowIndex]++;
+                                                //     populateTable(
+                                                //         productDetails);
+                                                //   });
+                                                // }
                                               },
                                               child: const Text('+',
                                                   style:
@@ -682,9 +610,9 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                       SizedBox(
                                         child: TextButton.icon(
                                           onPressed: () {
-                                            if (rowIndex != 0) {
-                                              removeRow(rowIndex);
-                                            }
+                                            // if (rowIndex != 0) {
+                                            //   removeRow(rowIndex);
+                                            // }
                                           },
                                           icon: Icon(
                                             Icons.remove_circle_outline,
@@ -716,15 +644,15 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                             const TextStyle(color: Colors.red, fontSize: 14.0),
                       ),
                     ]),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff4d47c3),
-                        ),
-                        onPressed: addRow,
-                        child: const Text('Add +'),
-                      ),
-                    ]),
+                    // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    //   ElevatedButton(
+                    //     style: ElevatedButton.styleFrom(
+                    //       backgroundColor: Color(0xff4d47c3),
+                    //     ),
+                    //     onPressed: addRow,
+                    //     child: const Text('Add +'),
+                    //   ),
+                    // ]),
                   ],
                 ),
                 Row(
@@ -795,138 +723,6 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (_formkey.currentState!.validate() &&
-                                    customerId != '' &&
-                                    callDate != 'Select Date' &&
-                                    selectedOptions[
-                                            selectedOptions.length - 1] !=
-                                        'Select Product') {
-                                  setState(() {
-                                    loading = true;
-                                    dateError = '';
-                                    productError = '';
-                                    error = '';
-                                  });
-                                  dynamic result =
-                                      await OrderDetailsDatabaseService(
-                                              docid: '')
-                                          .setOrderData(
-                                              currentUser!.uid,
-                                              customerId,
-                                              customerName,
-                                              shipmentID,
-                                              mobileNumber,
-                                              address1,
-                                              address2,
-                                              city,
-                                              state,
-                                              pincode,
-                                              callDate,
-                                              dropDown,
-                                              subTotal,
-                                              total)
-                                          .then((value) async {
-                                    for (var j = 0;
-                                        j < selectedOptions.length;
-                                        j++) {
-                                      if (selectedOptions[j] !=
-                                          'Select Product') {
-                                        await OrderDetailsDatabaseService(
-                                                docid: value)
-                                            .setOrderedProductDetails(
-                                          selectedOptions[j],
-                                          quantity[j].toString(),
-                                          amountList[j].toString(),
-                                        )
-                                            .then((value) {
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text(
-                                                'Order details added Successfully!!!'),
-                                          ));
-                                          Navigator.pop(context);
-                                        });
-                                      }
-                                    }
-                                  });
-                                } else {
-                                  if (customerId == '') {
-                                    setState(() {
-                                      error =
-                                          'The entered customer does not exist please register';
-                                      loading = false;
-                                    });
-                                  }
-
-                                  if (callDate == 'Select Date') {
-                                    setState(() {
-                                      dateError = 'Please enter delivery date';
-                                      loading = false;
-                                    });
-                                  }
-
-                                  if (selectedOptions[
-                                          selectedOptions.length - 1] ==
-                                      'Select Product') {
-                                    setState(() {
-                                      productError =
-                                          'Please select a product to place order';
-                                      loading = false;
-                                    });
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xff4d47c3),
-                              ),
-                              child: Container(
-                                width: 100,
-                                height: 59,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x664d47c3),
-                                      blurRadius: 61,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                  color: const Color(0xff4d47c3),
-                                ),
-                                padding: const EdgeInsets.only(
-                                  top: 18,
-                                  bottom: 17,
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    SizedBox(
-                                      width: 90,
-                                      child: Text(
-                                        "submit",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontFamily: "Poppins",
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 55,
-                            ),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);

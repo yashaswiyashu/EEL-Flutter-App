@@ -256,7 +256,9 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 ),
                 SizedBox(height: 20.80),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'complaintList');
+                  },
                   child: Container(
                     width: 323,
                     height: 105,

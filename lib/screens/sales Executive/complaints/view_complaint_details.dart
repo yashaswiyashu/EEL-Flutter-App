@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/models/complaint_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -44,13 +45,21 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
+    final args = ModalRoute.of(context)!.settings.arguments as ComplaintParameter;
     final currentUser = Provider.of<UserModel>(context);
     final complaintDetails = Provider.of<List<ComplaintDetailsModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
 
     var obj;
+
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser.uid) {
+          salesExecutive = element;
+        }
+      });
+    }
 
 
     if (complaintDetails != null) {
@@ -102,21 +111,21 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Container(
-                      //   padding: EdgeInsets.only(right: 15, top: 10),
-                      //   child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.end,
-                      //       children: [
-                      //         Text(
-                      //           'Name: ${salesExecutive.name}',
-                      //           style: TextStyle(
-                      //             color: Colors.black,
-                      //             fontSize: 15,
-                      //             fontWeight: FontWeight.bold,
-                      //           ),
-                      //         ),
-                      //       ]),
-                      // ),
+                      Container(
+                        padding: EdgeInsets.only(right: 15, top: 10),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Name: ${salesExecutive.name}',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ]),
+                      ),
                       SizedBox(
                         height: 10,
                       ),

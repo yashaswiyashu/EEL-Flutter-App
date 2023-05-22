@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/customer_database.dart';
@@ -139,6 +140,11 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
       if (exit) {
         // user pressed Yes button
         CustomerDatabaseService(docid: uid).deleteUserData();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(
+          content: Text(
+              'Customer details deleted Successfully!!!'),
+        ));
         Navigator.pop(context);
       } else {
         // user pressed No button
@@ -147,19 +153,31 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
       }
     });
   }
+  var salesExecutive;
+
 
   @override
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
-    final customerTable = Provider.of<List<CustomerModel?>?>(context);
+    final customerTable = Provider.of<List<CustomerModel>>(context);
+        final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+
     var obj;
 
     if (customerTable != null) {
       customerTable.forEach((element) {
-        if (element?.uid == args.uid) {
+        if (element.uid == args.uid) {
           obj = element;
+        }
+      });
+    }
+
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
         }
       });
     }
@@ -225,6 +243,21 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(right: 15, top: 10),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Name: ${salesExecutive.name}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ]),
+                    ),
                     Container(
                       margin: const EdgeInsets.only(left: 100),
                       width: 180,
@@ -1021,7 +1054,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                             content: Text(
-                                                'Customer Details edited Successfully!!!'),
+                                                'Customer Details updated Successfully!!!'),
                                           ));
                                           Navigator.pop(context);
                                         }));

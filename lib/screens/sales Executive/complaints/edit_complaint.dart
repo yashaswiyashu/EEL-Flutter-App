@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_forward_model.dart';
@@ -20,7 +21,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 class EditComplaintDetails extends StatefulWidget {
   const EditComplaintDetails({super.key, this.restorationId});
   final String? restorationId;
-  static const routeName = '/editCallDetails';
+  static const routeName = '/editComplaintDetails';
 
 
   @override
@@ -57,6 +58,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     // Start listening to changes.
     controllerName.addListener(_saveName);
     controllerNumber.addListener(_saveNumber);
+
+
     controllerComplaintDetails.addListener(_controllerComplaintDetails);
   }
 
@@ -67,6 +70,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     // This also removes the _printLatestValue listener.
     controllerName.dispose();
     controllerNumber.dispose();
+
+
     controllerComplaintDetails.dispose();
     super.dispose();
   }
@@ -109,6 +114,11 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
       if (exit) {
         // user pressed Yes button
         ComplaintDetailsDatabaseService(docid: uid).deleteUserData();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(
+          content: Text(
+              'Complaint details deleted Successfully!!!'),
+        ));
         Navigator.pop(context);
       } else {
         // user pressed No button
@@ -180,14 +190,21 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     content: Text('Call Details Updated Successfully!!!'),
   );
 
+
   String date = '';
+
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as ComplaintParameter;
     final currentUser = Provider.of<UserModel?>(context);
     final complaintDetails = Provider.of<List<ComplaintDetailsModel>>(context);
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    final ComplaintDetailsTable =
+        Provider.of<List<ComplaintDetailsModel?>?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+
+
     var obj;
     String salesExecutiveName = '';
     var salesExecutive;
@@ -201,9 +218,9 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     }
 
 
-    if (complaintDetails != null) {
-      complaintDetails.forEach((element) {
-        if (element.uid == currentUser?.uid) {
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
         }
       });
@@ -213,8 +230,10 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     if (obj != null) {
       controllerName.text = obj?.customerName;
       controllerNumber.text = obj?.mobileNumber;
+
+
+      date = obj?.complaintDate;
       controllerComplaintDetails.text = obj?.complaintDetails;
-      complaintDate = obj?.complaintDate;
     }
 
 
@@ -241,7 +260,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
         body: SingleChildScrollView(
           padding: EdgeInsets.only(right: 10, left: 10),
           child: Container(
-            // calldetailsedit2is (32:1733)
+            // call detailsedit2is (32:1733)
             padding: const EdgeInsets.only(
               top: 10,
               bottom: 0.4,
@@ -344,7 +363,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                   const SizedBox(
                     height: 20.0,
                     child: Text(
-                      "Call Date:",
+                      "Complaint Date:",
                       style: TextStyle(
                         color: Color(0xff090a0a),
                         fontSize: 16,
@@ -367,13 +386,113 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                           _restorableDatePickerRouteFuture.present();
                         },
                         child: Text(
-                          callDate == '' ? date : callDate,
+                          callDate == 'Select Date' ? date : callDate,
                           style: TextStyle(color: Colors.black, fontSize: 16),
                         ),
                       ),
                     ]),
                   ),
+
+
                   const SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
+                  const SizedBox(
+                      height: 20.0,
+                      child: Text(
+                        'Complaint Status:',
+                        style: TextStyle(
+                          color: Color(0xff090a0a),
+                          fontSize: 16,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  DropdownButtonFormField(
+                    decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        //<-- SEE HERE
+                        borderSide: BorderSide(color: Colors.black, width: 0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        //<-- SEE HERE
+                        borderSide: BorderSide(color: Colors.black, width: 2),
+                      ),
+                      filled: true,
+                      fillColor: Color(0xffefefff),
+                    ),
+                    dropdownColor: const Color(0xffefefff),
+                    value: complaintResult,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        complaintResult = newValue!;
+                      });
+                    },
+                    items: <String>[
+                      'Active',
+                      'Inactive',
+                      'InProcess',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 30.0),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    // complaintDetailsjeX (32:1762)
+                    margin: EdgeInsets.fromLTRB(1, 0, 0, 12),
+                    child: Text(
+                      'Complaint Details:',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        height: 1,
+                        color: Color(0xff000000),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 440,
+                    height: 83,
+                    padding: EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Color(0xffe3e4e5)),
+                      color: Color(0xfff0efff),
+                    ),
+                    child: TextFormField(
+                      controller: controllerComplaintDetails,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Missing Field' : null,
+                      onChanged: (val) {
+                        setState(() {});
+                      },
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5.0),
+                  Container(
+                    margin: const EdgeInsets.only(left: 110),
+                    child: Text(
+                      status,
+                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                  ),
                   const SizedBox(height: 40.0),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 6, 0),
@@ -397,21 +516,15 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                       setState(() {
                                         loading = true;
                                       });
-                                      await CallDetailsDatabaseService(
+                                      await ComplaintDetailsDatabaseService(
                                               docid: obj!.uid)
                                           .updateUserData(
                                             currentUser!.uid,
                                             customerName,
-                                            customerType == 'Individual'
-                                                ? type
-                                                : customerType,
                                             customerNumber,
                                             callDate == '' ? date : callDate,
-                                            callResult == 'Interested'
-                                                ? result
-                                                : callResult,
-                                            followUp,
-                                            followUpDetails,
+                                            complaintResult,
+                                            complaintDetails as String,
                                           )
                                           .then((value) => setState(() {
                                                 loading = false;
@@ -531,6 +644,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                       ],
                     ),
                   ),
+                  // import table from database
                   SizedBox(
                     height: 20,
                   )

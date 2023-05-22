@@ -7,6 +7,7 @@ import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/order_database.dart';
@@ -120,7 +121,6 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   List<String> products = ['Select Product'];
   List<String> customerNamesList = ['Select Name'];
 
-  List<String> select = ['Select Product'];
 
   List<String> selectedOptions = [];
   List<int> quantity = [
@@ -131,11 +131,11 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   ];
 
   void populateTable(List<ProductDetailsModel> product) {
+    print(tableData.length);
     setState(() {
       for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
         for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
           product.forEach((element) {
-            select[rowIndex] = selectedOptions[rowIndex];
             if (selectedOptions[rowIndex] == element.name) {
               if (cellIndex == 2) {
                 tableData[rowIndex][cellIndex] = element.price;
@@ -166,6 +166,30 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
           .toStringAsFixed(2);
     });
   }
+  void populateProductTable(List<ProductDetailsModel> product) {
+    setState(() {
+      for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
+        for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
+          product.forEach((element) {
+            if (selectedOptions[rowIndex] == element.name) {
+              if (cellIndex == 2) {
+                tableData[rowIndex][cellIndex] = element.price;
+              } else if (cellIndex == 3) {
+                tableData[rowIndex][cellIndex] = element.offers;
+              } else if (cellIndex == 4) {
+                tableData[rowIndex][cellIndex] = amountList[rowIndex].toString();
+              }
+            }
+          });
+        }
+      }
+      updateSubTotal();
+      total = (double.parse(subTotal) +
+              (double.parse(subTotal) * double.parse(cgst)) +
+              (double.parse(subTotal) * double.parse(sgst)))
+          .toStringAsFixed(2);
+    });
+  }
 
   void updateSubTotal() {
     setState(() {
@@ -176,20 +200,19 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
     });
   }
 
+  
   void addRow() {
     setState(() {
-      select.add(products[0]);
-      amountList.add(0.00);
       tableData.add(List.filled(6, ''));
+      amountList.add(0.00);
       selectedOptions.add(products[0]);
       quantity.add(1);
-      print(selectedOptions);
+      removeRow(0);
     });
   }
 
   void removeRow(int rowIndex) {
     setState(() {
-      select.removeAt(rowIndex);
       amountList.removeAt(rowIndex);
       tableData.removeAt(rowIndex);
       selectedOptions.removeAt(rowIndex);
@@ -241,6 +264,48 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   void _savePincode() {
     pincode = controllerPincode.text;
   }
+  List<String> productUidList = [];
+
+   void showConfirmation(String uid, List<String> uidList) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Do you want to delete entire document?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        OrderDetailsDatabaseService(docid: uid).deleteUserData();
+        uidList.forEach((element) {
+          OrderDetailsDatabaseService(docid: uid).deleteOrderedProductDetails(element);
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(
+          content: Text(
+              'Order details deleted Successfully!!!'),
+        ));
+        Navigator.pop(context);
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
+
+   var salesExecutive;
 
   @override
   Widget build(BuildContext context) {
@@ -250,9 +315,11 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
     final currentUser = Provider.of<UserModel?>(context);
     final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
     final orderedProductList = Provider.of<List<OrdersProductModel>>(context);
+            final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+
+    var orderedProductsName = [];
 
     var obj;
-
     if (products.length != productDetails.length + 1) {
       productDetails.forEach((element) {
         products.add(element.name);
@@ -269,34 +336,56 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
       if (customerName != 'Select Name') {
         customerList.forEach((element) {
           if (element.customerName == customerName) {
-            controllerNumber.text = element.mobileNumber;
-            controllerAddress1.text = element.address1;
-            controllerAddress2.text = element.address2;
-            controllerCity.text = element.city;
-            state = element.state;
-            controllerPincode.text = element.pincode;
+            setState(() {
+              controllerNumber.text = element.mobileNumber;
+              controllerAddress1.text = element.address1;
+              controllerAddress2.text = element.address2;
+              controllerCity.text = element.city;
+              state = element.state;
+              controllerPincode.text = element.pincode;
+            });
           }
         });
       }
     }
 
+    var orders = [];
+
     orderDetailsList.forEach((element) {
       if(element.uid == args.uid) {
-        controllerShipmentId.text = element.shipmentID;
-        customerName = element.customerName;
-        callDate = element.deliveryDate;
-        dropDown = element.dropdown;
+        setState(() {
+          orders.add(element);
+          controllerShipmentId.text = element.shipmentID;
+          customerName = element.customerName;
+          callDate = element.deliveryDate;
+          dropDown = element.dropdown;
+        });
         setCustomerData();
       }
     });
 
-    orderedProductList.forEach((element) {
-      selectedOptions.add(element.productName);
-      quantity.add(int.parse(element.quantity));
-      amountList.add(double.parse(element.amount));
-      tableData.add(List.filled(6, ''));
-      populateTable(productDetails);
-    });
+    if(tableData.length < orderedProductList.length){
+      orderedProductList.forEach((element) {
+        if(element.orderId == args.uid){
+          setState(() {
+            orderedProductsName.add(element.productName);
+            productUidList.add(element.uid);
+            selectedOptions.add(element.productName);
+            quantity.add(int.parse(element.quantity));
+            amountList.add(double.parse(element.amount));
+            tableData.add(List.filled(6, ''));
+          });
+        }
+      });
+      if(tableData.length != orderedProductList.length) {
+        removeRow(0);
+      } 
+    }
+
+    if(orderedProductList.isNotEmpty){
+      populateProductTable(productDetails);
+    }
+    
 
     customerList.forEach(
         (e) => e.customerName == customerName ? customerId = e.uid : []);
@@ -315,6 +404,14 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
         DataColumn(label: Text('Amount')),
         DataColumn(label: Text('Remove Row')),
       ];
+    }
+
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
     }
 
     return Scaffold(
@@ -347,6 +444,19 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Container(
+                      padding: EdgeInsets.only(right: 15, top: 10),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Text(
+                          'Name: ${salesExecutive.name}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ]),
+                    ),
                 Container(
                   margin: const EdgeInsets.only(left: 100),
                   width: 180,
@@ -634,10 +744,10 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                         rows: List.generate(
                           tableData.length,
                           (int rowIndex) {
-                            print(tableData.length);
+                            // print(tableData.length);
                             return DataRow(
                               cells: List.generate(
-                                orderedProductList.length,
+                                6,
                                 (int cellIndex) {
                                   if (cellIndex == 0) {
                                     return DataCell(
@@ -657,9 +767,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                                 )
                                                 .toList(),
                                             onChanged: (String? value) {
-                                              select[rowIndex] = value!;
-                                              onDropdownChanged(value, rowIndex,
-                                                  productDetails);
+                                              onDropdownChanged(value, rowIndex, productDetails);
                                             },
                                           ),
                                         ),
@@ -751,15 +859,15 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                             const TextStyle(color: Colors.red, fontSize: 14.0),
                       ),
                     ]),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff4d47c3),
-                        ),
-                        onPressed: addRow,
-                        child: const Text('Add +'),
-                      ),
-                    ]),
+                    // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    //   ElevatedButton(
+                    //     style: ElevatedButton.styleFrom(
+                    //       backgroundColor: Color(0xff4d47c3),
+                    //     ),
+                    //     onPressed: addRow,
+                    //     child: const Text('Add +'),
+                    //   ),
+                    // ]),
                   ],
                 ),
                 Row(
@@ -827,7 +935,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                         width: 420,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             ElevatedButton(
@@ -846,8 +954,8 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                   });
                                   dynamic result =
                                       await OrderDetailsDatabaseService(
-                                              docid: '')
-                                          .setOrderData(
+                                              docid: args.uid)
+                                          .updateOrderData(
                                               currentUser!.uid,
                                               customerId,
                                               customerName,
@@ -863,14 +971,19 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                               subTotal,
                                               total)
                                           .then((value) async {
+                                            print(selectedOptions);
+                                            print(productUidList);
+                                            print(quantity);
+                                            print(amountList);
+                                      var cnt = 0; 
                                     for (var j = 0;
-                                        j < selectedOptions.length;
+                                        j < productUidList.length;
                                         j++) {
-                                      if (selectedOptions[j] !=
-                                          'Select Product') {
-                                        await OrderDetailsDatabaseService(
-                                                docid: value)
-                                            .setOrderedProductDetails(
+                                      if (productUidList.isNotEmpty) {
+                                        await OrderDetailsDatabaseService(docid: args.uid)
+                                            .updateOrderedProductDetails(
+                                          productUidList[j],
+                                          args.uid,
                                           selectedOptions[j],
                                           quantity[j].toString(),
                                           amountList[j].toString(),
@@ -878,13 +991,16 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                             .then((value) {
                                           setState(() {
                                             loading = false;
+                                            cnt++;
                                           });
+                                          if(cnt == productUidList.length){
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                             content: Text(
-                                                'Order details added Successfully!!!'),
+                                                'Order details updated Successfully!!!'),
                                           ));
                                           Navigator.pop(context);
+                                          }
                                         });
                                       }
                                     }
@@ -920,7 +1036,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                 backgroundColor: Color(0xff4d47c3),
                               ),
                               child: Container(
-                                width: 100,
+                                width: 70,
                                 height: 59,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(9),
@@ -959,8 +1075,42 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              width: 55,
+                            ElevatedButton(
+                              // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                              onPressed: () {
+                                showConfirmation(args.uid, productUidList);
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Container(
+                                width: 100,
+                                height: 59,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff4d47c3),
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      offset: Offset(0, 4),
+                                      blurRadius: 30.5,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Delete',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.5,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -970,7 +1120,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                 backgroundColor: Color(0xff4d47c3),
                               ),
                               child: Container(
-                                width: 100,
+                                width: 70,
                                 height: 59,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(9),

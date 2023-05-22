@@ -49,11 +49,19 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   }
 
   var customer;
+  var salesExecutive;
 
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
@@ -86,6 +94,21 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Container(
+                      padding: EdgeInsets.only(right: 15, top: 10),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Name: ${salesExecutive.name}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ]),
+                    ),
               Container(
                 margin: const EdgeInsets.only(left: 100),
                 width: 180,

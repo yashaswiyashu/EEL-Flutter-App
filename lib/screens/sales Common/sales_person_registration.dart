@@ -447,18 +447,12 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                                             address2,
                                             city,
                                             state,
-                                            pincode);
-                                    loading = false;
-                                    if (role == 'Sales Executive') {
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                      Navigator.pushNamed(
-                                          context, 'salesExecutiveHome');
-                                      
-                                    } else if (role == 'Sales Co-Ordinator') {
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                      Navigator.pushNamed(
-                                          context, 'salesCoOrdinateHome');
-                                    }
+                                            pincode).then((value) {
+                                              setState(() {
+                                                loading = false;
+                                              });
+                                              Navigator.pushNamed(context, 'authWrapper');
+                                            });
                                   }
                                 }
                               }

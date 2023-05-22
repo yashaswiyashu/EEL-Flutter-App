@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/order_database.dart';
@@ -230,11 +231,14 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     pincode = controllerPincode.text;
   }
 
+    var salesExecutive;
+
   @override
   Widget build(BuildContext context) {
     final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
+        final salesTable = Provider.of<List<SalesPersonModel?>>(context);
 
     if (products.length != productDetails.length + 1) {
       productDetails.forEach((element) {
@@ -282,6 +286,14 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
       ];
     }
 
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
@@ -312,6 +324,19 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(right: 15, top: 10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Text(
+                      'Name: ${salesExecutive.name}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ]),
+                ),
                 Container(
                   margin: const EdgeInsets.only(left: 100),
                   width: 180,
@@ -623,8 +648,24 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                                 .toList(),
                                             onChanged: (String? value) {
                                               select[rowIndex] = value!;
-                                              onDropdownChanged(value, rowIndex,
-                                                  productDetails);
+                                              var count = 0;
+                                              for(var k = 0; k < rowIndex; k++) {
+                                                if(select[rowIndex] == select[k]) {
+                                                  count++;
+                                                }
+                                              }
+                                              
+                                              if(count != 0) {
+                                                setState(() {
+                                                  productError = 'Please select unique product';
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  productError = '';
+                                                });
+                                                selectedOptions[rowIndex] = value;
+                                                onDropdownChanged(value, rowIndex, productDetails);
+                                              }
                                             },
                                           ),
                                         ),
@@ -802,7 +843,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                     callDate != 'Select Date' &&
                                     selectedOptions[
                                             selectedOptions.length - 1] !=
-                                        'Select Product') {
+                                        'Select Product' && productError == '') {
                                   setState(() {
                                     loading = true;
                                     dateError = '';
@@ -828,6 +869,9 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                               subTotal,
                                               total)
                                           .then((value) async {
+                                         setState(() {
+                                            loading = false;
+                                          });
                                     for (var j = 0;
                                         j < selectedOptions.length;
                                         j++) {
@@ -836,14 +880,12 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                         await OrderDetailsDatabaseService(
                                                 docid: value)
                                             .setOrderedProductDetails(
+                                          value,
                                           selectedOptions[j],
                                           quantity[j].toString(),
                                           amountList[j].toString(),
                                         )
                                             .then((value) {
-                                          setState(() {
-                                            loading = false;
-                                          });
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                             content: Text(
@@ -877,6 +919,13 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                       productError =
                                           'Please select a product to place order';
                                       loading = false;
+                                    });
+                                  }
+
+                                  if(productError != '') {
+                                    setState(() {
+                                      loading = false;
+                                      error = 'Enter valid product details'; 
                                     });
                                   }
                                 }

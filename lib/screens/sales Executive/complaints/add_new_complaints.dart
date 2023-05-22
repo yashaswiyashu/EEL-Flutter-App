@@ -105,7 +105,14 @@ class _AddNewComplaintState extends State<AddNewComplaint>
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    }
     final AuthService _auth = AuthService();
     return Scaffold(
       appBar: AppBar(
@@ -140,7 +147,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                 padding: EdgeInsets.only(right: 15, top: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Text(
-                    'Name:SalesExecutive',
+                    'Name: ${salesExecutive.name}',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -377,7 +384,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: Text(
-                                          'Call Details added Successfully!!!'),
+                                          'Compliaint Details added Successfully!!!'),
                                     ));
                                   });
                                   Navigator.pop(context);

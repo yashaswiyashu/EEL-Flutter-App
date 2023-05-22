@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/orders_product_model.dart';
@@ -26,15 +27,16 @@ import 'package:flutter_app/screens/sales%20Executive/customer%20Details/view_cu
 import 'package:flutter_app/screens/customer/customer_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
-import 'package:flutter_app/screens/sales%20Executive/order%20Details/order_data_table.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/order_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/add_call_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/call_details_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales_executive_home.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/call_details_database.dart';
+import 'package:flutter_app/services/complaint_details_database.dart';
 import 'package:flutter_app/services/customer_database.dart';
 import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/services/products_database.dart';
@@ -62,6 +64,7 @@ class MyApp extends StatelessWidget {
       StreamProvider<List<ProductDetailsModel>>.value(value: ProductDatabaseService(docid: '').productDetailsTable, initialData: const []),
       StreamProvider<List<OrderDetailsModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderDetailsTable, initialData: const []),
       StreamProvider<List<OrdersProductModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderedProductDetailsTable, initialData: const []),
+      StreamProvider<List<ComplaintDetailsModel>>.value(value: ComplaintDetailsDatabaseService(docid: '').complaintDetailsTable, initialData: const []),
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
       child: MaterialApp(
@@ -89,11 +92,12 @@ class MyApp extends StatelessWidget {
             'addNewOrder':(context) => const AddNewOrder(restorationId: 'main'),
             'oderDetailsList':(context) => const OrderDetailsList(),
             EditOrder.routeName:(context) => const EditOrder(restorationId: 'main',),
+            ViewOrder.routeName:(context) => const ViewOrder(),
 
             //complaints
             'addNewComplaint':(context) => const AddNewComplaint(restorationId: 'main',),
             'complaintList':(context) => const ComplaintDetailsList(),
-            EditComplaintDetails.routeName:(context) => EditComplaintDetails(),
+            EditComplaintDetails.routeName:(context) => const EditComplaintDetails(restorationId: 'main'),
             ViewComplaintDetails.routeName:(context) => ViewComplaintDetails(),
 
           //Customer 

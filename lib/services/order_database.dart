@@ -90,6 +90,7 @@ class OrderDetailsDatabaseService {
   }
 
   Future<void> setOrderedProductDetails(
+   String orderId,
    String productName,
    String quantity,
    String amount,
@@ -97,6 +98,7 @@ class OrderDetailsDatabaseService {
       var uniqid = userCollection.doc().id;
     return await userCollection.doc(docid).collection('OrdersProductDetails').doc(uniqid).set({
       'uid': uniqid,
+      'orderId': orderId,
       'productName': productName,
       'quantity': quantity,
       'amount': amount,
@@ -105,12 +107,14 @@ class OrderDetailsDatabaseService {
 
   Future<void> updateOrderedProductDetails(
    String uid,
+   String orderId,
    String productName,
    String quantity,
    String amount,
     ) async {
     return await userCollection.doc(docid).collection('OrdersProductDetails').doc(uid).set({
       'uid': uid,
+      'orderId': orderId,
       'productName': productName,
       'quantity': quantity,
       'amount': amount,
@@ -171,33 +175,33 @@ class OrderDetailsDatabaseService {
     return userCollection.snapshots().map(_userListFromSnapshot);
   }
 
-  // get all documents in OrdersTable collection and get a list of documents in sub collection OrderedProducts table and it stream
   Stream<List<OrdersProductModel>> get orderedProductDetailsTable {
-    return userCollection.snapshots().asyncMap((QuerySnapshot snapshot) async {
-      final List<OrdersProductModel> productList = [];
+  return userCollection.snapshots().asyncMap((QuerySnapshot snapshot) async {
+    final List<OrdersProductModel> productList = [];
 
-      for (final DocumentSnapshot doc in snapshot.docs) {
-        final Map<String, dynamic> documentData = doc.data() as Map<String, dynamic>;
+    for (final DocumentSnapshot doc in snapshot.docs) {
+      final Map<String, dynamic> documentData = doc.data() as Map<String, dynamic>;
 
-        // Fetch subcollection data
-        final QuerySnapshot subCollectionSnapshot =
-            await doc.reference.collection('OrdersProductDetails').get();
+      // Fetch subcollection data
+      final QuerySnapshot subCollectionSnapshot =
+          await doc.reference.collection('OrdersProductDetails').get();
 
-        for (final DocumentSnapshot subDoc in subCollectionSnapshot.docs) {
-          final Map<String, dynamic> subDocumentData = subDoc.data() as Map<String, dynamic>;
+      for (final DocumentSnapshot subDoc in subCollectionSnapshot.docs) {
+        final Map<String, dynamic> subDocumentData = subDoc.data() as Map<String, dynamic>;
 
-          productList.add(
-            OrdersProductModel(
-              uid: documentData['uid']?.toString() ?? '',
-              amount: documentData['amount']?.toString() ?? '',
-              productName: documentData['productName']?.toString() ?? '',
-              quantity: documentData['quantity']?.toString() ?? '',
-            ),
-          );
-        }
+        productList.add(
+          OrdersProductModel(
+            uid: subDocumentData['uid']?.toString() ?? '',
+            orderId: subDocumentData['orderId']?.toString() ?? '',
+            amount: subDocumentData['amount']?.toString() ?? '',
+            productName: subDocumentData['productName']?.toString() ?? '',
+            quantity: subDocumentData['quantity']?.toString() ?? '',
+          ),
+        );
       }
+    }
 
-      return productList;
-    });
-  }
+    return productList;
+  });
+}
 }

@@ -27,13 +27,13 @@ class _CustomerListViewState extends State<CustomerListView> {
 
   @override
   Widget build(BuildContext context) {
-    final customerList = Provider.of<List<CustomerModel?>?>(context);
+    final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var details = [];
     var obj;
 
-    customerList!.forEach(
-        (e) => e?.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    customerList.forEach(
+        (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
 
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,

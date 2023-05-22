@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/models/complaint_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -37,6 +38,16 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
   Widget build(BuildContext context) {
     final complaintDetails = Provider.of<List<ComplaintDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    }
+
     var details = [];
     var obj;
 
@@ -168,7 +179,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                   child:
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     Text(
-                      'Name: Sales Executive',
+                      'Name: ${salesExecutive.name}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 15,
@@ -191,7 +202,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff4d47c3)),
                     onPressed: () {
-                      Navigator.pushNamed(context, 'addNewComplaints');
+                      Navigator.pushNamed(context, 'addNewComplaint');
                     },
                     child: Text('Add New +'),
                   ),
@@ -228,7 +239,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                             });
                             Navigator.pushNamed(
                                 context, ViewComplaintDetails.routeName,
-                                arguments: Parameter(
+                                arguments: ComplaintParameter(
                                   character,
                                 ));
                           }
@@ -282,7 +293,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                             });
                             Navigator.pushNamed(
                                 context, EditComplaintDetails.routeName,
-                                arguments: Parameter(
+                                arguments: ComplaintParameter(
                                   character,
                                 ));
                           }
