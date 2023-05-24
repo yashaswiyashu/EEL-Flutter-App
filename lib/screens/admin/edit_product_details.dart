@@ -350,9 +350,12 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                     ),
                     TextFormField(
                       controller: controllerPrice,
-                      validator: (value) => value!.isEmpty
+                      /* validator: (value) => value!.isEmpty
                         ? 'Enter Product Price'
-                            : null,
+                            : null, */
+                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(price) && price != '0'
+                        ? null
+                            : 'Enter Product Price',                            
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Product Price',
                           fillColor: const Color(0xfff0efff)),
@@ -377,9 +380,12 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                     ),
                     TextFormField(
                       controller: controllerOffers,
-                      validator: (value) => value!.isEmpty
+                    /*   validator: (value) => value!.isEmpty
                         ? 'Enter Discount Percentage'
-                            : null,
+                            : null, */
+                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(offers)
+                        ? null
+                            : 'Enter Discount Percentage',
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Discount Percentage',
                           fillColor: const Color(0xfff0efff)),

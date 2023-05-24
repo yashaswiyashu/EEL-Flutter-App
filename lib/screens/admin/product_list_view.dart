@@ -279,7 +279,8 @@ class _ProductListViewAdminState extends State<ProductListViewAdmin> {
                           TextButton(
                             // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
                             onPressed: () {
-                              Navigator.pop(context);
+                              //Viru(24/5/23): Currently commenting it, later proper fix is required
+                              //Navigator.pop(context);
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
