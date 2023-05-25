@@ -61,8 +61,13 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1),
-          lastDate: DateTime(2025),
+          /* firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1),
+          lastDate: DateTime(2025), */
+          //[Viru:25/5/23] Changed the first date, last date to pick from the current date and previous
+          firstDate: DateTime(2022),
+          lastDate: DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day),
+          
         );
       },
     );
@@ -403,7 +408,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                 color: Color(0xfff0efff),
                               ),
                               child: TextFormField(
-                                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                                validator: (value) => (followUp && value!.isEmpty) ? 'Missing Field' : null,
                                 onChanged: (val) {
                                   setState(() {
                                     followUpDetails = val;
