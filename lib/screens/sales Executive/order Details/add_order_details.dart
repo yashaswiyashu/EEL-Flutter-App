@@ -79,7 +79,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
 
-  String dropDown = 'Active';
+  String dropDown = 'Order Placed';
 
   final controllerNumber = TextEditingController();
   final controllerAddress1 = TextEditingController();
@@ -598,8 +598,13 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                     });
                   },
                   items: <String>[
-                    'Active',
-                    'Inactive',
+                    'Order Placed',
+                    'Payment Pending',
+                    'Shipped',
+                    'Out for Delivery',
+                    'Delivered',
+                    'Cancelled',
+                    'Returned'
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
