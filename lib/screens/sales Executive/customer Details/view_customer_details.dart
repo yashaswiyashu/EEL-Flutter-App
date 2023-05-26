@@ -679,7 +679,7 @@ class _ViewCustomerDetailsState extends State<ViewCustomerDetails> {
                                   SizedBox(
                                     width: 70,
                                     child: Text(
-                                      "Cancel",
+                                      "Back",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,

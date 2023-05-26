@@ -475,7 +475,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                       decoration:
                           textInputDecoration.copyWith(hintText: 'pincode'),
                       validator: (value) =>
-                          pincode.length == 7 ? 'Enter valid pincode' : null,
+                          RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6 ? null : 'Enter Valid pincode',
                       // onChanged: (val) {
                       //   setState(() {
                       //     pincode = val;
@@ -1089,7 +1089,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                                   SizedBox(
                                     width: 90,
                                     child: Text(
-                                      "Register",
+                                      "Save",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,

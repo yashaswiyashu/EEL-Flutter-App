@@ -10,6 +10,8 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/location.dart';
+
 class AddNewCustomer extends StatefulWidget {
   const AddNewCustomer({super.key});
 
@@ -44,12 +46,67 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   String error = '';
   bool _passwordVisible = false;
 
+  final nameController = TextEditingController();
+  final talukController = TextEditingController();
+  final cityController = TextEditingController();
+  final stateController = TextEditingController();
+
   void initState() {
     _passwordVisible = false;
+    cityController.addListener(_cityLatestValue);
+    talukController.addListener(_talukLatestValue);
+    nameController.addListener(_nameLatestValue);
+    stateController.addListener(_stateLatestValue);
+  }
+
+@override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    cityController.dispose();
+    stateController.dispose();
+    nameController.dispose();
+    talukController.dispose();
+    super.dispose();
+  }
+
+  void _cityLatestValue() {
+    print('Viru:: ${cityController.text}');
+  }
+
+  void _stateLatestValue() {
+    print('Viru:: ${stateController.text}');
+  }
+
+  void _nameLatestValue() {
+    print('Viru:: ${nameController.text}');
+  }
+
+  void _talukLatestValue() {
+    print('Viru:: ${talukController.text}');
   }
 
   var customer;
   var salesExecutive;
+
+  void updateAddressFields() async {
+    Location loc = await getLocation(pincode);
+    setState(() {
+      city = loc.district;
+      cityController.text = loc.district;
+      state = loc.state;
+      stateController.text = loc.state;
+      address1 = loc.name;
+      nameController.text = loc.name;
+      address2 = loc.taluk;
+      talukController.text = loc.taluk;
+
+    });
+   /*  print("Viru: $city");
+    print("Viru: $state");
+    print("Viru: $address1");
+    print("Viru: $address2"); */
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -244,6 +301,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                   )),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: nameController,
                 decoration:
                     textInputDecoration.copyWith(hintText: 'house#, area'),
                 validator: (value) =>
@@ -256,6 +314,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: talukController,
                 decoration:
                     textInputDecoration.copyWith(hintText: 'town, taluk'),
                 validator: (value) =>
@@ -268,17 +327,31 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: cityController,
                 decoration: textInputDecoration.copyWith(hintText: 'city'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
                 onChanged: (val) {
+                  //updateCity(val);
                   setState(() {
                     city = val;
                   });
                 },
               ),
               const SizedBox(height: 10.0),
-              DropdownButtonFormField(
+              TextFormField(
+                controller: stateController,
+                decoration: textInputDecoration.copyWith(hintText: 'state'),
+                validator: (value) =>
+                    value!.isEmpty ? 'Enter Customer Full Address' : null,
+                onChanged: (val) {
+                  //updateCity(val);
+                  setState(() {
+                    state = val;
+                  });
+                },
+              ),
+              /* DropdownButtonFormField(
                 decoration: const InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     //<-- SEE HERE
@@ -313,17 +386,19 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                     ),
                   );
                 }).toList(),
-              ),
+              ), */
               const SizedBox(height: 10.0),
               TextFormField(
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                 validator: (value) =>
-                    pincode.length == 7 ? 'Enter Valid pincode' : null,
+                    RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6 ? null : 'Enter Valid pincode',
                 onChanged: (val) {
                   setState(() {
                     pincode = val;
                   });
+                  
+                  updateAddressFields();
                 },
               ),
 
