@@ -45,7 +45,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
   String customerName = '';
   String customerNumber = '';
   String complaintDate = 'Select Date';
-  String complaintResult = 'Active';
+  String complaintResult = 'Open';
+  String res = '';
   String complaintDetails = '';
   String error = '';
 
@@ -58,7 +59,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     // Start listening to changes.
     controllerName.addListener(_saveName);
     controllerNumber.addListener(_saveNumber);
-
+    controllerResult.addListener(_saveResult);
 
     controllerComplaintDetails.addListener(_controllerComplaintDetails);
   }
@@ -70,7 +71,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     // This also removes the _printLatestValue listener.
     controllerName.dispose();
     controllerNumber.dispose();
-
+    controllerResult.dispose();
 
     controllerComplaintDetails.dispose();
     super.dispose();
@@ -84,6 +85,10 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
 
   void _saveNumber() {
     customerNumber = controllerNumber.text;
+  }
+
+  void _saveResult() {
+    complaintResult = controllerResult.text;
   }
 
 
@@ -199,7 +204,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     final args =
         ModalRoute.of(context)!.settings.arguments as ComplaintParameter;
     final currentUser = Provider.of<UserModel?>(context);
-    final complaintDetails = Provider.of<List<ComplaintDetailsModel>>(context);
+    final complaintDetailslist = Provider.of<List<ComplaintDetailsModel>>(context);
     final ComplaintDetailsTable =
         Provider.of<List<ComplaintDetailsModel?>?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
@@ -209,8 +214,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     String salesExecutiveName = '';
     var salesExecutive;
     final AuthService _auth = AuthService();
-    if (complaintDetails != null) {
-      complaintDetails.forEach((element) {
+    if (complaintDetailslist != null) {
+      complaintDetailslist.forEach((element) {
         if (element.uid == args.uid) {
           obj = element;
         }
@@ -231,7 +236,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
       controllerName.text = obj?.customerName;
       controllerNumber.text = obj?.mobileNumber;
 
-
+      controllerResult.text = obj?.complaintResult;
+      res = obj?.complaintResult;
       date = obj?.complaintDate;
       controllerComplaintDetails.text = obj?.complaintDetails;
     }
@@ -421,16 +427,17 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                       fillColor: Color(0xffefefff),
                     ),
                     dropdownColor: const Color(0xffefefff),
-                    value: complaintResult,
+                    value: complaintResult == 'Open' ? res : complaintResult,
                     onChanged: (String? newValue) {
                       setState(() {
                         complaintResult = newValue!;
                       });
                     },
                     items: <String>[
-                      'Active',
-                      'Inactive',
-                      'InProcess',
+                      'Open',
+                      'ReOpen',
+                      'Closed',
+                      'In Process',
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -523,8 +530,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                             customerName,
                                             customerNumber,
                                             callDate == '' ? date : callDate,
-                                            complaintResult,
-                                            complaintDetails as String,
+                                            complaintResult == 'Open' ? res : complaintResult,
+                                            complaintDetails,
                                           )
                                           .then((value) => setState(() {
                                                 loading = false;
@@ -553,7 +560,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                     ),
                                     child: Center(
                                       child: Text(
-                                        'save',
+                                        'Save',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: "Poppins",

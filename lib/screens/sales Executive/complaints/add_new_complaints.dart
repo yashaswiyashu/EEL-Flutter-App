@@ -36,7 +36,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
   String customerName = '';
   String customerNumber = '';
   String complaintDate = 'Select Date';
-  String complaintResult = 'Active';
+  String complaintResult = 'Open';
   String complaintDetails = '';
   String error = '';
   String status = '';
@@ -283,9 +283,10 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                   });
                 },
                 items: <String>[
-                  'Active',
-                  'Inacive',
-                  'InProcess',
+                  'Open',
+                  'ReOpen',
+                  'Closed',
+                  'In Process'
                 ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

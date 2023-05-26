@@ -64,7 +64,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Complaint ID')),
+        DataColumn(label: Text('Complaint Date')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust. Name')),
         DataColumn(label: _verticalDivider),

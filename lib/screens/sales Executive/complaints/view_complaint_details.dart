@@ -36,7 +36,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
   String customerName = '';
   String customerNumber = '';
   String complaintDate = 'Select Date';
-  String complaintResult = 'Active';
+  String complaintResult = 'Open';
   String complaintDetails = '';
   String error = '';
   String status = '';
@@ -217,7 +217,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                       const SizedBox(
                           height: 20.0,
                           child: Text(
-                            'Complaint Result:',
+                            'Complaint Status:',
                             style: TextStyle(
                               color: Color(0xff090a0a),
                               fontSize: 16,
@@ -228,13 +228,18 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                       TextFormField(
                         readOnly: true,
                         initialValue: obj.complaintResult,
-                        keyboardType: TextInputType.phone,
+                        //[Viru:26/5/23] since it is view screen, no need of below code
+                        /*  keyboardType: TextInputType.phone,
                         validator: (value) => value?.length == 12
                             ? null
                             : 'Enter valid Aadhar number',
                         decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Your Adhaar Number',
-                        ),
+                        ),  */
+                        decoration:
+                          textInputDecoration.copyWith(hintText: 'Current Status'),
+                        validator: (value) =>
+                              value!.isEmpty ? 'Missing Field' : null,
                       ),
                       const SizedBox(height: 30.0),
                       SizedBox(

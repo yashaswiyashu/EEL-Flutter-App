@@ -49,7 +49,7 @@ class ComplaintDetailsDatabaseService {
       'customerName': customerName,
       'mobileNumber': mobileNumber,
       'complaintDate': complaintDate,
-      'callResult': complaintResult,
+      'complaintResult': complaintResult,
       'complaintDetails': complaintDetails,
     });
   }
@@ -78,7 +78,7 @@ class ComplaintDetailsDatabaseService {
             (doc.data() as Map<String, dynamic>)['complaintDate']?.toString() ??
                 '',
         complaintResult:
-            (doc.data() as Map<String, dynamic>)['complaint']?.toString() ?? '',
+            (doc.data() as Map<String, dynamic>)['complaintResult']?.toString() ?? '',
         complaintDetails:
             (doc.data() as Map<String, dynamic>)['complaintDetails']
                     ?.toString() ??
