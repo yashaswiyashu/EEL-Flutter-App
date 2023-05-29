@@ -58,8 +58,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-      StreamProvider<List<SalesPersonModel?>>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: const []),
       StreamProvider<List<CustomerModel>>.value(value: CustomerDatabaseService(docid: '').customerTable, initialData: const []),
+      StreamProvider<List<SalesPersonModel?>>.value(value: SalesPersonDatabase(docid: '').salesPersonTable, initialData: const []),
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
       StreamProvider<List<ProductDetailsModel>>.value(value: ProductDatabaseService(docid: '').productDetailsTable, initialData: const []),
       StreamProvider<List<OrderDetailsModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderDetailsTable, initialData: const []),

@@ -36,7 +36,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
   @override
   Widget build(BuildContext context) {
-    final complaintDetails = Provider.of<List<ComplaintDetailsModel>>(context);
+    final ComplaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
@@ -52,7 +52,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
     var obj;
 
 
-    complaintDetails.forEach(
+    ComplaintDetailsList.forEach(
         (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
 
 
@@ -64,9 +64,9 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Complaint Date')),
+        DataColumn(label: Text('Compl. Date')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: Text('Cust Name')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust Mob.')),
         DataColumn(label: _verticalDivider),
@@ -113,7 +113,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: complaintDetails.isNotEmpty ? _createRows() : []);
+          rows: ComplaintDetailsList.isNotEmpty ? _createRows() : []);
     }
 
 

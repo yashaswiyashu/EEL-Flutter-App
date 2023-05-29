@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/services/auth.dart';
+import 'package:flutter_app/services/customer_database.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -16,6 +19,7 @@ import 'package:flutter_app/models/sales_person_model.dart';
 
 import 'package:flutter_app/services/complaint_details_database.dart';
 
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class AddNewComplaint extends StatefulWidget {
   const AddNewComplaint({super.key, this.restorationId});
@@ -40,9 +44,36 @@ class _AddNewComplaintState extends State<AddNewComplaint>
   String complaintDetails = '';
   String error = '';
   String status = '';
+  final numberController = TextEditingController();
+  final nameController = TextEditingController();
+
   @override
   String? get restorationId => widget.restorationId;
 
+
+  void initState() {
+    numberController.addListener(_numberLatestValue);
+    nameController.addListener(_nameLatestValue);
+  }
+
+@override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    numberController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
+
+  void _numberLatestValue() {
+    customerNumber = numberController.text;
+    //print('Viru:: ${numberController.text}');
+  }
+
+  void _nameLatestValue() {
+    customerName = nameController.text;
+    //print('Viru:: ${numberController.text}');
+  }
 
   final RestorableDateTime _selectedDate = RestorableDateTime(
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
@@ -104,6 +135,9 @@ class _AddNewComplaintState extends State<AddNewComplaint>
   var salesExecutive;
   @override
   Widget build(BuildContext context) {
+    //[Viru:27/5/23] Added to support customer name search list
+    //final customerList = Provider.of<List<CustomerModel>>(context);
+
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     if (salesTable != null) {
@@ -113,6 +147,11 @@ class _AddNewComplaintState extends State<AddNewComplaint>
         }
       });
     }
+
+
+    //[Viru:27/5/23] Added to support customer name search list
+    final customerList = Provider.of<List<CustomerModel>>(context);
+    
     final AuthService _auth = AuthService();
     return Scaffold(
       appBar: AppBar(
@@ -181,7 +220,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
               SizedBox(
                 height: 10,
               ),
-              TextFormField(
+    /*            TextFormField(
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Customer Name',
@@ -190,6 +229,50 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                   customerName = val;
                 },
               ),
+ */ 
+              //[Viru:27/5/23] Added to support customer name search list
+                TypeAheadFormField(
+                  
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: nameController,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Customer Name',
+                      fillColor: const Color(0xfff0efff),
+                    ),
+                    /* onChanged: (val) {
+                      customerName = val;
+                    }, */
+                  ),
+
+                  suggestionsCallback: (pattern) async {
+                    // Filter the customer list based on the search pattern
+                    return customerList
+                    .where((customer) =>
+                    customer != null &&
+                    customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
+                    .toList();
+                  },
+
+                  itemBuilder: (context, CustomerModel? suggestion) {
+                    if (suggestion == null) return const SizedBox.shrink();
+                    return ListTile(
+                      title: Text(suggestion.customerName),
+                    );
+                  },
+
+                  onSuggestionSelected: (CustomerModel? suggestion) {
+                    if (suggestion != null) {
+                      setState(() {
+                        //customerName = suggestion.customerName;
+                        nameController.text = suggestion.customerName;
+                        numberController.text = suggestion.mobileNumber;
+                    });
+                  }
+              },
+
+            ),
+  
+
               const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
@@ -204,15 +287,16 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                   )),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: numberController,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value?.length == 10 ? null : 'Enter valid number',
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter Customer Mobile Number',
                 ),
-                onChanged: (val) {
+                /* onChanged: (val) {
                   customerNumber = val;
-                },
+                }, */
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -379,17 +463,16 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                                   complaintResult,
                                   complaintDetails,
                                 )
-                                    .then((value) {
-                                  setState(() {
+                                    .then((value) => setState(() {
                                     loading = false;
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: Text(
                                           'Compliaint Details added Successfully!!!'),
                                     ));
-                                  });
+                                  
                                   Navigator.pop(context);
-                                });
+                                }));
                               } else {
                                 setState(() {
                                   loading = false;

@@ -47,7 +47,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(2023),
+          firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),//DateTime(2023),
           lastDate: DateTime(2025),
         );
       },
@@ -181,15 +181,6 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     });
   }
 
-  void removeRow(int rowIndex) {
-    setState(() {
-      select.removeAt(rowIndex);
-      amountList.removeAt(rowIndex);
-      tableData.removeAt(rowIndex);
-      selectedOptions.removeAt(rowIndex);
-      quantity.removeAt(rowIndex);
-    });
-  }
 
   void onDropdownChanged(
       String? value, int rowIndex, List<ProductDetailsModel> product) {
@@ -251,6 +242,28 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
         customerNamesList.add(element.customerName);
       });
     }
+
+    void removeRow(int rowIndex) {
+    if((rowIndex != 0) || (tableData.length > 1)){
+      setState(() {
+        select.removeAt(rowIndex);
+        amountList.removeAt(rowIndex);
+        tableData.removeAt(rowIndex);
+        selectedOptions.removeAt(rowIndex);
+        quantity.removeAt(rowIndex);
+        populateTable(productDetails);
+      });
+    } else {
+      setState(() {
+        select[rowIndex] = '';
+        amountList[rowIndex] = 0.00;
+        tableData[rowIndex] = List.filled(6, '');
+        selectedOptions[rowIndex] = products[0];
+        quantity[rowIndex] = 1;
+        populateTable(productDetails);
+      });
+    }
+  }
 
     void setCustomerData() {
       if (customerName != 'Select Name') {
@@ -728,9 +741,9 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                       SizedBox(
                                         child: TextButton.icon(
                                           onPressed: () {
-                                            if (rowIndex != 0) {
+                                            // if (rowIndex != 0) {
                                               removeRow(rowIndex);
-                                            }
+                                            // }
                                           },
                                           icon: Icon(
                                             Icons.remove_circle_outline,

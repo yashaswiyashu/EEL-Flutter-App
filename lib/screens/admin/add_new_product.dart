@@ -63,7 +63,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
     final AuthService _auth = AuthService();
-    controllerOffer.text = '0.00';
+    //controllerOffer.text = '0.00';
 
     final StorageService storage = StorageService(); 
 
@@ -283,17 +283,17 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                     TextFormField(
                       controller: controllerOffer,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(offers)
+                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(offers) && double.tryParse(offers)! < 100
                         ? null
                             : 'Enter Discount Percentage',
                       decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Discount Percentage',
                           fillColor: const Color(0xfff0efff)),
-                      // onChanged: (val) {
-                      //   setState(() {
-                      //     offers = '$val%';
-                      //   });
-                      // },
+                       /* onChanged: (val) {
+                         setState(() {
+                           offers = val;//'$val%';
+                         });
+                       }, */
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(

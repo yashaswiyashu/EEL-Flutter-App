@@ -53,7 +53,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(2023),
+          firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),//DateTime(2023),
           lastDate: DateTime(2025),
         );
       },
@@ -85,7 +85,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
 
-  String dropDown = 'Active';
+  String dropDown = 'Order Placed';
 
   final controllerShipmentId = TextEditingController();
   final controllerNumber = TextEditingController();
@@ -719,8 +719,13 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                     });
                   },
                   items: <String>[
-                    'Active',
-                    'Inactive',
+                    'Order Placed',
+                    'Payment Pending',
+                    'Shipped',
+                    'Out for Delivery',
+                    'Delivered',
+                    'Cancelled',
+                    'Returned'
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,

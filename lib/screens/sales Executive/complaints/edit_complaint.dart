@@ -31,7 +31,7 @@ class EditComplaintDetails extends StatefulWidget {
 
 class _EditComplaintDetailsState extends State<EditComplaintDetails>
     with RestorationMixin {
-  String callDate = 'Select Date';
+  //String callDate = 'Select Date';
   bool loading = false;
   final _formkey = GlobalKey<FormState>();
   final controllerName = TextEditingController();
@@ -44,7 +44,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
   String status = '';
   String customerName = '';
   String customerNumber = '';
-  String complaintDate = 'Select Date';
+  String complaintDate = '';
   String complaintResult = 'Open';
   String res = '';
   String complaintDetails = '';
@@ -184,7 +184,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     if (newSelectedDate != null) {
       setState(() {
         _selectedDate.value = newSelectedDate;
-        callDate =
+        complaintDate =
             '${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}';
       });
     }
@@ -392,7 +392,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                           _restorableDatePickerRouteFuture.present();
                         },
                         child: Text(
-                          callDate == 'Select Date' ? date : callDate,
+                          complaintDate == '' ? date : complaintDate,
                           style: TextStyle(color: Colors.black, fontSize: 16),
                         ),
                       ),
@@ -529,7 +529,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                             currentUser!.uid,
                                             customerName,
                                             customerNumber,
-                                            callDate == '' ? date : callDate,
+                                            complaintDate == '' ? date : complaintDate,
                                             complaintResult == 'Open' ? res : complaintResult,
                                             complaintDetails,
                                           )
