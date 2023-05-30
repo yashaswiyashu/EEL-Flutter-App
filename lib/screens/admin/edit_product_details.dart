@@ -383,7 +383,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                     /*   validator: (value) => value!.isEmpty
                         ? 'Enter Discount Percentage'
                             : null, */
-                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(offers)
+                      validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(offers) && (double.tryParse(offers)! < 100)
                         ? null
                             : 'Enter Discount Percentage',
                       decoration: textInputDecoration.copyWith(
