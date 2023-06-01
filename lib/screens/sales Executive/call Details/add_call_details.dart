@@ -36,6 +36,8 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
   String error = '';
   String status = '';
     final nameController = TextEditingController();
+    final numberController = TextEditingController();
+    
 
   @override
   String? get restorationId => widget.restorationId;
@@ -67,7 +69,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
           /* firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1),
           lastDate: DateTime(2025), */
           //[Viru:25/5/23] Changed the first date, last date to pick from the current date and previous
-          firstDate: DateTime(2022),
+          firstDate: DateTime(DateTime.now().year - 1),
           lastDate: DateTime(
               DateTime.now().year, DateTime.now().month, DateTime.now().day),
           
@@ -96,20 +98,27 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
       });
     }
   }
-    var salesExecutive;
+  var salesExecutive;
   void initState() {
     nameController.addListener(_nameLatestValue);
+    numberController.addListener(_numberLatestValue);
   }
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
     nameController.dispose();
+    numberController.dispose();
     super.dispose();
   }
 
   void _nameLatestValue() {
     customerName = nameController.text;
+    //print('Viru:: ${numberController.text}');
+  }
+
+  void _numberLatestValue() {
+    customerNumber = numberController.text;
     //print('Viru:: ${numberController.text}');
   }
 
@@ -132,6 +141,11 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
 
     customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
 
+    details.forEach((element) {
+      if(element.customerName == customerName) {
+        numberController.text = element.mobileNumber;
+      }
+    });
 
       var snackBar = SnackBar(
   content: Text('Call Details added Successfully!!!'),
@@ -309,15 +323,16 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                         )),
                     const SizedBox(height: 10.0),
                     TextFormField(
+                      controller: numberController,
                       keyboardType: TextInputType.phone,
                       validator: (value) =>
                           value?.length == 10 ? null : 'Enter valid number',
                       decoration: textInputDecoration.copyWith(
                         hintText: 'Enter Customer Mobile Number',
                       ),
-                      onChanged: (val) {
-                        customerNumber = val;
-                      },
+                      // onChanged: (val) {
+                      //   customerNumber = val;
+                      // },
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(

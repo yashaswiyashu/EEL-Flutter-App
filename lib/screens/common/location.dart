@@ -18,7 +18,7 @@ class Location {
 }
 
  
-Future<Location> getLocation(String pincode) async {
+Future<Location?> getLocation(String pincode) async {
   final response = await http.get(Uri.parse("http://www.postalpincode.in/api/pincode/$pincode"));
 
   if (response.statusCode >= 200 && response.statusCode < 400) {
@@ -26,7 +26,8 @@ Future<Location> getLocation(String pincode) async {
     if (json['PostOffice'] != null && json['PostOffice'].isNotEmpty) {
       return Location.fromJson(json['PostOffice'][0]);
     } else {
-      throw Exception("Invalid response data");
+      // throw Exception("Invalid response data");
+      return null;
     }
   } else {
     throw Exception("Error while fetching data");

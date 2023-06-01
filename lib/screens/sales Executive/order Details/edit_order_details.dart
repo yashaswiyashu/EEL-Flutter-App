@@ -56,8 +56,8 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
           initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(2023),
-          lastDate: DateTime(2025),
+          firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+          lastDate: DateTime(DateTime.now().year + 1),
         );
       },
     );
@@ -91,9 +91,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   String dropDown = 'Order Placed';
   String prevDropDown = 'Order Placed';
 
-  final controllerName = TextEditingController();
   final controllerShipmentId = TextEditingController();
-  final controllerNumber = TextEditingController();
   final controllerAddress1 = TextEditingController();
   final controllerAddress2 = TextEditingController();
   final controllerCity = TextEditingController();
@@ -119,6 +117,8 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   String cgst = '0.09';
   String sgst = '0.09';
   String total = '0';
+
+  DateTime orderedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   List<List<String>> tableData = [
     ['', '', '', '', '', ''],
@@ -221,9 +221,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   @override
   void initState() {
     super.initState();
-    controllerName.addListener(_saveName);
     controllerShipmentId.addListener(_saveShipmentId);
-    controllerNumber.addListener(_saveNumber);
     controllerAddress1.addListener(_saveAddress1);
     controllerAddress2.addListener(_saveAddress2);
     controllerCity.addListener(_saveCity);
@@ -233,17 +231,10 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
     selectedOptions = List.generate(tableData.length, (index) => products[0]);
   }
 
-  void _saveName() {
-    customerName = controllerName.text;
-  }
 
 
   void _saveShipmentId() {
     shipmentID = controllerShipmentId.text;
-  }
-
-  void _saveNumber() {
-    mobileNumber = controllerNumber.text;
   }
 
   void _saveAddress1() {
@@ -452,7 +443,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
         customerList.forEach((element) {
           if (element.customerName == customerName) {
             setState(() {
-              controllerNumber.text = element.mobileNumber;
+              mobileNumber = element.mobileNumber;
               controllerAddress1.text = element.address1;
               controllerAddress2.text = element.address2;
               controllerCity.text = element.city;
@@ -468,7 +459,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
       if (element.uid == args.uid) {
         setState(() {
           controllerShipmentId.text = element.shipmentID;
-          controllerName.text = element.customerName;
+          customerName = element.customerName;
           date = element.deliveryDate;
           prevDropDown = element.dropdown;
         });
@@ -599,7 +590,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                 //   }).toList(),
                 // ),
                 TextFormField(
-                  controller: controllerName,
+                  initialValue: customerName,
                   readOnly: true,
                   keyboardType: TextInputType.phone,
                   decoration: textInputDecoration.copyWith(
@@ -646,7 +637,8 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                     )),
                 TextFormField(
                   keyboardType: TextInputType.phone,
-                  controller: controllerNumber,
+                  initialValue: mobileNumber,
+                  readOnly: true,
                   decoration: textInputDecoration.copyWith(
                     hintText: 'Enter customer mob.num',
                   ),
@@ -1122,6 +1114,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                               dropDown == prevDropDown ? prevDropDown : dropDown,
                                               subTotal,
                                               total, 
+                                              '${orderedDate.day}/${orderedDate.month}/${orderedDate.year}',
                                               editedProductList)
                                           .then((value) async {
                                             ScaffoldMessenger.of(context)

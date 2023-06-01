@@ -120,6 +120,8 @@ class _EditPendingOrderState extends State<EditPendingOrder> with RestorationMix
   String sgst = '0.09';
   String total = '0';
 
+  DateTime orderedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
   List<List<String>> tableData = [
     ['', '', '', '', '', ''],
   ];
@@ -1126,7 +1128,8 @@ class _EditPendingOrderState extends State<EditPendingOrder> with RestorationMix
                                               callDate == date ? date : callDate,
                                               dropDown == prevDropDown ? prevDropDown : dropDown,
                                               subTotal,
-                                              total, 
+                                              total,
+                                              '${orderedDate.day}/${orderedDate.month}/${orderedDate.year}',
                                               editedProductList)
                                           .then((value) async {
                                             ScaffoldMessenger.of(context)

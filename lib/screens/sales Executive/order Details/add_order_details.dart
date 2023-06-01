@@ -112,6 +112,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   String sgst = '0.09';
   String total = '0';
 
+  DateTime orderedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
   List<List<String>> tableData = [
     ['', '', '', '', '', ''],
   ];
@@ -977,6 +979,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                               dropDown,
                                               subTotal,
                                               total,
+                                              '${orderedDate.day}/${orderedDate.month}/${orderedDate.year}',
                                               productsList,
                                               )
                                           .then((value) async {

@@ -34,9 +34,6 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
   //String callDate = 'Select Date';
   bool loading = false;
   final _formkey = GlobalKey<FormState>();
-  final controllerName = TextEditingController();
-  final controllerType = TextEditingController();
-  final controllerNumber = TextEditingController();
   final controllerResult = TextEditingController();
   final controllerComplaintDetails = TextEditingController();
 
@@ -57,8 +54,6 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
 
 
     // Start listening to changes.
-    controllerName.addListener(_saveName);
-    controllerNumber.addListener(_saveNumber);
     controllerResult.addListener(_saveResult);
 
     controllerComplaintDetails.addListener(_controllerComplaintDetails);
@@ -69,23 +64,12 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
-    controllerName.dispose();
-    controllerNumber.dispose();
     controllerResult.dispose();
 
     controllerComplaintDetails.dispose();
     super.dispose();
   }
 
-
-  void _saveName() {
-    customerName = controllerName.text;
-  }
-
-
-  void _saveNumber() {
-    customerNumber = controllerNumber.text;
-  }
 
   void _saveResult() {
     complaintResult = controllerResult.text;
@@ -233,8 +217,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
 
 
     if (obj != null) {
-      controllerName.text = obj?.customerName;
-      controllerNumber.text = obj?.mobileNumber;
+      customerName= obj?.customerName;
+      customerNumber = obj?.mobileNumber;
 
       controllerResult.text = obj?.complaintResult;
       res = obj?.complaintResult;
@@ -330,7 +314,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                     height: 10,
                   ),
                   TextFormField(
-                    controller: controllerName,
+                    initialValue: customerName,
+                    readOnly: true,
                     validator: (value) =>
                         value!.isEmpty ? 'Missing Field' : null,
                     decoration: textInputDecoration.copyWith(
@@ -355,7 +340,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                   const SizedBox(height: 10.0),
                   TextFormField(
                     keyboardType: TextInputType.phone,
-                    controller: controllerNumber,
+                    initialValue: customerNumber,
+                    readOnly: true,
                     validator: (value) =>
                         value?.length == 10 ? null : 'Enter valid number',
                     decoration: textInputDecoration.copyWith(
@@ -389,7 +375,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xffe3e4e5)),
                         onPressed: () {
-                          _restorableDatePickerRouteFuture.present();
+                         // _restorableDatePickerRouteFuture.present();
                         },
                         child: Text(
                           complaintDate == '' ? date : complaintDate,

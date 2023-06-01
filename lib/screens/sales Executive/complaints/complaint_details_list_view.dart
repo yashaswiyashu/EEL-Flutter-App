@@ -53,7 +53,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
 
     ComplaintDetailsList.forEach(
-        (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+        (e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
 
 
     Widget _verticalDivider = const VerticalDivider(

@@ -27,6 +27,7 @@ class OrderDetailsDatabaseService {
     String dropdown,
     String subTotal,
     String totalAmount,
+    String orderedDate,
     List<OrdersProductModel> products,
 
   ) async {
@@ -47,7 +48,7 @@ class OrderDetailsDatabaseService {
       'dropdown': dropdown,
       'subTotal': subTotal,
       'totalAmount': totalAmount,
-      // 'products': products,
+      'orderedDate': orderedDate,
       'products': ConvertProductModeltoMap(productList: products),
 
       // 'products': products.map((element) {
@@ -72,6 +73,7 @@ class OrderDetailsDatabaseService {
     String dropdown,
     String subTotal,
     String totalAmount,
+    String orderedDate,
     List<OrdersProductModel> products,
   ) async {
     return await userCollection.doc(docid).set({
@@ -90,6 +92,7 @@ class OrderDetailsDatabaseService {
       'dropdown': dropdown,
       'subTotal': subTotal,
       'totalAmount': totalAmount,
+      'orderedDate': orderedDate,
       'products': ConvertProductModeltoMap(productList: products),
     });
   }
@@ -169,6 +172,7 @@ class OrderDetailsDatabaseService {
       dropdown: data['dropdown']?.toString() ?? '',
       subTotal: data['subTotal']?.toString() ?? '',
       totalAmount: data['totalAmount']?.toString() ?? '',
+      orderedDate: data['orderedDate']?.toString() ?? '',
       products: orderedProducts,
     );
   }).toList();

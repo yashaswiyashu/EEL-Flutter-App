@@ -49,8 +49,6 @@ class _EditCallDetailsState extends State<EditCallDetails>
     super.initState();
 
     // Start listening to changes.
-    controllerName.addListener(_saveName);
-    controllerNumber.addListener(_saveNumber);
     controllerFolowUpDetails.addListener(_saveFollowUpDetails);
   }
 
@@ -58,18 +56,8 @@ class _EditCallDetailsState extends State<EditCallDetails>
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
-    controllerName.dispose();
-    controllerNumber.dispose();
     controllerFolowUpDetails.dispose();
     super.dispose();
-  }
-
-  void _saveName() {
-    customerName = controllerName.text;
-  }
-
-  void _saveNumber() {
-    customerNumber = controllerNumber.text;
   }
 
   void _saveFollowUpDetails() {
@@ -191,9 +179,9 @@ class _EditCallDetailsState extends State<EditCallDetails>
     }
 
     if (obj != null) {
-      controllerName.text = obj?.customerName;
+      customerName = obj?.customerName;
       type = obj?.customerType;
-      controllerNumber.text = obj?.mobileNumber;
+      customerNumber = obj?.mobileNumber;
       controllerFolowUpDetails.text = obj?.followUpdetails;
       result = obj?.callResult;
       followUp = obj?.followUp;
@@ -290,7 +278,8 @@ class _EditCallDetailsState extends State<EditCallDetails>
                         height: 10,
                       ),
                       TextFormField(
-                        controller: controllerName,
+                        initialValue:  customerName,
+                        readOnly: true,
                         validator: (value) =>
                             value!.isEmpty ? 'Missing Field' : null,
                         decoration: textInputDecoration.copyWith(
@@ -313,42 +302,54 @@ class _EditCallDetailsState extends State<EditCallDetails>
                             ),
                           )),
                       const SizedBox(height: 10.0),
-                      DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            //<-- SEE HERE
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            //<-- SEE HERE
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 2),
-                          ),
-                          filled: true,
-                          fillColor: Color(0xffefefff),
-                        ),
-                        dropdownColor: const Color(0xffefefff),
-                        value:
-                            customerType == 'Individual' ? type : customerType,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            customerType = newValue!;
-                          });
-                        },
-                        items: <String>[
-                          'Individual',
-                          'Dealer',
-                          'Distributor'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          );
-                        }).toList(),
+                      // DropdownButtonFormField(
+                      //   decoration: const InputDecoration(
+                      //     enabledBorder: OutlineInputBorder(
+                      //       //<-- SEE HERE
+                      //       borderSide:
+                      //           BorderSide(color: Colors.black, width: 0),
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       //<-- SEE HERE
+                      //       borderSide:
+                      //           BorderSide(color: Colors.black, width: 2),
+                      //     ),
+                      //     filled: true,
+                      //     fillColor: Color(0xffefefff),
+                      //   ),
+                      //   dropdownColor: const Color(0xffefefff),
+                      //   value:
+                      //       customerType == 'Individual' ? type : customerType,
+                      //   onChanged: (String? newValue) {
+                      //     setState(() {
+                      //       customerType = newValue!;
+                      //     });
+                      //   },
+                      //   items: <String>[
+                      //     'Individual',
+                      //     'Dealer',
+                      //     'Distributor'
+                      //   ].map<DropdownMenuItem<String>>((String value) {
+                      //     return DropdownMenuItem<String>(
+                      //       value: value,
+                      //       child: Text(
+                      //         value,
+                      //         style: const TextStyle(fontSize: 18),
+                      //       ),
+                      //     );
+                      //   }).toList(),
+                      // ),
+                      TextFormField(
+                        initialValue:  type,
+                        readOnly: true,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Missing Field' : null,
+                        decoration: textInputDecoration.copyWith(
+                            hintText: 'Enter Customer Type',
+                            fillColor: const Color(0xfff0efff)),
+                        // onChanged: (val) {
+                        //   customerName = val;
+                        // },
                       ),
                       const SizedBox(height: 20.0),
                       const SizedBox(
@@ -365,7 +366,8 @@ class _EditCallDetailsState extends State<EditCallDetails>
                       const SizedBox(height: 10.0),
                       TextFormField(
                         keyboardType: TextInputType.phone,
-                        controller: controllerNumber,
+                        initialValue: customerNumber,
+                        readOnly: true,
                         validator: (value) =>
                             value?.length == 10 ? null : 'Enter valid number',
                         decoration: textInputDecoration.copyWith(
@@ -399,10 +401,10 @@ class _EditCallDetailsState extends State<EditCallDetails>
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xffe3e4e5)),
                             onPressed: () {
-                              _restorableDatePickerRouteFuture.present();
+                              // _restorableDatePickerRouteFuture.present();
                             },
                             child: Text(
-                              callDate == '' ? date : callDate,
+                              date,
                               style: TextStyle(color: Colors.black, fontSize: 16),
                             ),
                           ),]

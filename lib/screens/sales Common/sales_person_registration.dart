@@ -34,6 +34,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
   String city = '';
   String state = 'Select State';
   String pincode = '';
+  String pincodeError = '';
 
   String error = '';
   bool _passwordVisible = false;
@@ -108,19 +109,26 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
     });
   }
 
-  void updateAddressFields() async {
-    Location loc = await getLocation(pincode);
-    setState(() {
-      city = loc.district;
-      cityController.text = loc.district;
-      state = loc.state;
-      stateController.text = loc.state;
-      address1 = loc.name;
-      nameController.text = loc.name;
-      address2 = loc.taluk;
-      talukController.text = loc.taluk;
-    });
-    /*  print("Viru: $city");
+Future<bool> updateAddressFields() async {
+    Location? loc = await getLocation(pincode);
+    
+    if(loc != null){
+      setState(() {
+        city = loc.district;
+        cityController.text = loc.district;
+        state = loc.state;
+        stateController.text = loc.state;
+        address1 = loc.name;
+        nameController.text = loc.name;
+        address2 = loc.taluk;
+        talukController.text = loc.taluk;
+
+      });
+      return true;
+    } else {
+      return false;
+    }
+   /*  print("Viru: $city");
     print("Viru: $state");
     print("Viru: $address1");
     print("Viru: $address2"); */
@@ -455,9 +463,20 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
                     pincode = val;
                   });
                   if (pincode.length == 6) {
-                    updateAddressFields();
+                    updateAddressFields().then((value) {
+                      if(!value) {
+                        setState(() {
+                          pincodeError = 'Please enter valid pincode';
+                        });
+                      }
+                    });
                   }
                 },
+              ),
+                            const SizedBox(height: 12.0),
+              Text(
+                pincodeError,
+                style: const TextStyle(color: Colors.red, fontSize: 14.0),
               ),
               const SizedBox(height: 20.0),
               Container(

@@ -16,6 +16,7 @@ class OrderDetailsModel {
   final String dropdown;
   final String subTotal;
   final String totalAmount;
+  final String orderedDate;
   final List<OrdersProductModel> products;
 
 
@@ -35,6 +36,7 @@ class OrderDetailsModel {
     required this.dropdown,
     required this.subTotal,
     required this.totalAmount,
+    required this.orderedDate,
     required this.products,
   });
 }
