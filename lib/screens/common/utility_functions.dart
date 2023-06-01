@@ -65,6 +65,7 @@ int getPendingOrderCount(List orderDetailsList) {
  */
 CallDetailDashBoard getCallsCountConvertedThisMonth(List callDetailsList) {
   CallDetailDashBoard cdb = CallDetailDashBoard(0, 0);
+  _pendingComplaintsCount = 0;
   DateTime now = DateTime.now();
   callDetailsList.forEach((element) {
     DateTime callDate = DateFormat('dd/MM/yy').parse(element.callDate);
@@ -89,6 +90,7 @@ int getPendingComplaintCount(List complaintsList) {
 }
 
 int getFollowUpCount(List callDetailsList) {
+  _followUpCount = 0;
   callDetailsList.forEach((element) {
         if (element.followUp) { 
           _followUpCount++;
