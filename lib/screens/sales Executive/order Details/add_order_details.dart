@@ -89,6 +89,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   final controllerAddress1 = TextEditingController();
   final controllerAddress2 = TextEditingController();
   final controllerCity = TextEditingController();
+  final controllerState = TextEditingController();
   final controllerPincode = TextEditingController();
 
   // text field state
@@ -202,6 +203,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     controllerAddress1.addListener(_saveAddress1);
     controllerAddress2.addListener(_saveAddress2);
     controllerCity.addListener(_saveCity);
+    controllerState.addListener(_saveState);
     controllerPincode.addListener(_savePincode);
     _passwordVisible = false;
     selectedOptions = List.generate(tableData.length, (index) => products[0]);
@@ -221,6 +223,10 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
 
   void _saveCity() {
     city = controllerCity.text;
+  }
+
+  void _saveState() {
+    state = controllerState.text;
   }
 
   void _savePincode() {
@@ -285,7 +291,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               controllerAddress1.text = element.address1;
               controllerAddress2.text = element.address2;
               controllerCity.text = element.city;
-              state = element.state;
+              controllerState.text = element.state;
               controllerPincode.text = element.pincode;
             });
           }
@@ -553,42 +559,54 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                   // },
                 ),
                 const SizedBox(height: 10.0),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 0),
+                // DropdownButtonFormField(
+                //   decoration: const InputDecoration(
+                //     enabledBorder: OutlineInputBorder(
+                //       //<-- SEE HERE
+                //       borderSide: BorderSide(color: Colors.black, width: 0),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       //<-- SEE HERE
+                //       borderSide: BorderSide(color: Colors.black, width: 0),
+                //     ),
+                //     filled: true,
+                //     fillColor: Color(0xffefefff),
+                //   ),
+                //   dropdownColor: const Color(0xffefefff),
+                //   value: state,
+                //   onChanged: (String? newValue) {
+                //     setState(() {
+                //       state = newValue!;
+                //     });
+                //   },
+                //   items: <String>[
+                //     'Select State',
+                //     'Karnataka',
+                //     'Kerala',
+                //     'Tamil Nadu',
+                //     'Andra Pradesh'
+                //   ].map<DropdownMenuItem<String>>((String value) {
+                //     return DropdownMenuItem<String>(
+                //       value: value,
+                //       child: Text(
+                //         value,
+                //         style: const TextStyle(fontSize: 18),
+                //       ),
+                //     );
+                //   }).toList(),
+                // ),
+                                    TextFormField(
+                      controller: controllerState,
+                      decoration:
+                          textInputDecoration.copyWith(hintText: 'state'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Enter Customer Full Address' : null,
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     city = val;
+                      //   });
+                      // },
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 0),
-                    ),
-                    filled: true,
-                    fillColor: Color(0xffefefff),
-                  ),
-                  dropdownColor: const Color(0xffefefff),
-                  value: state,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      state = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'Select State',
-                    'Karnataka',
-                    'Kerala',
-                    'Tamil Nadu',
-                    'Andra Pradesh'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    );
-                  }).toList(),
-                ),
                 const SizedBox(height: 10.0),
                 TextFormField(
                   controller: controllerPincode,

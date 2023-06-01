@@ -478,7 +478,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                     TextFormField(
                       controller: controllerState,
                       decoration:
-                          textInputDecoration.copyWith(hintText: 'city'),
+                          textInputDecoration.copyWith(hintText: 'state'),
                       validator: (value) =>
                           value!.isEmpty ? 'Enter Customer Full Address' : null,
                       // onChanged: (val) {
