@@ -32,7 +32,7 @@ SaleOrderDashBoard getSalesOrderCountAmtThisMonth(List orderDetailsList) {
       });
       sdb.bonus = (sdb.salesAmount / 10).toStringAsFixed(2);
   orderDetailsList.forEach((element) {
-        if ((element.dropDown == 'Delivered') && (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
+        if ((element.dropdown == 'Delivered') && (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
           sdb.salesCount++;
           sdb.salesAmount += element.totalAmount;
         }
@@ -43,7 +43,7 @@ SaleOrderDashBoard getSalesOrderCountAmtThisMonth(List orderDetailsList) {
 int getPendingOrderCount(List orderDetailsList) {
   _pendingOrderCount = 0;
   orderDetailsList.forEach((element) {
-        if (element.dropDown != 'Delivered') { //&& (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
+        if (element.dropdown != 'Delivered') { //&& (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
           _pendingOrderCount++;
           
         }
