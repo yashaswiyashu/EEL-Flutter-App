@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+<<<<<<< HEAD
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
+=======
+>>>>>>> 537bd16977ea968044814b58dc0c53d05a1251a9
 import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
@@ -38,6 +41,10 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
     var complaintDetails = [];
     final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
     var orderDetails = [];
+<<<<<<< HEAD
+=======
+
+>>>>>>> 537bd16977ea968044814b58dc0c53d05a1251a9
 
     if (salesTable != null) {
       salesTable.forEach((element) {
@@ -178,7 +185,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                             TextSpan(
                                               text: "Call Details:",
                                               style: TextStyle(
+<<<<<<< HEAD
                                                 decoration: TextDecoration.none,
+=======
+                                                decoration: TextDecoration.underline,
+>>>>>>> 537bd16977ea968044814b58dc0c53d05a1251a9
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -274,7 +285,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                             TextSpan(
                                               text: "Sales Details:",
                                               style: TextStyle(
+<<<<<<< HEAD
                                                 decoration: TextDecoration.none,
+=======
+                                                decoration: TextDecoration.underline,
+>>>>>>> 537bd16977ea968044814b58dc0c53d05a1251a9
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -284,7 +299,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
+<<<<<<< HEAD
                                       "Orders Delivered This Month: ${sdb.salesCount}\nTotal Sales Amount: ${sdb.salesAmount}\nBonus Earned: ${sdb.bonus}",
+=======
+                                      "Orders Delivered This Month: ${sdb.salesCount}\nTotal Sales Amount: ${sdb.salesAmount}",
+>>>>>>> 537bd16977ea968044814b58dc0c53d05a1251a9
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -368,7 +387,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                             TextSpan(
                                               text: "Pending Orders:",
                                               style: TextStyle(
+<<<<<<< HEAD
                                                 decoration: TextDecoration.none,
+=======
+                                                decoration: TextDecoration.underline,
+>>>>>>> 537bd16977ea968044814b58dc0c53d05a1251a9
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -462,7 +485,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                             TextSpan(
                                               text: "Pending Complaints:",
                                               style: TextStyle(
+<<<<<<< HEAD
                                                 decoration: TextDecoration.none,
+=======
+                                                decoration: TextDecoration.underline,
+>>>>>>> 537bd16977ea968044814b58dc0c53d05a1251a9
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
