@@ -303,7 +303,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
               TextFormField(
                 controller: nameController,
                 decoration:
-                    textInputDecoration.copyWith(hintText: 'house#, area'),
+                    textInputDecoration.copyWith(hintText: 'Please enter the pincode to autofill postal address'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
                 onChanged: (val) {
@@ -397,8 +397,12 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                   setState(() {
                     pincode = val;
                   });
+                  if(pincode.length == 6) {
+                    updateAddressFields();
+                  }
+                },
+                onEditingComplete: () {
                   
-                  updateAddressFields();
                 },
               ),
 

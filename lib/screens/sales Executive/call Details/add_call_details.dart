@@ -338,6 +338,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                         'Interested',
                         'Later',
                         'Not-Interested',
+                        'Converted'
                       ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,

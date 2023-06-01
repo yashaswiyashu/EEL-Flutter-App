@@ -10,20 +10,22 @@ import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.d
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/edit_pending_order.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/view_sales_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class OrderDetailsList extends StatefulWidget {
-  const OrderDetailsList({super.key});
+class PendingOrdersList extends StatefulWidget {
+  const PendingOrdersList({super.key});
 
   @override
-  State<OrderDetailsList> createState() => _OrderDetailsListState();
+  State<PendingOrdersList> createState() => _PendingOrdersListState();
 }
 
 
 
-class _OrderDetailsListState extends State<OrderDetailsList> {
+class _PendingOrdersListState extends State<PendingOrdersList> {
   bool loading = false;
   String status = '';
 
@@ -40,7 +42,7 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
     var obj;
     // var productsList = [];
 
-    orderDetails.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    orderDetails.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) &&  (e.dropdown != 'Delivered')) ? details.add(e) : []);
 
     // details.forEach((element) {
     //   productsList.add(element.products);
@@ -212,7 +214,7 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
                                 });
                                 Navigator.pushNamed(
                                   context, 
-                                  ViewOrder.routeName,
+                                  ViewPendingOrder.routeName,
                                   arguments: Parameter(
                                     character,
                                   )
@@ -267,7 +269,7 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
                                   status ='';
                                 });
                                 Navigator.of(context).pushNamed(
-                                  EditOrder.routeName,
+                                  EditPendingOrder.routeName,
                                   arguments: Parameter(
                                     character,
                                   )

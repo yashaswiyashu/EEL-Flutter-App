@@ -33,6 +33,11 @@ import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dar
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/add_call_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/call_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/edit_pending_order.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/pending_order_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/view_sales_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/sales%20Details/sales_details_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/sales%20Details/view_sales_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales_executive_home.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/call_details_database.dart';
@@ -63,7 +68,7 @@ class MyApp extends StatelessWidget {
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
       StreamProvider<List<ProductDetailsModel>>.value(value: ProductDatabaseService(docid: '').productDetailsTable, initialData: const []),
       StreamProvider<List<OrderDetailsModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderDetailsTable, initialData: const []),
-      StreamProvider<List<OrdersProductModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderedProductDetailsTable, initialData: const []),
+      // StreamProvider<List<OrdersProductModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderedProductDetailsTable, initialData: const []),
       StreamProvider<List<ComplaintDetailsModel>>.value(value: ComplaintDetailsDatabaseService(docid: '').complaintDetailsTable, initialData: const []),
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
@@ -78,23 +83,34 @@ class MyApp extends StatelessWidget {
           
           //Sales Executive
           'salesPersonRegistration':(context) => const SalesPersonRegistration(),
-            //call details  
+            //Call details  
             'addCallDetails':(context) => const AddCallDetails(restorationId: 'main',),
             'callDetailsList':(context) => const CallDetailsList(),
             EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
             ViewCallDetails.routeName:(context) => ViewCallDetails(),
-            //customer details
+            
+            //Sales Details
+            'salesDetailsList':(context) => const SalesDetailsList(),
+            ViewSalesOrder.routeName:(context) => const ViewSalesOrder(),
+
+            //Pending orders
+            'pendingOrderList':(context) => const PendingOrdersList(),
+            EditPendingOrder.routeName:(context) => const EditPendingOrder(),
+            ViewPendingOrder.routeName:(context) => const ViewPendingOrder(),
+
+            //Customer details
             'addNewCustomer':(context) => const AddNewCustomer(),
             'customerList':(context) => const CustomerListView(),
             EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
             ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
-            //order details
+            
+            //Order details
             'addNewOrder':(context) => const AddNewOrder(restorationId: 'main'),
             'oderDetailsList':(context) => const OrderDetailsList(),
             EditOrder.routeName:(context) => const EditOrder(restorationId: 'main',),
             ViewOrder.routeName:(context) => const ViewOrder(),
 
-            //complaints
+            //Complaints
             'addNewComplaint':(context) => const AddNewComplaint(restorationId: 'main',),
             'complaintList':(context) => const ComplaintDetailsList(),
             EditComplaintDetails.routeName:(context) => const EditComplaintDetails(restorationId: 'main'),

@@ -446,6 +446,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                           'Interested',
                           'Later',
                           'Not-Interested',
+                          'Converted',
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -519,7 +520,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                         ),
                         child: TextFormField(
                           validator: (value) =>
-                              value!.isEmpty ? 'Missing Field' : null,
+                              (followUp && value!.isEmpty) ? 'Missing Field' : null,
                           controller: controllerFolowUpDetails,
                           // onChanged: (val) {
                           //   setState(() {

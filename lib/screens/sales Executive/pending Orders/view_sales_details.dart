@@ -15,15 +15,15 @@ import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class ViewOrder extends StatefulWidget {
-  const ViewOrder({super.key});
-  static const routeName = '/ViewOrderDetails';
+class ViewPendingOrder extends StatefulWidget {
+  const ViewPendingOrder({super.key});
+  static const routeName = '/ViewPendingOrderDetails';
 
   @override
-  State<ViewOrder> createState() => _ViewOrderState();
+  State<ViewPendingOrder> createState() => _ViewPendingOrderState();
 }
 
-class _ViewOrderState extends State<ViewOrder>{
+class _ViewPendingOrderState extends State<ViewPendingOrder>{
   String callDate = 'Select Date';
   @override
 

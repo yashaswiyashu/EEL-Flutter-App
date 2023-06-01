@@ -10,20 +10,21 @@ import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.d
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/sales%20Details/view_sales_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class OrderDetailsList extends StatefulWidget {
-  const OrderDetailsList({super.key});
+class SalesDetailsList extends StatefulWidget {
+  const SalesDetailsList({super.key});
 
   @override
-  State<OrderDetailsList> createState() => _OrderDetailsListState();
+  State<SalesDetailsList> createState() => _SalesDetailsListState();
 }
 
 
 
-class _OrderDetailsListState extends State<OrderDetailsList> {
+class _SalesDetailsListState extends State<SalesDetailsList> {
   bool loading = false;
   String status = '';
 
@@ -40,7 +41,7 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
     var obj;
     // var productsList = [];
 
-    orderDetails.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    orderDetails.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) &&  (e.dropdown == 'Delivered')) ? details.add(e) : []);
 
     // details.forEach((element) {
     //   productsList.add(element.products);
@@ -174,16 +175,16 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 250),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
-                        onPressed: (){
-                          Navigator.pushNamed(context, 'addNewOrder');
-                        }, 
-                        child: Text('Add New +'),
-                      ),
-                    ),
+                    // Container(
+                    //   margin: EdgeInsets.only(left: 250),
+                    //   child: ElevatedButton(
+                    //     style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
+                    //     onPressed: (){
+                    //       Navigator.pushNamed(context, 'addNewOrder');
+                    //     }, 
+                    //     child: Text('Add New +'),
+                    //   ),
+                    // ),
                     SizedBox(height: 10),
                     _createDataTable(),
                     SizedBox(height: 20,),
@@ -212,7 +213,7 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
                                 });
                                 Navigator.pushNamed(
                                   context, 
-                                  ViewOrder.routeName,
+                                  ViewSalesOrder.routeName,
                                   arguments: Parameter(
                                     character,
                                   )
@@ -239,63 +240,6 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
                               child: Center(
                                 child: Text(
                                   'View',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.5,
-                                    color: Color(0xffffffff),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
-                          margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
-                          child: TextButton(
-                            onPressed: ()  {
-                              // showSettingsPanel(character);
-                              if(character == ''){
-                                setState(() {
-                                  status ='Please select an option';
-                                });
-                              }else{
-                                setState(() {
-                                  status ='';
-                                });
-                                Navigator.of(context).pushNamed(
-                                  EditOrder.routeName,
-                                  arguments: Parameter(
-                                    character,
-                                  )
-                                ).then((_) { setState(() {
-
-                                });});
-                              }
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            child: Container(
-                              width: 95.63,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                color: Color(0xff4d47c3),
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    offset: Offset(0, 4),
-                                    blurRadius: 30.5,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Edit',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",

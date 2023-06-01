@@ -1,3 +1,5 @@
+import 'package:flutter_app/models/orders_product_model.dart';
+
 class OrderDetailsModel {
   final String uid;
   final String salesExecutiveId;
@@ -14,7 +16,7 @@ class OrderDetailsModel {
   final String dropdown;
   final String subTotal;
   final String totalAmount;
-
+  final List<OrdersProductModel> products;
 
 
   OrderDetailsModel({
@@ -33,5 +35,6 @@ class OrderDetailsModel {
     required this.dropdown,
     required this.subTotal,
     required this.totalAmount,
+    required this.products,
   });
 }

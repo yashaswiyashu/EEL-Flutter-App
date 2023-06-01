@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/utility_functions.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
 // import 'package:flutter_app/screens/salesPerson/executive/call_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:provider/provider.dart';
+
+import '../../models/call_details_model.dart';
+import '../../models/complaint_details_model.dart';
 
 class SalesExecutiveHome extends StatefulWidget {
   const SalesExecutiveHome({super.key});
@@ -25,6 +32,12 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
     final productDetails = Provider.of<List<ProductDetailsModel>>(context);
+    final callDetailsList = Provider.of<List<CallDetailsModel>>(context);
+    var callDetails = [];
+    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    var complaintDetails = [];
+    final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
+    var orderDetails = [];
 
     if (salesTable != null) {
       salesTable.forEach((element) {
@@ -33,6 +46,17 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
         }
       });
     }
+
+    callDetailsList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? callDetails.add(e) : []);
+    CallDetailDashBoard cdb = getCallsCountConvertedThisMonth(callDetails);
+    //String cdbText = "Call Details:\n Calls Made This Month: $cdb.callsCount \nCalls Coverted: $cdb.callsConverted";
+
+    complaintDetailsList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? complaintDetails.add(e) : []);
+    int complaintsCount = getPendingComplaintCount(complaintDetails);
+
+    orderDetailsList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? orderDetails.add(e) : []);
+    SaleOrderDashBoard sdb = getSalesOrderCountAmtThisMonth(orderDetails);
+    int pendingOrderCount = getPendingOrderCount(orderDetails);
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -125,20 +149,60 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                width: 130,
-                                height: 25,
-                                child: Text(
-                                  "Call Details",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontFamily: "Poppins",
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 4), // Add padding below the underline
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.white, // Set the underline color
+                                            width: 2, // Set the underline thickness
+                                          ),
+                                        ),
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "Call Details:",
+                                              style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      "Calls Made This Month: ${cdb.callsCount}\nCalls Converted: ${cdb.callsConverted}",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                            ),
+
+
                             ],
                           ),
                         ),
@@ -148,7 +212,9 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 ),
                 SizedBox(height: 20.80),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'salesDetailsList');
+                  },
                   child: Container(
                     width: 323,
                     height: 115,
@@ -179,20 +245,58 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                width: 150,
-                                height: 25,
-                                child: Text(
-                                  "Sales Details",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontFamily: "Poppins",
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 4), // Add padding below the underline
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.white, // Set the underline color
+                                            width: 2, // Set the underline thickness
+                                          ),
+                                        ),
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "Sales Details:",
+                                              style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      "Orders Delivered This Month: ${sdb.salesCount}\nTotal Sales Amount: ${sdb.salesAmount}\nBonus Earned: ${sdb.bonus}",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                            ),
                             ],
                           ),
                         ),
@@ -202,7 +306,9 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 ),
                 SizedBox(height: 20.80),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'pendingOrderList');
+                  },
                   child: Container(
                     width: 323,
                     height: 115,
@@ -233,20 +339,58 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                width: 170,
-                                height: 25,
-                                child: Text(
-                                  "Pending orders",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontFamily: "Poppins",
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 4), // Add padding below the underline
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.white, // Set the underline color
+                                            width: 2, // Set the underline thickness
+                                          ),
+                                        ),
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "Pending Orders:",
+                                              style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      "Total Pending Orders: $pendingOrderCount",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                            ),
                             ],
                           ),
                         ),
@@ -289,20 +433,59 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                width: 200,
-                                height: 30,
-                                child: Text(
-                                  "Pending complaints",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontFamily: "Poppins",
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 4), // Add padding below the underline
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.white, // Set the underline color
+                                            width: 2, // Set the underline thickness
+                                          ),
+                                        ),
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "Pending Complaints:",
+                                              style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      "Total Complaints Pending: $complaintsCount",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                            ),
+
                             ],
                           ),
                         ),

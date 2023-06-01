@@ -27,6 +27,7 @@ class OrderDetailsDatabaseService {
     String dropdown,
     String subTotal,
     String totalAmount,
+    List<OrdersProductModel> products,
 
   ) async {
     var uniqid = userCollection.doc().id;
@@ -46,6 +47,12 @@ class OrderDetailsDatabaseService {
       'dropdown': dropdown,
       'subTotal': subTotal,
       'totalAmount': totalAmount,
+      // 'products': products,
+      'products': ConvertProductModeltoMap(productList: products),
+
+      // 'products': products.map((element) {
+      //   OrderDetailsDatabaseService(docid: uniqid).setOrderedProductDetails(uniqid, element.productName, element.quantity, element.amount);
+      // }),
     });
     return uniqid;
   }
@@ -65,6 +72,7 @@ class OrderDetailsDatabaseService {
     String dropdown,
     String subTotal,
     String totalAmount,
+    List<OrdersProductModel> products,
   ) async {
     return await userCollection.doc(docid).set({
       'uid': docid,
@@ -82,11 +90,21 @@ class OrderDetailsDatabaseService {
       'dropdown': dropdown,
       'subTotal': subTotal,
       'totalAmount': totalAmount,
+      'products': ConvertProductModeltoMap(productList: products),
     });
   }
 
   Future<void> deleteUserData() async {
     return await userCollection.doc(docid).delete();
+  }
+
+  static List<Map> ConvertProductModeltoMap({required List<OrdersProductModel> productList}) {
+    List<Map> steps = [];
+    productList.forEach((OrdersProductModel product) {
+      Map step = product.toMap();
+      steps.add(step);
+    });
+    return steps;
   }
 
   Future<void> setOrderedProductDetails(
@@ -128,80 +146,65 @@ class OrderDetailsDatabaseService {
   }
 
   List<OrderDetailsModel> _userListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((DocumentSnapshot doc) {
-      return OrderDetailsModel(
-        uid: (doc.data() as Map<String, dynamic>)['uid']?.toString() ?? '',
-        salesExecutiveId:
-            (doc.data() as Map<String, dynamic>)['salesExecutiveId']
-                    ?.toString() ??
-                '',
-        customerId:
-            (doc.data() as Map<String, dynamic>)['customerId']
-                    ?.toString() ??
-                '',
-        customerName:
-            (doc.data() as Map<String, dynamic>)['customerName']?.toString() ??
-                '',
-        shipmentID:
-            (doc.data() as Map<String, dynamic>)['shipmentID']?.toString() ??
-                '',
-        mobileNumber:
-            (doc.data() as Map<String, dynamic>)['mobileNumber']?.toString() ??
-                '',
-        address1:
-            (doc.data() as Map<String, dynamic>)['address1']?.toString() ?? '',
-        address2:
-            (doc.data() as Map<String, dynamic>)['address2']?.toString() ?? '',
-        district:
-            (doc.data() as Map<String, dynamic>)['district']?.toString() ?? '',
-        state: (doc.data() as Map<String, dynamic>)['state']?.toString() ?? '',
-        pincode:
-            (doc.data() as Map<String, dynamic>)['pincode']?.toString() ?? '',
-        deliveryDate:
-            (doc.data() as Map<String, dynamic>)['deliveryDate']?.toString() ??
-                '',
-        dropdown:
-            (doc.data() as Map<String, dynamic>)['dropdown']?.toString() ?? '',
-        subTotal:
-            (doc.data() as Map<String, dynamic>)['subTotal']?.toString() ?? '',
-        totalAmount:
-            (doc.data() as Map<String, dynamic>)['totalAmount']?.toString() ?? '',
-      );
+  return snapshot.docs.map((DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+
+    List<OrdersProductModel> orderedProducts = (data['products'] as List<dynamic>).map<OrdersProductModel>((productMap) {
+      return OrdersProductModel.fromMap(productMap);
     }).toList();
-  }
+
+    return OrderDetailsModel(
+      uid: data['uid']?.toString() ?? '',
+      salesExecutiveId: data['salesExecutiveId']?.toString() ?? '',
+      customerId: data['customerId']?.toString() ?? '',
+      customerName: data['customerName']?.toString() ?? '',
+      shipmentID: data['shipmentID']?.toString() ?? '',
+      mobileNumber: data['mobileNumber']?.toString() ?? '',
+      address1: data['address1']?.toString() ?? '',
+      address2: data['address2']?.toString() ?? '',
+      district: data['district']?.toString() ?? '',
+      state: data['state']?.toString() ?? '',
+      pincode: data['pincode']?.toString() ?? '',
+      deliveryDate: data['deliveryDate']?.toString() ?? '',
+      dropdown: data['dropdown']?.toString() ?? '',
+      subTotal: data['subTotal']?.toString() ?? '',
+      totalAmount: data['totalAmount']?.toString() ?? '',
+      products: orderedProducts,
+    );
+  }).toList();
+}
 
   // get user table stream
   Stream<List<OrderDetailsModel>> get orderDetailsTable {
     return userCollection.snapshots().map(_userListFromSnapshot);
   }
 
-  Stream<List<OrdersProductModel>> get orderedProductDetailsTable {
-  return userCollection.snapshots().asyncMap((QuerySnapshot snapshot) async {
-    final List<OrdersProductModel> productList = [];
+//   Stream<List<OrdersProductModel>> get orderedProductDetailsTable {
+//   return userCollection.snapshots().asyncMap((QuerySnapshot snapshot) async {
+//     final List<OrdersProductModel> productList = [];
 
-    for (final DocumentSnapshot doc in snapshot.docs) {
-      final Map<String, dynamic> documentData = doc.data() as Map<String, dynamic>;
+//     for (final DocumentSnapshot doc in snapshot.docs) {
+//       final Map<String, dynamic> documentData = doc.data() as Map<String, dynamic>;
 
-      // Fetch subcollection data
-      final QuerySnapshot subCollectionSnapshot =
-          await doc.reference.collection('OrdersProductDetails').get();
+//       // Fetch subcollection data
+//       final QuerySnapshot subCollectionSnapshot =
+//           await doc.reference.collection('OrdersProductDetails').get();
 
-      for (final DocumentSnapshot subDoc in subCollectionSnapshot.docs) {
-        final Map<String, dynamic> subDocumentData = subDoc.data() as Map<String, dynamic>;
+//       for (final DocumentSnapshot subDoc in subCollectionSnapshot.docs) {
+//         final Map<String, dynamic> subDocumentData = subDoc.data() as Map<String, dynamic>;
 
-        productList.add(
-          OrdersProductModel(
-            uid: subDocumentData['uid']?.toString() ?? '',
-            orderId: subDocumentData['orderId']?.toString() ?? '',
-            amount: subDocumentData['amount']?.toString() ?? '',
-            productName: subDocumentData['productName']?.toString() ?? '',
-            quantity: subDocumentData['quantity']?.toString() ?? '',
-          ),
-        );
-      }
-    }
+//         productList.add(
+//           OrdersProductModel(
+//             uid: subDocumentData['uid']?.toString() ?? '',
+//             amount: subDocumentData['amount']?.toString() ?? '',
+//             productName: subDocumentData['productName']?.toString() ?? '',
+//             quantity: subDocumentData['quantity']?.toString() ?? '',
+//           ),
+//         );
+//       }
+//     }
 
-    return productList;
-  });
-}
+//     return productList;
+//   });
+// }
 }
