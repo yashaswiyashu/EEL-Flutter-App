@@ -112,6 +112,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+
     if (salesTable != null) {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {

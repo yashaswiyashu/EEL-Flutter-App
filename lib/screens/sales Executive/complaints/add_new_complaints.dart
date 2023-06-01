@@ -137,6 +137,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
   Widget build(BuildContext context) {
     //[Viru:27/5/23] Added to support customer name search list
     //final customerList = Provider.of<List<CustomerModel>>(context);
+    List<CustomerModel> details = [];
 
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
@@ -151,7 +152,8 @@ class _AddNewComplaintState extends State<AddNewComplaint>
 
     //[Viru:27/5/23] Added to support customer name search list
     final customerList = Provider.of<List<CustomerModel>>(context);
-    
+    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+
     final AuthService _auth = AuthService();
     return Scaffold(
       appBar: AppBar(
@@ -246,7 +248,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
 
                   suggestionsCallback: (pattern) async {
                     // Filter the customer list based on the search pattern
-                    return customerList
+                    return details
                     .where((customer) =>
                     customer != null &&
                     customer.customerName.toLowerCase().contains(pattern.toLowerCase()))

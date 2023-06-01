@@ -39,6 +39,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
   final controllerAddress1 = TextEditingController();
   final controllerAddress2 = TextEditingController();
   final controllerCity = TextEditingController();
+  final controllerState = TextEditingController();
   final controllerPincode = TextEditingController();
   // text field state
   String customerName = '';
@@ -66,6 +67,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
     controllerAddress1.addListener(_saveAddress1);
     controllerAddress2.addListener(_saveAddress2);
     controllerCity.addListener(_saveCity);
+    controllerState.addListener(_saveState);
     controllerPincode.addListener(_savePincode);
   }
 
@@ -80,6 +82,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
     controllerAddress1.dispose();
     controllerAddress2.dispose();
     controllerCity.dispose();
+    controllerState.dispose();
     controllerPincode.dispose();
     super.dispose();
   }
@@ -112,6 +115,10 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
 
   void _saveCity() {
     city = controllerCity.text;
+  }
+
+  void _saveState() {
+    state = controllerState.text;
   }
 
   void _savePincode() {
@@ -201,7 +208,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
       controllerAddress2.text = obj.address2;
       controllerCity.text = obj.city;
       controllerPincode.text = obj.pincode;
-      st = obj.state;
+      controllerState.text = obj.state;
       int1 = obj.product1;
       int2 = obj.product2;
       int3 = obj.product3;
@@ -433,40 +440,52 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                       // },
                     ),
                     const SizedBox(height: 10.0),
-                    DropdownButtonFormField(
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          //<-- SEE HERE
-                          borderSide: BorderSide(color: Colors.black, width: 0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          //<-- SEE HERE
-                          borderSide: BorderSide(color: Colors.black, width: 0),
-                        ),
-                        filled: true,
-                        fillColor: Color(0xffefefff),
-                      ),
-                      dropdownColor: const Color(0xffefefff),
-                      value: state == 'Select State' ? st : state,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          state = newValue!;
-                        });
-                      },
-                      items: <String>[
-                        'Select State',
-                        'Karnataka',
-                        'Kerala',
-                        'Tamil Nadu',
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                        );
-                      }).toList(),
+                    // DropdownButtonFormField(
+                    //   decoration: const InputDecoration(
+                    //     enabledBorder: OutlineInputBorder(
+                    //       //<-- SEE HERE
+                    //       borderSide: BorderSide(color: Colors.black, width: 0),
+                    //     ),
+                    //     focusedBorder: OutlineInputBorder(
+                    //       //<-- SEE HERE
+                    //       borderSide: BorderSide(color: Colors.black, width: 0),
+                    //     ),
+                    //     filled: true,
+                    //     fillColor: Color(0xffefefff),
+                    //   ),
+                    //   dropdownColor: const Color(0xffefefff),
+                    //   value: state == 'Select State' ? st : state,
+                    //   onChanged: (String? newValue) {
+                    //     setState(() {
+                    //       state = newValue!;
+                    //     });
+                    //   },
+                    //   items: <String>[
+                    //     'Select State',
+                    //     'Karnataka',
+                    //     'Kerala',
+                    //     'Tamil Nadu',
+                    //   ].map<DropdownMenuItem<String>>((String value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(
+                    //         value,
+                    //         style: const TextStyle(fontSize: 15),
+                    //       ),
+                    //     );
+                    //   }).toList(),
+                    // ),
+                    TextFormField(
+                      controller: controllerState,
+                      decoration:
+                          textInputDecoration.copyWith(hintText: 'city'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Enter Customer Full Address' : null,
+                      // onChanged: (val) {
+                      //   setState(() {
+                      //     city = val;
+                      //   });
+                      // },
                     ),
                     const SizedBox(height: 10.0),
                     TextFormField(

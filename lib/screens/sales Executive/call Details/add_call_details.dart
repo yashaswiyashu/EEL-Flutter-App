@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
 import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -33,7 +35,8 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
   String followUpDetails = '';
   String error = '';
   String status = '';
-  
+    final nameController = TextEditingController();
+
   @override
   String? get restorationId => widget.restorationId;
 
@@ -94,14 +97,30 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
     }
   }
     var salesExecutive;
+  void initState() {
+    nameController.addListener(_nameLatestValue);
+  }
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    nameController.dispose();
+    super.dispose();
+  }
 
-  
+  void _nameLatestValue() {
+    customerName = nameController.text;
+    //print('Viru:: ${numberController.text}');
+  }
+
   @override
   Widget build(BuildContext context) {
 
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
     final AuthService _auth = AuthService();
+    final customerList = Provider.of<List<CustomerModel>>(context);
+    List<CustomerModel> details = [];
 
     if (salesTable != null) {
       salesTable.forEach((element) {
@@ -110,6 +129,9 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
         }
       });
     }
+
+    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+
 
       var snackBar = SnackBar(
   content: Text('Call Details added Successfully!!!'),
@@ -187,16 +209,45 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                     SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      validator: (value) =>
-                          value!.isEmpty ? 'Missing Field' : null,
-                      decoration: textInputDecoration.copyWith(
-                          hintText: 'Enter Customer Name',
-                          fillColor: const Color(0xfff0efff)),
-                      onChanged: (val) {
-                        customerName = val;
-                      },
+                    TypeAheadFormField(
+                  
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: nameController,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Customer Name',
+                      fillColor: const Color(0xfff0efff),
                     ),
+                    /* onChanged: (val) {
+                      customerName = val;
+                    }, */
+                  ),
+
+                  suggestionsCallback: (pattern) async {
+                    // Filter the customer list based on the search pattern
+                    return details
+                    .where((customer) =>
+                    customer != null &&
+                    customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
+                    .toList();
+                  },
+
+                  itemBuilder: (context, CustomerModel? suggestion) {
+                    if (suggestion == null) return const SizedBox.shrink();
+                    return ListTile(
+                      title: Text(suggestion.customerName),
+                    );
+                  },
+
+                  onSuggestionSelected: (CustomerModel? suggestion) {
+                    if (suggestion != null) {
+                      setState(() {
+                        //customerName = suggestion.customerName;
+                        nameController.text = suggestion.customerName;
+                    });
+                  }
+              },
+
+            ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
                         height: 20.0,

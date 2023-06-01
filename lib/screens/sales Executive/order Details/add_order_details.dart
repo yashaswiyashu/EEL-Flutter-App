@@ -239,6 +239,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    List<CustomerModel> details = [];
+    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
 
     if (products.length != productDetails.length + 1) {
       productDetails.forEach((element) {
@@ -428,7 +430,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
 
                   suggestionsCallback: (pattern) async {
                     // Filter the customer list based on the search pattern
-                    return customerList
+                    return details
                     .where((customer) =>
                     customer != null &&
                     customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
