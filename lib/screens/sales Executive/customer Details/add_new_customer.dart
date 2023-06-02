@@ -99,7 +99,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   }
 
   void _numberLatestValue() {
-    print('Viru:: ${numberController.text}');
+    mobileNumber = numberController.text;
   }
 
   var customer;
@@ -263,7 +263,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                     onChanged: (value) {
                       setState(() {
                         numError = ''; // Clear the error message
-                        numberController.text = value;
+                        // numberController.text = value;
                       });
                     },
                   ),
@@ -501,9 +501,6 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                     });
                     
                   }
-                },
-                onEditingComplete: () {
-                  
                 },
               ),
               const SizedBox(height: 12.0),
