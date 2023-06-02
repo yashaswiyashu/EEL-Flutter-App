@@ -262,7 +262,8 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                     ],
                     onChanged: (value) {
                       setState(() {
-                      numError = ''; // Clear the error message
+                        numError = ''; // Clear the error message
+                        numberController.text = value;
                       });
                     },
                   ),
