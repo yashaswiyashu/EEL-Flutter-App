@@ -165,20 +165,6 @@ class _PendingComplaintDetailsListState extends State<PendingComplaintDetailsLis
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(right: 15, top: 10),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      'Name: ${salesExecutive.name}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]),
-                ),
-                Container(
                   width: 270,
                   height: 60,
                   decoration: BoxDecoration(
