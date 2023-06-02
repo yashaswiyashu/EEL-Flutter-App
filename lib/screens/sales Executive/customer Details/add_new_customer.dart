@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_app/services/customer_database.dart';
 import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/location.dart';
@@ -23,6 +25,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
+  String numError = '';
   String dropdownInt1 = 'Suraksha';
   String dropdownInt2 = 'Suraksha';
   String dropdownInt3 = 'Suraksha';
@@ -51,6 +54,9 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   final talukController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
+  final numberController = TextEditingController();
+  //final custNameController = TextEditingController();
+
 
   void initState() {
     _passwordVisible = false;
@@ -58,6 +64,9 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
     talukController.addListener(_talukLatestValue);
     nameController.addListener(_nameLatestValue);
     stateController.addListener(_stateLatestValue);
+    //custNameController.addListener(_custNameLatestValue);
+    numberController.addListener(_numberLatestValue);
+
   }
 
 @override
@@ -68,6 +77,8 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
     stateController.dispose();
     nameController.dispose();
     talukController.dispose();
+    //custNameController.dispose();
+    numberController.dispose();
     super.dispose();
   }
 
@@ -85,6 +96,10 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
 
   void _talukLatestValue() {
     print('Viru:: ${talukController.text}');
+  }
+
+  void _numberLatestValue() {
+    print('Viru:: ${numberController.text}');
   }
 
   var customer;
@@ -119,6 +134,12 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+
+    //[Viru:2/6/23] Added to support customer mob search list
+    List<CustomerModel> details = [];
+    final customerList = Provider.of<List<CustomerModel>>(context);
+    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+
 
     if (salesTable != null) {
       salesTable.forEach((element) {
@@ -215,7 +236,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                       fontWeight: FontWeight.w500,
                     ),
                   )),
-              TextFormField(
+/*               TextFormField(
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter Customer Mobile Number',
@@ -226,6 +247,70 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                   mobileNumber = val;
                 },
               ),
+ */           
+                //[Viru:2/6/23] Added to support customer name search list
+                TypeAheadFormField(
+                  
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: numberController,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Customer Mobile Number',
+                      fillColor: const Color(0xfff0efff),
+                    ),
+                    inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // Only allow numerical values
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                      numError = ''; // Clear the error message
+                      });
+                    },
+                  ),
+
+                  suggestionsCallback: (pattern) async {
+                    // Filter the customer list based on the search pattern
+                    return details
+                    .where((customer) =>
+                    customer != null &&
+                    customer.mobileNumber.contains(pattern))
+                    .toList();
+                  },
+
+                  itemBuilder: (context, CustomerModel? suggestion) {
+                    if (suggestion == null) return const SizedBox.shrink();
+                    return ListTile(
+                      title: Text(suggestion.mobileNumber),
+                    );
+                  },
+
+                  onSuggestionSelected: (CustomerModel? suggestion) {
+                    if (suggestion != null) {
+                      setState(() {
+                        numError = 'Customer with this number already exists';
+                        numberController.clear();
+                      });
+                    } else {
+                      numberController.text.length != 10 ? 'Enter Customer Mobile Number' : null;
+                      setState(() {
+                        numError = '';
+                      });
+                    }
+              },
+              validator: (value) {
+              if (value != null && value.length != 10) {
+              return 'Enter a valid 10-digit mobile number';
+              }
+              return null;
+              },
+              onSaved: (value) {
+              setState(() {
+              numError = ''; // Clear the error message
+              });
+  },
+
+            ),
+              SizedBox(child: Text(numError,
+                     style: TextStyle(color: Color.fromARGB(190, 193, 2, 2),),),),
               const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
