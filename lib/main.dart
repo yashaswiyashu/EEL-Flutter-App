@@ -14,6 +14,8 @@ import 'package:flutter_app/screens/admin/product_list_view.dart';
 import 'package:flutter_app/screens/admin/view_product_details.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
+import 'package:flutter_app/screens/sales%20CoOrdinator/complaints/pending_complaints_list.dart';
+import 'package:flutter_app/screens/sales%20CoOrdinator/follow%20up/follow_up_details_list.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
@@ -85,12 +87,12 @@ class MyApp extends StatelessWidget {
           'salesPersonRegistration':(context) => const SalesPersonRegistration(),
             //Call details  
             'addCallDetails':(context) => const AddCallDetails(restorationId: 'main',),
-            'callDetailsList':(context) => const CallDetailsList(),
+            CallDetailsList.routeName:(context) => const CallDetailsList(),
             EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
             ViewCallDetails.routeName:(context) => ViewCallDetails(),
             
             //Sales Details
-            'salesDetailsList':(context) => const SalesDetailsList(),
+            SalesDetailsList.routeName:(context) => const SalesDetailsList(),
             ViewSalesOrder.routeName:(context) => const ViewSalesOrder(),
 
             //Pending orders
@@ -100,24 +102,34 @@ class MyApp extends StatelessWidget {
 
             //Customer details
             'addNewCustomer':(context) => const AddNewCustomer(),
-            'customerList':(context) => const CustomerListView(),
+            CustomerListView.routeName:(context) => const CustomerListView(),
             EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
             ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
             
             //Order details
             'addNewOrder':(context) => const AddNewOrder(restorationId: 'main'),
-            'oderDetailsList':(context) => const OrderDetailsList(),
+            OrderDetailsList.routeName:(context) => const OrderDetailsList(),
             EditOrder.routeName:(context) => const EditOrder(restorationId: 'main',),
             ViewOrder.routeName:(context) => const ViewOrder(),
 
             //Complaints
             'addNewComplaint':(context) => const AddNewComplaint(restorationId: 'main',),
-            'complaintList':(context) => const ComplaintDetailsList(),
+            ComplaintDetailsList.routeName:(context) => const ComplaintDetailsList(),
             EditComplaintDetails.routeName:(context) => const EditComplaintDetails(restorationId: 'main'),
             ViewComplaintDetails.routeName:(context) => ViewComplaintDetails(),
 
+          //sales Co-ordinator
+          'salesCoOrdinatorHome':(context) => const SalesCoOrdinatorHome(),
+            
+            //Follow Up
+            FollowUpDetails.routeName:(context) => const FollowUpDetails(),
+
+            //Pending Complaints
+            PendingComplaintDetailsList.routeName:(context) => const PendingComplaintDetailsList(),
+
           //Customer 
           'customerRegistration':(context) => const CustomerRegistration(),
+            
 
           //Admin
           'addNewProduct':(context) => const AddProductAdmin(),

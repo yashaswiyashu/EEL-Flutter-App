@@ -13,16 +13,16 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 
-class ComplaintDetailsList extends StatefulWidget {
-  const ComplaintDetailsList({super.key});
-static const routeName = '/ComplaintDetailsList';
+class PendingComplaintDetailsList extends StatefulWidget {
+  const PendingComplaintDetailsList({super.key});
+static const routeName = '/PendingComplaintDetailsList';
 
   @override
-  State<ComplaintDetailsList> createState() => _ComplaintDetailsListState();
+  State<PendingComplaintDetailsList> createState() => _PendingComplaintDetailsListState();
 }
 
 
-class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
+class _PendingComplaintDetailsListState extends State<PendingComplaintDetailsList> {
   bool loading = false;
   String status = '';
 
@@ -40,17 +40,12 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
     final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    List<SalesPersonModel?> salesExecList = [];
 
-    if (salesTable != null && args.uid == '') {
+    if (salesTable != null) {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    } else {
-      salesTable!.forEach((element) {
-        if (element?.uid == args.uid) {
-          salesExecutive = element;
+          salesExecList.add(element);
         }
       });
     }
@@ -58,12 +53,9 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
     var details = [];
     var obj;
 
-    if (args.uid == '') {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
-    } else {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
-    }
-
+    salesExecList.forEach((element) {
+      complaintDetailsList.forEach((e) => ((element?.coOrdinatorId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+    });
 
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
@@ -137,6 +129,9 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
     //     }
     //   );
     // }
+
+
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Energy Efficient Lights'),

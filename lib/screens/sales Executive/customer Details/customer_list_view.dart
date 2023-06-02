@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 class CustomerListView extends StatefulWidget {
   const CustomerListView({super.key});
+  static const routeName = '/CustomerList';
 
   @override
   State<CustomerListView> createState() => _CustomerListViewState();
@@ -27,14 +28,19 @@ class _CustomerListViewState extends State<CustomerListView> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var details = [];
     var obj;
 
+    if (args.uid == '') {
     customerList.forEach(
         (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
-
+    } else {
+       customerList.forEach(
+        (e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+    }
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
       thickness: 0.5,
@@ -102,9 +108,15 @@ class _CustomerListViewState extends State<CustomerListView> {
 
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
-    if (salesTable != null) {
+    if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable!.forEach((element) {
+        if (element?.uid == args.uid) {
           salesExecutive = element;
         }
       });

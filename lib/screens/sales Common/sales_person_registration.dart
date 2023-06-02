@@ -7,6 +7,7 @@ import 'package:flutter_app/services/sales_database.dart';
 
 import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
 class SalesPersonRegistration extends StatefulWidget {
@@ -35,12 +36,15 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
   String state = 'Select State';
   String pincode = '';
   String pincodeError = '';
+  String coOrdNameErr = '';
+  String salesCoordId = '';
 
   String error = '';
   bool _passwordVisible = false;
   late FocusNode myFocusNode;
 
   final nameController = TextEditingController();
+  final coOrdinatorName = TextEditingController();
   final talukController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
@@ -51,6 +55,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
     _passwordVisible = false;
     myFocusNode = FocusNode();
     nameController.addListener(_nameLatestValue);
+    coOrdinatorName.addListener(_coOrdinatorName);
     cityController.addListener(_cityLatestValue);
     talukController.addListener(_talukLatestValue);
     stateController.addListener(_stateLatestValue);
@@ -61,6 +66,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
     // Clean up the focus node when the Form is disposed.
     myFocusNode.dispose();
     nameController.dispose();
+    coOrdinatorName.dispose();
     cityController.dispose();
     stateController.dispose();
     talukController.dispose();
@@ -81,6 +87,10 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
 
   void _nameLatestValue() {
     print('Viru:: ${nameController.text}');
+  }
+
+  void _coOrdinatorName() {
+    print('Viru:: ${coOrdinatorName.text}');
   }
 
   var snackBar = SnackBar(
@@ -136,6 +146,23 @@ Future<bool> updateAddressFields() async {
 
   @override
   Widget build(BuildContext context) {
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    List<String> salesCoOrd = [];
+
+    salesTable.forEach((element) {
+      if(element!.name == coOrdinatorName.text) {
+        salesCoordId = element.uid;
+      }
+    });
+
+    if(salesTable != null) {
+      salesTable.forEach((e) {
+        if(e!.role == 'Sales Co-Ordinator'){
+          salesCoOrd.add(e.name);
+        }
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
@@ -243,6 +270,69 @@ Future<bool> updateAddressFields() async {
                     ),
                   );
                 }).toList(),
+              ),
+              role == 'Sales Executive' ? const SizedBox(height: 20.0) : const SizedBox(height: 0,),
+              role == 'Sales Executive' ? const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Sales Co-Ordinator:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )) : const SizedBox(height: 0,),
+              role == 'Sales Executive' ? SizedBox(
+                child: TypeAheadFormField(
+                  
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: coOrdinatorName,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Co-ordinator Name',
+                      fillColor: const Color(0xfff0efff),
+                    ),
+                    /* onChanged: (val) {
+                      customerName = val;
+                    }, */
+                  ),
+
+                  suggestionsCallback: (pattern) async {
+                    // Filter the customer list based on the search pattern
+                    return salesCoOrd
+                    .where((customer) =>
+                    customer != null &&
+                    customer.toLowerCase().contains(pattern.toLowerCase()))
+                    .toList();
+                  },
+
+                  itemBuilder: (context, String? suggestion) {
+                    if (suggestion == null) return const SizedBox.shrink();
+                    return ListTile(
+                      title: Text(suggestion),
+                    );
+                  },
+
+                  onSuggestionSelected: (String? suggestion) {
+                    if (suggestion != null) {
+                      setState(() {
+                        //customerName = suggestion.customerName;
+                        coOrdinatorName.text = suggestion;
+                        coOrdNameErr = '';
+                    });
+                  }
+              },
+
+            ),
+              ) : const SizedBox(height: 0,),
+              Container(
+                child: Text(
+                  coOrdNameErr,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 13.0,
+                  ),
+                ),
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -506,9 +596,10 @@ Future<bool> updateAddressFields() async {
                               ? const Loading()
                               : ElevatedButton(
                                   onPressed: () async {
-                                    if (_formkey.currentState!.validate()) {
+                                    if (_formkey.currentState!.validate() && (!(role == 'Sales Executive' && coOrdinatorName.text == ''))) {
                                       setState(() {
                                         loading = true;
+                                        coOrdNameErr = '';
                                       });
                                       dynamic result = await _auth
                                           .registerWithEmailAndPassword(
@@ -527,6 +618,7 @@ Future<bool> updateAddressFields() async {
                                                   name,
                                                   education,
                                                   role,
+                                                  salesCoordId,
                                                   adhaarNumber,
                                                   phoneNumber,
                                                   email,
@@ -544,6 +636,12 @@ Future<bool> updateAddressFields() async {
                                                 context, 'authWrapper');
                                           });
                                         }
+                                      }
+                                    } else {
+                                      if (role == 'Sales Executive' && coOrdinatorName.text == '') {
+                                        setState(() {
+                                          coOrdNameErr = 'Please enter a Co-Ordinator Name';
+                                        });
                                       }
                                     }
                                   },

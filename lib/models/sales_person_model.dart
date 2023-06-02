@@ -3,6 +3,7 @@ class SalesPersonModel {
   final String name;
   final String education;
   final String role;
+  final String coOrdinatorId;
   final String adhaarNumber;
   final String phoneNumber;
   final String email;
@@ -18,6 +19,7 @@ class SalesPersonModel {
   required this.name,
   required this.education,
   required this.role,
+  required this.coOrdinatorId,
   required this.adhaarNumber,
   required this.phoneNumber,
   required this.email,

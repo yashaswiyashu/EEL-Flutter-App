@@ -11,36 +11,45 @@ import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class CallDetailsList extends StatefulWidget {
-  const CallDetailsList({super.key});
-  static const routeName = '/callDetailsList';
+class FollowUpDetails extends StatefulWidget {
+  const FollowUpDetails({super.key});
+  static const routeName = '/FollowUpDetails';
   @override
-  State<CallDetailsList> createState() => _CallDetailsListState();
+  State<FollowUpDetails> createState() => _FollowUpDetailsState();
 }
 
 
 
-class _CallDetailsListState extends State<CallDetailsList> {
+class _FollowUpDetailsState extends State<FollowUpDetails> {
   bool loading = false;
   String status = '';
 
   String character = '';
   final AuthService _auth = AuthService();
 
-  var salesExecutive;
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final callDetails = Provider.of<List<CallDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+
+    List<SalesPersonModel?> salesExecList = [];
     var details = [];
     var obj;
-    if(args.uid == '') {
-      callDetails.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
-    } else {
-      callDetails.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.coOrdinatorId == currentUser?.uid) {
+          salesExecList.add(element);
+        }
+      });
     }
+    
+    salesExecList.forEach((element) {
+      callDetails.forEach((e) => element!.uid == e.salesExecutiveId && e.followUp ? details.add(e) : []);
+    });
 
     Widget _verticalDivider = const VerticalDivider(
         color: Colors.black,
@@ -105,22 +114,6 @@ class _CallDetailsListState extends State<CallDetailsList> {
     //   );
     // }
 
-    
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
-
-    if ((salesTable != null) && (args.uid == '')) {
-      salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    } else if (salesTable != null){
-      salesTable.forEach((element) {
-        if (element?.uid == args.uid) {
-          salesExecutive = element;
-        }
-      });
-    }
 
 
 
@@ -154,21 +147,6 @@ class _CallDetailsListState extends State<CallDetailsList> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                padding: EdgeInsets.only(right: 15, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                  Text(
-                    'Name: ${salesExecutive.name}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    ),
-                ]),
-              ),
-                    Container(
                       width: 270,
                       height: 60,
                       decoration: BoxDecoration(
@@ -176,16 +154,16 @@ class _CallDetailsListState extends State<CallDetailsList> {
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 250),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
-                        onPressed: (){
-                          Navigator.pushNamed(context, 'addCallDetails');
-                        }, 
-                        child: Text('Add New +'),
-                      ),
-                    ),
+                    // Container(
+                    //   margin: EdgeInsets.only(left: 250),
+                    //   child: ElevatedButton(
+                    //     style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
+                    //     onPressed: (){
+                    //       Navigator.pushNamed(context, 'addCallDetails');
+                    //     }, 
+                    //     child: Text('Add New +'),
+                    //   ),
+                    // ),
                     SizedBox(height: 10),
                     _createDataTable(),
                     SizedBox(height: 20,),

@@ -94,7 +94,6 @@ int getFollowUpCount(List callDetailsList) {
   callDetailsList.forEach((element) {
         if (element.followUp) { 
           _followUpCount++;
-          
         }
       });
   return _followUpCount;

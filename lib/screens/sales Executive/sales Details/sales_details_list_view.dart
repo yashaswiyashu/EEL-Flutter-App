@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 
 class SalesDetailsList extends StatefulWidget {
   const SalesDetailsList({super.key});
+  static const routeName = '/SalesDetails';
 
   @override
   State<SalesDetailsList> createState() => _SalesDetailsListState();
@@ -35,14 +36,18 @@ class _SalesDetailsListState extends State<SalesDetailsList> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var details = [];
     var obj;
     // var productsList = [];
+    if(args.uid == '') {
+      orderDetails.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) &&  (e.dropdown == 'Delivered')) ? details.add(e) : []);
+    } else {
+      orderDetails.forEach((e) => ((e.salesExecutiveId == args.uid) &&  (e.dropdown == 'Delivered')) ? details.add(e) : []);
 
-    orderDetails.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) &&  (e.dropdown == 'Delivered')) ? details.add(e) : []);
-
+    }
     // details.forEach((element) {
     //   productsList.add(element.products);
     // });
@@ -113,9 +118,15 @@ class _SalesDetailsListState extends State<SalesDetailsList> {
     
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
-    if (salesTable != null) {
+    if (salesTable != null && (args.uid == '')) {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable?.forEach((element) {
+        if (element?.uid == args.uid) {
           salesExecutive = element;
         }
       });

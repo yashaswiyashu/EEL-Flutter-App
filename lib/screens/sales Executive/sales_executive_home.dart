@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
@@ -9,7 +10,12 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/common/utility_functions.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/call_details_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/complaints/complaint_details_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/order_details_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/sales%20Details/sales_details_list_view.dart';
 // import 'package:flutter_app/screens/salesPerson/executive/call_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:provider/provider.dart';
@@ -118,7 +124,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'callDetailsList');
+                    Navigator.pushNamed(
+                        context, CallDetailsList.routeName,
+                        arguments: Parameter(
+                          '',
+                        ));
                   },
                   child: Container(
                     width: 297,
@@ -215,7 +225,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'salesDetailsList');
+                    Navigator.pushNamed(
+                        context, SalesDetailsList.routeName,
+                        arguments: Parameter(
+                          '',
+                        ));
                   },
                   child: Container(
                     width: 323,
@@ -404,7 +418,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'complaintList');
+                    Navigator.pushNamed(
+                        context, ComplaintDetailsList.routeName,
+                        arguments: Parameter(
+                          '',
+                        ));
                   },
                   child: Container(
                     width: 323,
@@ -507,7 +525,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, 'customerList');
+                          Navigator.pushNamed(
+                              context, CustomerListView.routeName,
+                              arguments: Parameter(
+                                '',
+                              ));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xff4d47c3),
@@ -557,7 +579,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, 'oderDetailsList');
+                          Navigator.pushNamed(
+                              context, OrderDetailsList.routeName,
+                              arguments: Parameter(
+                                '',
+                              ));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xff4d47c3),
