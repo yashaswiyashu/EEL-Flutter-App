@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/screens/common/location.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -23,6 +24,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
+  String numError = '';
 
   String name = '';
   String education = '';
@@ -49,6 +51,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
   final talukController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
+  final numberController = TextEditingController();
 
   @override
   void initState() {
@@ -60,6 +63,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
     cityController.addListener(_cityLatestValue);
     talukController.addListener(_talukLatestValue);
     stateController.addListener(_stateLatestValue);
+    numberController.addListener(_numberLatestValue);
   }
 
   @override
@@ -71,6 +75,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
     cityController.dispose();
     stateController.dispose();
     talukController.dispose();
+    numberController.dispose();
     super.dispose();
   }
 
@@ -93,6 +98,11 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
   void _coOrdinatorName() {
     print('Viru:: ${coOrdinatorName.text}');
   }
+
+  void _numberLatestValue() {
+    phoneNumber = numberController.text;
+  }
+
 
   var snackBar = SnackBar(
     content: Text('Registered Successfully!!!'),
@@ -154,6 +164,10 @@ Future<bool> updateAddressFields() async {
       role = args;
     });
 
+        //[Viru:2/6/23] Added to support customer mob search list
+    List<SalesPersonModel?> details = [];
+    salesTable.forEach((e) => details.add(e));
+
     salesTable.forEach((element) {
       if(element!.name == coOrdinatorName.text) {
         salesCoordId = element.uid;
@@ -211,6 +225,83 @@ Future<bool> updateAddressFields() async {
                 },
               ),
               const SizedBox(height: 20.0),
+              const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Phone Number:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
+
+              TypeAheadFormField(
+                  
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: numberController,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Phone Number',
+                      fillColor: const Color(0xfff0efff),
+                    ),
+                    inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // Only allow numerical values
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        numError = ''; // Clear the error message
+                        // numberController.text = value;
+                      });
+                    },
+                  ),
+
+                  suggestionsCallback: (pattern) async {
+                    // Filter the customer list based on the search pattern
+                    return details
+                    .where((salesPerson) =>
+                    salesPerson != null &&
+                    salesPerson.phoneNumber.contains(pattern))
+                    .toList();
+                  },
+
+                  itemBuilder: (context, SalesPersonModel? suggestion) {
+                    if (suggestion == null) return const SizedBox.shrink();
+                    return ListTile(
+                      title: Text(suggestion.phoneNumber),
+                    );
+                  },
+
+                  onSuggestionSelected: (SalesPersonModel? suggestion) {
+                    if (suggestion != null) {
+                      setState(() {
+                        numError = 'SalesPerson with this number already exists';
+                        numberController.clear();
+                      });
+                    } else {
+                      numberController.text.length != 10 ? 'Enter Phone Number' : null;
+                      setState(() {
+                        numError = '';
+                      });
+                    }
+                },
+                validator: (value) {
+                if (value != null && value.length != 10) {
+                return 'Enter a valid 10-digit mobile number';
+                }
+                return null;
+                },
+                onSaved: (value) {
+                setState(() {
+                numError = ''; // Clear the error message
+                });
+              },
+
+              ),
+              SizedBox(child: Text(numError,
+                     style: TextStyle(color: Color.fromARGB(190, 193, 2, 2),),),),
+
+
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -339,7 +430,7 @@ Future<bool> updateAddressFields() async {
                   ),
                 ),
               ),
-              const SizedBox(height: 20.0),
+              //const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -363,7 +454,7 @@ Future<bool> updateAddressFields() async {
                 },
               ),
               const SizedBox(height: 20.0),
-              const SizedBox(
+/*               const SizedBox(
                   height: 20.0,
                   child: Text(
                     'Phone Number:',
@@ -374,7 +465,7 @@ Future<bool> updateAddressFields() async {
                       fontWeight: FontWeight.w500,
                     ),
                   )),
-              TextFormField(
+ */              /* TextFormField(
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value?.length == 10 ? null : 'Enter valid number',
@@ -384,8 +475,9 @@ Future<bool> updateAddressFields() async {
                 onChanged: (val) {
                   phoneNumber = val;
                 },
-              ),
-              const SizedBox(height: 20.0),
+              ), */
+
+              //const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
