@@ -13,6 +13,7 @@ class SalesPersonModel {
   final String district;
   final String state;
   final String pincode;
+  final bool approved;
 
   SalesPersonModel(
   {required this.uid,
@@ -28,5 +29,6 @@ class SalesPersonModel {
   required this.address2,
   required this.district,
   required this.state,
-  required this.pincode});
+  required this.pincode,
+  required this.approved});
 }

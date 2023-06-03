@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
-import 'package:flutter_app/screens/admin/product_list_view.dart';
+import 'package:flutter_app/screens/admin/admin_home.dart';
+import 'package:flutter_app/screens/admin/products/product_list_view.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/common/login.dart';
 import 'package:flutter_app/screens/common/register_as.dart';
@@ -16,11 +17,6 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // if(login){
-    //   return const Login();
-    // } else {
-    //   return const RegisterAs();
-    // }
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     final customerTable = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
@@ -49,7 +45,7 @@ class AuthWrapper extends StatelessWidget {
       } else if (obj?.role == 'Sales Co-Ordinator') {
         return SalesCoOrdinatorHome();
       } else if (obj?.role == 'Admin') {
-        return ProductListViewAdmin();
+        return AdminHome();
       } 
 
       if(cust) {

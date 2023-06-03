@@ -40,6 +40,7 @@ class SalesPersonDatabase {
       'city': district,
       'state': state,
       'pincode': pincode,
+      'approved': false,
     });
   }
 
@@ -58,6 +59,7 @@ class SalesPersonDatabase {
     String district,
     String state, 
     String pincode,
+    bool approved,
     ) async {
     return await userCollection.doc(docid).set({
       'uid': docid,
@@ -74,6 +76,7 @@ class SalesPersonDatabase {
       'city': district,
       'state': state,
       'pincode': pincode,
+      'approved': approved,
     });
   }
 
@@ -101,6 +104,7 @@ class SalesPersonDatabase {
         district: (doc.data() as Map<String, dynamic>)['district']?.toString() ?? '',
         state: (doc.data() as Map<String, dynamic>)['state']?.toString() ?? '',
         pincode: (doc.data() as Map<String, dynamic>)['pincode']?.toString() ?? '',
+        approved: (doc.data() as Map<String, dynamic>)['approved'] as bool? ?? false,
       );
     }).toList();
   }

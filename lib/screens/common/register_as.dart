@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 
 
 class RegisterAs extends StatefulWidget {
@@ -37,7 +38,9 @@ class _RegisterAsState extends State<RegisterAs> {
             const SizedBox(height: 20.20),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, 'salesPersonRegistration');
+                Navigator.pushNamed(
+                        context, SalesPersonRegistration.routeName,
+                        arguments: 'Sales Executive');
               },
               child: Container(
                   width: 322,
@@ -76,7 +79,9 @@ class _RegisterAsState extends State<RegisterAs> {
             const SizedBox(height: 38.20),
             TextButton(
               onPressed: (){
-                Navigator.pushNamed(context, 'salesPersonRegistration');
+                Navigator.pushNamed(
+                        context, SalesPersonRegistration.routeName,
+                        arguments: 'Sales Co-Ordinator');
               },
               child: Container(
                   width: 322,

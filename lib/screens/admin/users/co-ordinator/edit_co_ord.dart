@@ -10,16 +10,16 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
-class SalesPersonRegistration extends StatefulWidget {
-  const SalesPersonRegistration({super.key});
-  static const routeName = '/salesPersonRegistration';
+class EditSalesCoOrdinator extends StatefulWidget {
+  const EditSalesCoOrdinator({super.key});
+  static const routeName = '/EditSalesCoOrdinator';
 
   @override
-  State<SalesPersonRegistration> createState() =>
-      _SalesPersonRegistrationState();
+  State<EditSalesCoOrdinator> createState() =>
+      _EditSalesCoOrdinatorState();
 }
 
-class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
+class _EditSalesCoOrdinatorState extends State<EditSalesCoOrdinator> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
@@ -45,6 +45,11 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
   late FocusNode myFocusNode;
 
   final nameController = TextEditingController();
+  final educationController = TextEditingController();
+  final aadharController = TextEditingController();
+  final numberController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   final coOrdinatorName = TextEditingController();
   final talukController = TextEditingController();
   final cityController = TextEditingController();
