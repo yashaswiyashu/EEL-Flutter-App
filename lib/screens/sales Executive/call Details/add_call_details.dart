@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -19,6 +20,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 class AddCallDetails extends StatefulWidget {
   const AddCallDetails({super.key, this.restorationId});
   final String? restorationId;
+  static const routeName = '/addCallDetails';
   @override
   State<AddCallDetails> createState() => _AddCallDetailsState();
 }
@@ -124,22 +126,32 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
 
   @override
   Widget build(BuildContext context) {
-
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
     final AuthService _auth = AuthService();
     final customerList = Provider.of<List<CustomerModel>>(context);
     List<CustomerModel> details = [];
 
-    if (salesTable != null) {
+    if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
         }
       });
+    } else {
+      salesTable?.forEach((element) {
+        if (element?.uid == args.uid) {
+          salesExecutive = element;
+        }
+      });
     }
 
-    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    if(args.uid == '') {
+      customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    } else {
+      customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+    }
 
     details.forEach((element) {
       if(element.customerName == customerName) {
@@ -520,7 +532,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                     });
                                     await CallDetailsDatabaseService(docid: '')
                                       .setUserData(
-                                        currentUser!.uid,
+                                        (args.uid == '' ? currentUser?.uid : args.uid)!,
                                         customerName,
                                         customerType,
                                         customerNumber,

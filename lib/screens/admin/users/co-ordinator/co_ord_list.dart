@@ -6,6 +6,8 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
+import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
+import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -42,10 +44,6 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
         coOrdList.add(element);
       }
     });
-
-
-    
-
 
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
@@ -152,8 +150,10 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xff4d47c3)),
                         onPressed: () {
-                          
-                        },
+                          Navigator.pushNamed(
+                            context, SalesPersonRegistration.routeName,
+                            arguments: 'Sales Co-Ordinator');
+                          },
                         child: Text('Add New +'),
                       ),
                     ),
@@ -188,7 +188,6 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                 setState(() {
                                   status = '';
                                 });
-                                
                               }
                             },
                             style: TextButton.styleFrom(
@@ -238,7 +237,12 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                 setState(() {
                                   status = '';
                                 });
-                                
+                                Navigator.pushNamed(
+                                  context, EditSalesPersonDetails.routeName,
+                                  arguments: Parameter(
+                                    select!,
+                                  )
+                                );
                               }
                             },
                             style: TextButton.styleFrom(

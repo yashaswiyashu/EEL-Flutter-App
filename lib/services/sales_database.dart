@@ -24,6 +24,7 @@ class SalesPersonDatabase {
     String district,
     String state, 
     String pincode,
+    bool approved
     ) async {
     return await userCollection.doc(uid).set({
       'uid': uid,
@@ -37,10 +38,10 @@ class SalesPersonDatabase {
       'password': password,
       'address1': address1,
       'address2': address2,
-      'city': district,
+      'district': district,
       'state': state,
       'pincode': pincode,
-      'approved': false,
+      'approved': approved,
     });
   }
 
@@ -73,7 +74,7 @@ class SalesPersonDatabase {
       'password': password,
       'address1': address1,
       'address2': address2,
-      'city': district,
+      'district': district,
       'state': state,
       'pincode': pincode,
       'approved': approved,

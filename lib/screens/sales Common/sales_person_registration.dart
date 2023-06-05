@@ -322,51 +322,6 @@ Future<bool> updateAddressFields() async {
                   education = val;
                 },
               ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Role:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xffefefff),
-                ),
-                dropdownColor: const Color(0xffefefff),
-                value: role,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    role = newValue!;
-                  });
-                },
-                items: <String>[
-                  'Sales Executive',
-                  'Sales Co-Ordinator',
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  );
-                }).toList(),
-              ),
               role == 'Sales Executive' ? const SizedBox(height: 20.0) : const SizedBox(height: 0,),
               role == 'Sales Executive' ? const SizedBox(
                   height: 20.0,
@@ -724,7 +679,8 @@ Future<bool> updateAddressFields() async {
                                                   address2,
                                                   city,
                                                   state,
-                                                  pincode)
+                                                  pincode,
+                                                  false)
                                               .then((value) {
                                             setState(() {
                                               loading = false;

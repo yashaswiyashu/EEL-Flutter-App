@@ -8,6 +8,7 @@ import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/edit_pending_order.dart';
@@ -18,6 +19,7 @@ import 'package:provider/provider.dart';
 
 class PendingOrdersList extends StatefulWidget {
   const PendingOrdersList({super.key});
+  static const routeName = '/PendingOrderDetailsList';
 
   @override
   State<PendingOrdersList> createState() => _PendingOrdersListState();
@@ -36,14 +38,17 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var details = [];
     var obj;
     // var productsList = [];
-
+    if (args.uid == '') {
     orderDetails.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) &&  (e.dropdown != 'Delivered')) ? details.add(e) : []);
-
+    } else {
+    orderDetails.forEach((e) => ((e.salesExecutiveId == args.uid) &&  (e.dropdown != 'Delivered')) ? details.add(e) : []);
+    }
     // details.forEach((element) {
     //   productsList.add(element.products);
     // });
@@ -114,12 +119,19 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
     
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
-    if (salesTable != null) {
+    if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
         }
       });
+    } else {
+      salesTable?.forEach((element) {
+        if (element?.uid == args.uid) {
+          salesExecutive = element;
+        }
+      });
+      
     }
 
 
@@ -181,7 +193,13 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
                         onPressed: (){
-                          Navigator.pushNamed(context, 'addNewOrder');
+                          Navigator.pushNamed(
+                                  context, 
+                                  AddNewOrder.routeName,
+                                  arguments: Parameter(
+                                    '',
+                                  )
+                                );
                         }, 
                         child: Text('Add New +'),
                       ),

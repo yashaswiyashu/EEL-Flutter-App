@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/screens/common/location.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -10,27 +12,31 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
-class EditSalesCoOrdinator extends StatefulWidget {
-  const EditSalesCoOrdinator({super.key});
-  static const routeName = '/EditSalesCoOrdinator';
+class EditSalesPersonDetails extends StatefulWidget {
+  const EditSalesPersonDetails({super.key});
+  static const routeName = '/EditSalesPersonDetails';
 
   @override
-  State<EditSalesCoOrdinator> createState() =>
-      _EditSalesCoOrdinatorState();
+  State<EditSalesPersonDetails> createState() =>
+      _EditSalesPersonDetailsState();
 }
 
-class _EditSalesCoOrdinatorState extends State<EditSalesCoOrdinator> {
+class _EditSalesPersonDetailsState extends State<EditSalesPersonDetails> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
+  String numError = '';
+  bool approve = false;
 
   String name = '';
   String education = '';
-  String role = 'Sales Executive';
+  String role = '';
   String adhaarNumber = '';
   String phoneNumber = '';
   String email = '';
+  String prevEmail = '';
   String password = '';
+  String prevPassword = '';
   String address1 = '';
   String address2 = '';
   String city = '';
@@ -39,21 +45,26 @@ class _EditSalesCoOrdinatorState extends State<EditSalesCoOrdinator> {
   String pincodeError = '';
   String coOrdNameErr = '';
   String salesCoordId = '';
+  bool authCredEdited = false;
+
+  bool firstTime = true;
 
   String error = '';
   bool _passwordVisible = false;
   late FocusNode myFocusNode;
 
   final nameController = TextEditingController();
-  final educationController = TextEditingController();
-  final aadharController = TextEditingController();
-  final numberController = TextEditingController();
+  final educationController = TextEditingController();  
+  final aadharController = TextEditingController();  
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final coOrdinatorName = TextEditingController();
+  final address1Controller = TextEditingController();
   final talukController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
+  final numberController = TextEditingController();
+  final pincodeController = TextEditingController();
 
   @override
   void initState() {
@@ -61,10 +72,17 @@ class _EditSalesCoOrdinatorState extends State<EditSalesCoOrdinator> {
     _passwordVisible = false;
     myFocusNode = FocusNode();
     nameController.addListener(_nameLatestValue);
+    educationController.addListener(_educationValue);
+    aadharController.addListener(_aadharValue);
+    emailController.addListener(_emailValue);
+    passwordController.addListener(_passwordValue);
     coOrdinatorName.addListener(_coOrdinatorName);
+    address1Controller.addListener(_address1Value);
     cityController.addListener(_cityLatestValue);
     talukController.addListener(_talukLatestValue);
     stateController.addListener(_stateLatestValue);
+    numberController.addListener(_numberLatestValue);
+    pincodeController.addListener(_pincodeValue);
   }
 
   @override
@@ -72,32 +90,68 @@ class _EditSalesCoOrdinatorState extends State<EditSalesCoOrdinator> {
     // Clean up the focus node when the Form is disposed.
     myFocusNode.dispose();
     nameController.dispose();
+    educationController.dispose();
+    aadharController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     coOrdinatorName.dispose();
+    address1Controller.dispose();
     cityController.dispose();
     stateController.dispose();
     talukController.dispose();
+    numberController.dispose();
+    pincodeController.dispose();
     super.dispose();
   }
 
   void _cityLatestValue() {
-    print('Viru:: ${cityController.text}');
+    city = cityController.text;
+  }
+
+  void _educationValue() {
+    education = educationController.text;
+  }
+
+  void _aadharValue() {
+    adhaarNumber = aadharController.text;
+  }
+
+  void _emailValue() {
+    email = emailController.text;
+  }
+
+  void _passwordValue() {
+    password = passwordController.text;
   }
 
   void _stateLatestValue() {
-    print('Viru:: ${stateController.text}');
+    state = stateController.text;
   }
 
   void _talukLatestValue() {
-    print('Viru:: ${talukController.text}');
+    address2 = talukController.text;
   }
 
   void _nameLatestValue() {
-    print('Viru:: ${nameController.text}');
+    name = nameController.text;
   }
 
   void _coOrdinatorName() {
-    print('Viru:: ${coOrdinatorName.text}');
+    print(coOrdinatorName.text);
   }
+
+  void _address1Value() {
+    address1 = address1Controller.text;
+  }
+
+  void _numberLatestValue() {
+    phoneNumber = numberController.text;
+  }
+
+  void _pincodeValue() {
+    pincode = pincodeController.text;
+  }
+
 
   var snackBar = SnackBar(
     content: Text('Registered Successfully!!!'),
@@ -135,7 +189,7 @@ Future<bool> updateAddressFields() async {
         state = loc.state;
         stateController.text = loc.state;
         address1 = loc.name;
-        nameController.text = loc.name;
+        address1Controller.text = loc.name;
         address2 = loc.taluk;
         talukController.text = loc.taluk;
 
@@ -150,29 +204,54 @@ Future<bool> updateAddressFields() async {
     print("Viru: $address2"); */
   }
 
+  void fillFields(SalesPersonModel salesCoOrd) {
+    setState(() {
+      nameController.text = salesCoOrd.name;
+      numberController.text = salesCoOrd.phoneNumber;
+      educationController.text = salesCoOrd.education;
+      role = salesCoOrd.role;
+      aadharController.text = salesCoOrd.adhaarNumber;
+      emailController.text = salesCoOrd.email;
+      prevEmail = salesCoOrd.email;
+      passwordController.text = salesCoOrd.password;
+      prevPassword = salesCoOrd.password;
+      address1Controller.text = salesCoOrd.address1;
+      talukController.text = salesCoOrd.address2;
+      cityController.text = salesCoOrd.district;
+      stateController.text = salesCoOrd.state;
+      pincodeController.text = salesCoOrd.pincode;
+      approve = salesCoOrd.approved;
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as String;
+    if(prevEmail != email || prevPassword != password) {
+      setState(() {
+        authCredEdited = true;
+      });
+    }
+    print(authCredEdited);
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
-    List<String> salesCoOrd = [];
-    setState(() {
-      role = args;
-    });
 
-    salesTable.forEach((element) {
-      if(element!.name == coOrdinatorName.text) {
-        salesCoordId = element.uid;
-      }
-    });
+        //[Viru:2/6/23] Added to support customer mob search list
+    List<SalesPersonModel?> details = [];
+    salesTable.forEach((e) => details.add(e));
 
-    if(salesTable != null) {
+
+    if(firstTime) {
+      setState(() {
+        firstTime = false;
+      });
       salesTable.forEach((e) {
-        if(e!.role == 'Sales Co-Ordinator'){
-          salesCoOrd.add(e.name);
+        if(e!.role == 'Sales Co-Ordinator' && e.uid == args.uid){
+          fillFields(e);
         }
       });
     }
-
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
@@ -194,6 +273,44 @@ Future<bool> updateAddressFields() async {
                 child: Image.asset('assets/logotm.jpg'),
               ),
               const SizedBox(height: 20.0),
+              Container(
+                margin: EdgeInsets.only(right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                        const SizedBox(
+                            height: 20.0,
+                            child: Text(
+                              'Approve Co-Ordinator:',
+                              style: TextStyle(
+                                color: Color(0xff090a0a),
+                                fontSize: 16,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )),
+                        Container(
+                          margin: EdgeInsets.only(left: 20),
+                          width: 27.46,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 255, 254, 254),
+                          ),
+                          child: StatefulBuilder(builder:
+                              (BuildContext context, StateSetter setState) {
+                            return Switch(
+                              value: approve,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  approve = value;
+                                });
+                              },
+                            );
+                          }),
+                        ),
+                      ]),
+                    ),
+                    const SizedBox(height: 10.0),
               const SizedBox(
                 height: 20.0,
                 child: Text(
@@ -207,165 +324,14 @@ Future<bool> updateAddressFields() async {
                 ),
               ),
               TextFormField(
+                controller: nameController,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Your Name',
                     fillColor: const Color(0xfff0efff)),
-                onChanged: (val) {
-                  name = val;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Education:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Education Details',
-                ),
-                onChanged: (val) {
-                  education = val;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Role:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xffefefff),
-                ),
-                dropdownColor: const Color(0xffefefff),
-                value: role,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    role = newValue!;
-                  });
-                },
-                items: <String>[
-                  'Sales Executive',
-                  'Sales Co-Ordinator',
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  );
-                }).toList(),
-              ),
-              role == 'Sales Executive' ? const SizedBox(height: 20.0) : const SizedBox(height: 0,),
-              role == 'Sales Executive' ? const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Sales Co-Ordinator:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )) : const SizedBox(height: 0,),
-              role == 'Sales Executive' ? SizedBox(
-                child: TypeAheadFormField(
-                  
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: coOrdinatorName,
-                    decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Co-ordinator Name',
-                      fillColor: const Color(0xfff0efff),
-                    ),
-                    /* onChanged: (val) {
-                      customerName = val;
-                    }, */
-                  ),
-
-                  suggestionsCallback: (pattern) async {
-                    // Filter the customer list based on the search pattern
-                    return salesCoOrd
-                    .where((customer) =>
-                    customer != null &&
-                    customer.toLowerCase().contains(pattern.toLowerCase()))
-                    .toList();
-                  },
-
-                  itemBuilder: (context, String? suggestion) {
-                    if (suggestion == null) return const SizedBox.shrink();
-                    return ListTile(
-                      title: Text(suggestion),
-                    );
-                  },
-
-                  onSuggestionSelected: (String? suggestion) {
-                    if (suggestion != null) {
-                      setState(() {
-                        //customerName = suggestion.customerName;
-                        coOrdinatorName.text = suggestion;
-                        coOrdNameErr = '';
-                    });
-                  }
-              },
-
-            ),
-              ) : const SizedBox(height: 0,),
-              Container(
-                child: Text(
-                  coOrdNameErr,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 13.0,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Adhaar Number:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                keyboardType: TextInputType.phone,
-                validator: (value) =>
-                    value?.length == 12 ? null : 'Enter valid Aadhar number',
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Your Adhaar Number',
-                ),
-                onChanged: (val) {
-                  adhaarNumber = val;
-                },
+                // onChanged: (val) {
+                //   name = val;
+                // },
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -379,7 +345,88 @@ Future<bool> updateAddressFields() async {
                       fontWeight: FontWeight.w500,
                     ),
                   )),
+
               TextFormField(
+                controller: numberController,
+                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Your Number',
+                    fillColor: const Color(0xfff0efff)),
+                // onChanged: (val) {
+                //   name = val;
+                // },
+              ),
+              SizedBox(child: Text(numError,
+                     style: TextStyle(color: Color.fromARGB(190, 193, 2, 2),),),),
+
+
+              const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Education:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
+              TextFormField(
+                controller: educationController,
+                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                decoration: textInputDecoration.copyWith(
+                  hintText: 'Enter Education Details',
+                ),
+                // onChanged: (val) {
+                //   education = val;
+                // },
+              ),
+              Container(
+                child: Text(
+                  coOrdNameErr,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 13.0,
+                  ),
+                ),
+              ),
+              //const SizedBox(height: 20.0),
+              const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Adhaar Number:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
+              TextFormField(
+                controller: aadharController,
+                keyboardType: TextInputType.phone,
+                validator: (value) =>
+                    value?.length == 12 ? null : 'Enter valid Aadhar number',
+                decoration: textInputDecoration.copyWith(
+                  hintText: 'Enter Your Adhaar Number',
+                ),
+                // onChanged: (val) {
+                //   adhaarNumber = val;
+                // },
+              ),
+              const SizedBox(height: 20.0),
+/*               const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Phone Number:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
+ */              /* TextFormField(
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value?.length == 10 ? null : 'Enter valid number',
@@ -389,8 +436,9 @@ Future<bool> updateAddressFields() async {
                 onChanged: (val) {
                   phoneNumber = val;
                 },
-              ),
-              const SizedBox(height: 20.0),
+              ), */
+
+              //const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -403,6 +451,7 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
+                controller: emailController,
                 focusNode: myFocusNode,
                 validator: (value) =>
                     RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -412,9 +461,11 @@ Future<bool> updateAddressFields() async {
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter Your Email',
                 ),
-                onChanged: (val) {
-                  email = val;
-                },
+                // onChanged: (val) {
+                //   setState(() {
+                //     authCredEdited = true;
+                //   });
+                // },
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -429,6 +480,7 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
+                controller: passwordController,
                 validator: (value) => value!.length < 6
                     ? 'Enter a password of more than 6 characters'
                     : null,
@@ -452,9 +504,11 @@ Future<bool> updateAddressFields() async {
                     },
                   ),
                 ),
-                onChanged: (val) {
-                  password = val;
-                },
+                // onChanged: (val) {
+                //   setState(() {
+                //     authCredEdited = true;
+                //   });
+                // },
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -469,7 +523,7 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
-                controller: nameController,
+                controller: address1Controller,
                 validator: (value) =>
                     value!.isEmpty ? 'Missing address field' : null,
                 decoration: textInputDecoration.copyWith(
@@ -485,9 +539,9 @@ Future<bool> updateAddressFields() async {
                 validator: (value) =>
                     value!.isEmpty ? 'Missing address field' : null,
                 decoration: textInputDecoration.copyWith(hintText: 'talluk'),
-                onChanged: (val) {
-                  address2 = val;
-                },
+                // onChanged: (val) {
+                //   address2 = val;
+                // },
               ),
               const SizedBox(height: 10.0),
               TextFormField(
@@ -543,35 +597,36 @@ Future<bool> updateAddressFields() async {
                 decoration: textInputDecoration.copyWith(hintText: 'state'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
-                onChanged: (val) {
-                  //updateCity(val);
-                  setState(() {
-                    state = val;
-                  });
-                },
+                // onChanged: (val) {
+                //   //updateCity(val);
+                //   setState(() {
+                //     state = val;
+                //   });
+                // },
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: pincodeController,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
                         ? null
                         : 'Enter Valid pincode',
                 decoration: textInputDecoration.copyWith(hintText: 'pincode'),
-                onChanged: (val) {
-                  setState(() {
-                    pincode = val;
-                  });
-                  if (pincode.length == 6) {
-                    updateAddressFields().then((value) {
-                      if(!value) {
-                        setState(() {
-                          pincodeError = 'Please enter valid pincode';
-                        });
-                      }
-                    });
-                  }
-                },
+                // onChanged: (val) {
+                //   setState(() {
+                //     pincode = val;
+                //   });
+                //   // if (pincode.length == 6) {
+                //   //   updateAddressFields().then((value) {
+                //   //     if(!value) {
+                //   //       setState(() {
+                //   //         pincodeError = 'Please enter valid pincode';
+                //   //       });
+                //   //     }
+                //   //   });
+                //   // }
+                // },
               ),
                             const SizedBox(height: 12.0),
               Text(
@@ -606,25 +661,24 @@ Future<bool> updateAddressFields() async {
                               ? const Loading()
                               : ElevatedButton(
                                   onPressed: () async {
-                                    if (_formkey.currentState!.validate() && (!(role == 'Sales Executive' && coOrdinatorName.text == ''))) {
+                                    if (_formkey.currentState!.validate()) {
                                       setState(() {
                                         loading = true;
                                         coOrdNameErr = '';
                                       });
-                                      dynamic result = await _auth
-                                          .registerWithEmailAndPassword(
-                                              email, password);
-                                      if (result == null) {
-                                        setState(() {
-                                          error = 'please supply a valid email';
-                                          loading = false;
-                                        });
-                                        showConfirmation();
-                                      } else {
-                                        if (result?.uid != null) {
-                                          await SalesPersonDatabase(docid: '')
-                                              .setUserData(
-                                                  result?.uid,
+                                      
+                                      if(authCredEdited) {
+                                        dynamic result = await _auth.updateEmailAndPassword(args.uid, email, password);
+                                        // dynamic result = '';
+                                        if (!result) {
+                                          setState(() {
+                                            error = 'Failed to update Email and Password';
+                                            loading = false;
+                                          });
+                                        } else {
+                                        if (result) {
+                                          await SalesPersonDatabase(docid: args.uid)
+                                              .updateUserData(
                                                   name,
                                                   education,
                                                   role,
@@ -637,22 +691,48 @@ Future<bool> updateAddressFields() async {
                                                   address2,
                                                   city,
                                                   state,
-                                                  pincode)
+                                                  pincode,
+                                                  approve
+                                                  )
                                               .then((value) {
                                             setState(() {
                                               loading = false;
                                             });
-                                            Navigator.pushNamed(
-                                                context, 'authWrapper');
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                              content: Text('Co-Ordinator Details Updated Successfully!!!'),
+                                              ));
+                                              Navigator.pop(context);
                                           });
                                         }
                                       }
-                                    } else {
-                                      if (role == 'Sales Executive' && coOrdinatorName.text == '') {
-                                        setState(() {
-                                          coOrdNameErr = 'Please enter a Co-Ordinator Name';
-                                        });
-                                      }
+                                      } else {
+                                        await SalesPersonDatabase(docid: args.uid)
+                                              .updateUserData(
+                                                  name,
+                                                  education,
+                                                  role,
+                                                  salesCoordId,
+                                                  adhaarNumber,
+                                                  phoneNumber,
+                                                  email,
+                                                  password,
+                                                  address1,
+                                                  address2,
+                                                  city,
+                                                  state,
+                                                  pincode,
+                                                  approve
+                                                  )
+                                              .then((value) {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                              content: Text('Co-Ordinator Details Updated Successfully!!!'),
+                                              ));
+                                              Navigator.pop(context);
+                                          });
+                                      } 
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(

@@ -8,6 +8,7 @@ import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -189,7 +190,13 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
                         onPressed: (){
-                          Navigator.pushNamed(context, 'addNewOrder');
+                          Navigator.pushNamed(
+                                  context, 
+                                  AddNewOrder.routeName,
+                                  arguments: Parameter(
+                                    args.uid,
+                                  )
+                                );
                         }, 
                         child: Text('Add New +'),
                       ),

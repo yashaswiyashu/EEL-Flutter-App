@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -16,6 +17,7 @@ import '../../common/location.dart';
 
 class AddNewCustomer extends StatefulWidget {
   const AddNewCustomer({super.key});
+  static const routeName = '/addCustomerDetails';
 
   @override
   State<AddNewCustomer> createState() => _AddNewCustomerState();
@@ -132,18 +134,29 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
 
     //[Viru:2/6/23] Added to support customer mob search list
     List<CustomerModel> details = [];
     final customerList = Provider.of<List<CustomerModel>>(context);
+    if(args.uid == '') {
     customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    } else {
+    customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+    }
 
 
-    if (salesTable != null) {
+    if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable.forEach((element) {
+        if (element?.uid == args.uid) {
           salesExecutive = element;
         }
       });
@@ -1104,7 +1117,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                                               docid: userCredential.user!.uid)
                                           .setUserData(
                                         userCredential.user!.uid,
-                                        currentUser!.uid,
+                                        args.uid == '' ? currentUser!.uid : args.uid,
                                         customerName,
                                         mobileNumber,
                                         email,

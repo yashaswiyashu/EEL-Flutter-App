@@ -64,7 +64,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
       setState(() {
         firstTime = false;
       });
-      salesTable?.forEach((element) {
+      salesExecList.forEach((element) {
         if (element?.role == 'Sales Executive') {
           executiveList.add(element!.name);
         }

@@ -6,6 +6,7 @@ import 'package:flutter_app/models/complaint_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/view_complaint_details.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -197,7 +198,13 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff4d47c3)),
                     onPressed: () {
-                      Navigator.pushNamed(context, 'addNewComplaint');
+                      Navigator.pushNamed(
+                                  context, 
+                                  AddNewComplaint.routeName,
+                                  arguments: Parameter(
+                                    args.uid,
+                                  )
+                                );
                     },
                     child: Text('Add New +'),
                   ),

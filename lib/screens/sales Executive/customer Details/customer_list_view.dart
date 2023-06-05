@@ -3,6 +3,7 @@ import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/edit_customer_detail.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/view_customer_details.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -186,7 +187,13 @@ class _CustomerListViewState extends State<CustomerListView> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xff4d47c3)),
                         onPressed: () {
-                          Navigator.pushNamed(context, 'addNewCustomer');
+                          Navigator.pushNamed(
+                                  context, 
+                                  AddNewCustomer.routeName,
+                                  arguments: Parameter(
+                                    args.uid,
+                                  )
+                                );
                         },
                         child: Text('Add New +'),
                       ),

@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:firebase_admin/firebase_admin.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
   
@@ -51,4 +56,25 @@ class AuthService {
       return null;
     }
   }
+
+  Future<bool> updateEmailAndPassword(String userId, String newEmail, String newPassword) async {
+    try {
+      var url = Uri.parse('http://127.0.0.1:3000/updateUser/$userId/$newEmail/$newPassword');
+      var response = await http.post(
+        url,
+      );
+
+      if (response.statusCode == 200) {
+        print('Email and password updated successfully.');
+        return true;
+      } else {
+        print('Failed to update email and password. Status code: ${response.statusCode}');
+        return false;
+      }
+    } catch (error) {
+      print('Error updating email and password: $error');
+      return false;
+    }
+  }
+
 }

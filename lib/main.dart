@@ -14,6 +14,8 @@ import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
 import 'package:flutter_app/screens/admin/products/product_list_view.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/co_ord_list.dart';
+import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
+import 'package:flutter_app/screens/admin/users/select_user.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/complaints/pending_complaints_list.dart';
@@ -86,7 +88,7 @@ class MyApp extends StatelessWidget {
           //Sales Executive =>
           SalesPersonRegistration.routeName:(context) => const SalesPersonRegistration(),
             //Call details  
-            'addCallDetails':(context) => const AddCallDetails(restorationId: 'main',),
+            AddCallDetails.routeName:(context) => const AddCallDetails(restorationId: 'main',),
             CallDetailsList.routeName:(context) => const CallDetailsList(),
             EditCallDetails.routeName:(context) => const EditCallDetails(restorationId: 'edit',),
             ViewCallDetails.routeName:(context) => ViewCallDetails(),
@@ -101,19 +103,19 @@ class MyApp extends StatelessWidget {
             ViewPendingOrder.routeName:(context) => const ViewPendingOrder(),
 
             //Customer details
-            'addNewCustomer':(context) => const AddNewCustomer(),
+            AddNewCustomer.routeName:(context) => const AddNewCustomer(),
             CustomerListView.routeName:(context) => const CustomerListView(),
             EditCustomerDetails.routeName:(context) => const EditCustomerDetails(),
             ViewCustomerDetails.routeName:(context) => const ViewCustomerDetails(),
             
             //Order details
-            'addNewOrder':(context) => const AddNewOrder(restorationId: 'main'),
+            AddNewOrder.routeName:(context) => const AddNewOrder(restorationId: 'main'),
             OrderDetailsList.routeName:(context) => const OrderDetailsList(),
             EditOrder.routeName:(context) => const EditOrder(restorationId: 'main',),
             ViewOrder.routeName:(context) => const ViewOrder(),
 
             //Complaints
-            'addNewComplaint':(context) => const AddNewComplaint(restorationId: 'main',),
+            AddNewComplaint.routeName:(context) => const AddNewComplaint(restorationId: 'main',),
             ComplaintDetailsList.routeName:(context) => const ComplaintDetailsList(),
             EditComplaintDetails.routeName:(context) => const EditComplaintDetails(restorationId: 'main'),
             ViewComplaintDetails.routeName:(context) => ViewComplaintDetails(),
@@ -137,8 +139,12 @@ class MyApp extends StatelessWidget {
             ViewProductAdmin.routeName:(context) => const ViewProductAdmin(),
 
             //Users
+              'selectUser':(context) => const UserSelection(),
+
               //Sales Co-Ordinator
               'salesCoOrdList':(context) => const SalesCoOrdinatorList(),
+              EditSalesPersonDetails.routeName:(context) => const EditSalesPersonDetails(),
+
 
         },
       ),

@@ -104,7 +104,7 @@ class _RegisterAsState extends State<RegisterAs> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children:const [
                           Text(
-                              "Sales coordinator",
+                              "Sales Co-Ordinator",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,

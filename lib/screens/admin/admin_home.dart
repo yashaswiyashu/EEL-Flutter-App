@@ -180,7 +180,7 @@ class _AdminHomeState extends State<AdminHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'salesCoOrdList');
+                    Navigator.pushNamed(context, 'selectUser');
                   },
                   child: Container(
                     width: 323,
@@ -239,7 +239,7 @@ class _AdminHomeState extends State<AdminHome> {
                                           ),
                                           children: [
                                             TextSpan(
-                                              text: "Sales Co-Ordinators:",
+                                              text: "Users:",
                                               style: TextStyle(
                                                 decoration: TextDecoration.none,
 
@@ -252,7 +252,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Sales Co-Ordinators: ",
+                                      "Total Sales Co-Ordinators: \nTotal Sales Executive: \nTotal Customers:",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -334,7 +334,7 @@ class _AdminHomeState extends State<AdminHome> {
                                           ),
                                           children: [
                                             TextSpan(
-                                              text: "Sales Executives:",
+                                              text: "Complaints:",
                                               style: TextStyle(
                                                 decoration: TextDecoration.none,
                                                 fontWeight: FontWeight.bold,
@@ -346,7 +346,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Sales Executives: ",
+                                      "Total Complaints(This Month): \n Total Pending Complaints",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -428,7 +428,7 @@ class _AdminHomeState extends State<AdminHome> {
                                           ),
                                           children: [
                                             TextSpan(
-                                              text: "Customers:",
+                                              text: "Orders:",
                                               style: TextStyle(
                                                 decoration: TextDecoration.none,
                                                 fontWeight: FontWeight.bold,
@@ -440,7 +440,197 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Customers: ",
+                                      "Total Orders(This Month): \nTotal Pending Orders:",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.80),
+                TextButton(
+                  onPressed: () {
+                    
+                  },
+                  child: Container(
+                    width: 323,
+                    height: 105,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 297,
+                          height: 115,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(9),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x664d47c3),
+                                blurRadius: 61,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                            color: Color(0xff4d47c3),
+                          ),
+                          padding: const EdgeInsets.only(
+                            top: 9,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 4), // Add padding below the underline
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.white, // Set the underline color
+                                            width: 2, // Set the underline thickness
+                                          ),
+                                        ),
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "Call Details:",
+                                              style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      "Total Calls(This Month): ",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.80),
+                TextButton(
+                  onPressed: () {
+                    
+                  },
+                  child: Container(
+                    width: 323,
+                    height: 105,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 297,
+                          height: 115,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(9),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x664d47c3),
+                                blurRadius: 61,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                            color: Color(0xff4d47c3),
+                          ),
+                          padding: const EdgeInsets.only(
+                            top: 9,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Flexible(
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 4), // Add padding below the underline
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.white, // Set the underline color
+                                            width: 2, // Set the underline thickness
+                                          ),
+                                        ),
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "Feedback Details:",
+                                              style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      "Total Feedbacks: ",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,

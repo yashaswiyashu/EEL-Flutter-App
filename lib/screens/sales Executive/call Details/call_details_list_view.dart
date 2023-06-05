@@ -5,6 +5,7 @@ import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/add_call_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -181,7 +182,13 @@ class _CallDetailsListState extends State<CallDetailsList> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
                         onPressed: (){
-                          Navigator.pushNamed(context, 'addCallDetails');
+                          Navigator.pushNamed(
+                                  context, 
+                                  AddCallDetails.routeName,
+                                  arguments: Parameter(
+                                    args.uid,
+                                  )
+                                );
                         }, 
                         child: Text('Add New +'),
                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -24,6 +25,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 class AddNewComplaint extends StatefulWidget {
   const AddNewComplaint({super.key, this.restorationId});
   final String? restorationId;
+  static const routeName = '/addComplaintDetails';
+
   @override
   State<AddNewComplaint> createState() => _AddNewComplaintState();
 }
@@ -138,12 +141,18 @@ class _AddNewComplaintState extends State<AddNewComplaint>
     //[Viru:27/5/23] Added to support customer name search list
     //final customerList = Provider.of<List<CustomerModel>>(context);
     List<CustomerModel> details = [];
-
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
-    if (salesTable != null) {
+    if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable.forEach((element) {
+        if (element?.uid == args.uid) {
           salesExecutive = element;
         }
       });
@@ -152,7 +161,11 @@ class _AddNewComplaintState extends State<AddNewComplaint>
 
     //[Viru:27/5/23] Added to support customer name search list
     final customerList = Provider.of<List<CustomerModel>>(context);
-    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    if(args.uid == '') {
+      customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    } else {
+      customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+    }
 
     final AuthService _auth = AuthService();
     return Scaffold(
@@ -458,7 +471,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                                 });
                                 await ComplaintDetailsDatabaseService(docid: '')
                                     .setUserData(
-                                  currentUser!.uid,
+                                  (args.uid == '' ? currentUser?.uid : args.uid)!,
                                   customerName,
                                   customerNumber,
                                   complaintDate,
