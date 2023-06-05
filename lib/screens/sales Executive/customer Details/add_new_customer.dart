@@ -59,7 +59,6 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   final numberController = TextEditingController();
   //final custNameController = TextEditingController();
 
-
   void initState() {
     _passwordVisible = false;
     cityController.addListener(_cityLatestValue);
@@ -68,10 +67,9 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
     stateController.addListener(_stateLatestValue);
     //custNameController.addListener(_custNameLatestValue);
     numberController.addListener(_numberLatestValue);
-
   }
 
-@override
+  @override
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
@@ -109,8 +107,8 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
 
   Future<bool> updateAddressFields() async {
     Location? loc = await getLocation(pincode);
-    
-    if(loc != null){
+
+    if (loc != null) {
       setState(() {
         city = loc.district;
         cityController.text = loc.district;
@@ -120,17 +118,18 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
         nameController.text = loc.name;
         address2 = loc.taluk;
         talukController.text = loc.taluk;
-
       });
       return true;
     } else {
       return false;
     }
-   /*  print("Viru: $city");
+    /*  print("Viru: $city");
     print("Viru: $state");
     print("Viru: $address1");
     print("Viru: $address2"); */
   }
+
+  var isDupNum = false;
 
   @override
   Widget build(BuildContext context) {
@@ -141,12 +140,13 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
     //[Viru:2/6/23] Added to support customer mob search list
     List<CustomerModel> details = [];
     final customerList = Provider.of<List<CustomerModel>>(context);
-    if(args.uid == '') {
-    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    if (args.uid == '') {
+      customerList.forEach(
+          (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
     } else {
-    customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+      customerList
+          .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
     }
-
 
     if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
@@ -161,6 +161,13 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
         }
       });
     }
+
+    customerList.forEach((element) {
+      if(element.mobileNumber == numberController.text) {
+        isDupNum = true;
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
@@ -194,20 +201,18 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                      padding: EdgeInsets.only(right: 15, top: 10),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              'Name: ${salesExecutive.name}',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ]),
+                padding: EdgeInsets.only(right: 15, top: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  Text(
+                    'Name: ${salesExecutive.name}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                ]),
+              ),
               Container(
                 margin: const EdgeInsets.only(left: 100),
                 width: 180,
@@ -260,71 +265,75 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                   mobileNumber = val;
                 },
               ),
- */           
-                //[Viru:2/6/23] Added to support customer name search list
-                TypeAheadFormField(
-                  
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: numberController,
-                    decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Customer Mobile Number',
-                      fillColor: const Color(0xfff0efff),
-                    ),
-                    inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // Only allow numerical values
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        numError = ''; // Clear the error message
-                        // numberController.text = value;
-                      });
-                    },
+ */
+              //[Viru:2/6/23] Added to support customer name search list
+              TypeAheadFormField(
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: numberController,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Customer Mobile Number',
+                    fillColor: const Color(0xfff0efff),
                   ),
-
-                  suggestionsCallback: (pattern) async {
-                    // Filter the customer list based on the search pattern
-                    return details
-                    .where((customer) =>
-                    customer != null &&
-                    customer.mobileNumber.contains(pattern))
-                    .toList();
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[0-9]')), // Only allow numerical values
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      numError = ''; // Clear the error message
+                      // numberController.text = value;
+                    });
                   },
-
-                  itemBuilder: (context, CustomerModel? suggestion) {
-                    if (suggestion == null) return const SizedBox.shrink();
-                    return ListTile(
-                      title: Text(suggestion.mobileNumber),
-                    );
-                  },
-
-                  onSuggestionSelected: (CustomerModel? suggestion) {
-                    if (suggestion != null) {
-                      setState(() {
-                        numError = 'Customer with this number already exists';
-                        numberController.clear();
-                      });
-                    } else {
-                      numberController.text.length != 10 ? 'Enter Customer Mobile Number' : null;
-                      setState(() {
-                        numError = '';
-                      });
-                    }
-              },
-              validator: (value) {
-              if (value != null && value.length != 10) {
-              return 'Enter a valid 10-digit mobile number';
-              }
-              return null;
-              },
-              onSaved: (value) {
-              setState(() {
-              numError = ''; // Clear the error message
-              });
-  },
-
-            ),
-              SizedBox(child: Text(numError,
-                     style: TextStyle(color: Color.fromARGB(190, 193, 2, 2),),),),
+                ),
+                suggestionsCallback: (pattern) async {
+                  // Filter the customer list based on the search pattern
+                  return details
+                      .where((customer) =>
+                          customer != null &&
+                          customer.mobileNumber.contains(pattern))
+                      .toList();
+                },
+                itemBuilder: (context, CustomerModel? suggestion) {
+                  if (suggestion == null) return const SizedBox.shrink();
+                  return ListTile(
+                    title: Text(suggestion.mobileNumber),
+                  );
+                },
+                onSuggestionSelected: (CustomerModel? suggestion) {
+                  if (suggestion != null) {
+                    setState(() {
+                      numError = 'Customer with this number already exists';
+                      numberController.clear();
+                    });
+                  } else {
+                    numberController.text.length != 10
+                        ? 'Enter Customer Mobile Number'
+                        : null;
+                    setState(() {
+                      numError = '';
+                    });
+                  }
+                },
+                validator: (value) {
+                  if (value != null && value.length != 10) {
+                    return 'Enter a valid 10-digit mobile number';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  setState(() {
+                    numError = ''; // Clear the error message
+                  });
+                },
+              ),
+              SizedBox(
+                child: Text(
+                  numError,
+                  style: TextStyle(
+                    color: Color.fromARGB(190, 193, 2, 2),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
@@ -409,8 +418,9 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
               const SizedBox(height: 10.0),
               TextFormField(
                 controller: nameController,
-                decoration:
-                    textInputDecoration.copyWith(hintText: 'Please enter the pincode to autofill postal address'),
+                decoration: textInputDecoration.copyWith(
+                    hintText:
+                        'Please enter the pincode to autofill postal address'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
                 onChanged: (val) {
@@ -499,20 +509,21 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                 validator: (value) =>
-                    RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6 ? null : 'Enter Valid pincode',
+                    RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
+                        ? null
+                        : 'Enter Valid pincode',
                 onChanged: (val) {
                   setState(() {
                     pincode = val;
                   });
-                  if(pincode.length == 6) {
+                  if (pincode.length == 6) {
                     updateAddressFields().then((value) {
-                      if(!value) {
+                      if (!value) {
                         setState(() {
                           pincodeError = 'Please enter valid pincode';
                         });
                       }
                     });
-                    
                   }
                 },
               ),
@@ -1080,78 +1091,92 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                           ElevatedButton(
                             onPressed: () async {
                               if (_formkey.currentState!.validate() &&
-                                      state != 'Select State') {
+                                  state != 'Select State' && !isDupNum) {
                                 setState(() {
                                   loading = true;
+                                  numError = '';
                                 });
                                 try {
                                   var cred;
-                                  User? currentExistingUser = FirebaseAuth.instance.currentUser;
-                                  
+                                  User? currentExistingUser =
+                                      FirebaseAuth.instance.currentUser;
+
                                   if (salesTable != null) {
                                     salesTable.forEach((element) {
-                                      if (element?.uid == currentExistingUser?.uid) {
+                                      if (element?.uid ==
+                                          currentExistingUser?.uid) {
                                         cred = element;
                                       }
                                     });
                                   }
 
-                                  AuthCredential credential = EmailAuthProvider.credential(
+                                  AuthCredential credential =
+                                      EmailAuthProvider.credential(
                                     email: cred!.email,
                                     password: cred.password,
                                   );
 
                                   // Register the new user
                                   UserCredential userCredential =
-                                      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                      await FirebaseAuth.instance
+                                          .createUserWithEmailAndPassword(
                                     email: email,
                                     password: password,
                                   );
 
                                   await FirebaseAuth.instance.signOut();
-                                  await FirebaseAuth.instance.signInWithCredential(credential);
+                                  await FirebaseAuth.instance
+                                      .signInWithCredential(credential);
                                   // Perform any additional actions with the new user
                                   // ...
                                   if (userCredential.user?.uid != null) {
-                                      await CustomerDatabaseService(
-                                              docid: userCredential.user!.uid)
-                                          .setUserData(
-                                        userCredential.user!.uid,
-                                        args.uid == '' ? currentUser!.uid : args.uid,
-                                        customerName,
-                                        mobileNumber,
-                                        email,
-                                        password,
-                                        address1,
-                                        address2,
-                                        city,
-                                        state,
-                                        pincode,
-                                        dropdownInt1,
-                                        dropdownInt2,
-                                        dropdownInt3,
-                                        dropdownInt4,
-                                        dropdownUses1,
-                                        dropdownUses2,
-                                        dropdownUses3,
-                                        dropdownUses4,
-                                      )
-                                          .then((value) {
-                                        setState(() {
-                                          loading = false;
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text(
-                                                'New Customer Details Added Successfully!!!'),
-                                          ));
-                                        });
-                                        Navigator.pop(context);
+                                    await CustomerDatabaseService(
+                                            docid: userCredential.user!.uid)
+                                        .setUserData(
+                                      userCredential.user!.uid,
+                                      args.uid == ''
+                                          ? currentUser!.uid
+                                          : args.uid,
+                                      customerName,
+                                      mobileNumber,
+                                      email,
+                                      password,
+                                      address1,
+                                      address2,
+                                      city,
+                                      state,
+                                      pincode,
+                                      dropdownInt1,
+                                      dropdownInt2,
+                                      dropdownInt3,
+                                      dropdownInt4,
+                                      dropdownUses1,
+                                      dropdownUses2,
+                                      dropdownUses3,
+                                      dropdownUses4,
+                                    )
+                                        .then((value) {
+                                      setState(() {
+                                        loading = false;
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(
+                                              'New Customer Details Added Successfully!!!'),
+                                        ));
                                       });
+                                      Navigator.pop(context);
+                                    });
                                   }
                                 } catch (e) {
                                   setState(() {
                                     error = e.toString();
                                     loading = false;
+                                  });
+                                }
+                              } else {
+                                if (isDupNum) {
+                                  setState(() {
+                                    numError = 'SalesPerson with this number already exists';
                                   });
                                 }
                               }

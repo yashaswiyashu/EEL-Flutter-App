@@ -15,6 +15,7 @@ import 'package:flutter_app/screens/admin/products/product_list_view.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/co_ord_list.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
+import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/select_user.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
@@ -144,7 +145,7 @@ class MyApp extends StatelessWidget {
               //Sales Co-Ordinator
               'salesCoOrdList':(context) => const SalesCoOrdinatorList(),
               EditSalesPersonDetails.routeName:(context) => const EditSalesPersonDetails(),
-
+              ViewCoOrdinatorDetails.routeName:(context) => const ViewCoOrdinatorDetails(),
 
         },
       ),

@@ -59,11 +59,10 @@ class AuthService {
 
   Future<bool> updateEmailAndPassword(String userId, String newEmail, String newPassword) async {
     try {
-      var url = Uri.parse('http://127.0.0.1:3000/updateUser/$userId/$newEmail/$newPassword');
+      var url = Uri.parse('https://www.ar.rscsys.in/updateUser/$userId/$newEmail/$newPassword');
       var response = await http.post(
         url,
       );
-
       if (response.statusCode == 200) {
         print('Email and password updated successfully.');
         return true;
@@ -76,5 +75,4 @@ class AuthService {
       return false;
     }
   }
-
 }

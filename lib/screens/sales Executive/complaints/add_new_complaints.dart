@@ -35,7 +35,7 @@ class AddNewComplaint extends StatefulWidget {
 class _AddNewComplaintState extends State<AddNewComplaint>
     with RestorationMixin {
   final _formkey = GlobalKey<FormState>();
-
+final AuthService _auth = AuthService();
 
   bool loading = false;
 
@@ -47,6 +47,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
   String complaintDetails = '';
   String error = '';
   String status = '';
+  String nameErr = '';
   final numberController = TextEditingController();
   final nameController = TextEditingController();
 
@@ -136,6 +137,7 @@ class _AddNewComplaintState extends State<AddNewComplaint>
 
 
   var salesExecutive;
+  var isDupName = false;
   @override
   Widget build(BuildContext context) {
     //[Viru:27/5/23] Added to support customer name search list
@@ -167,7 +169,13 @@ class _AddNewComplaintState extends State<AddNewComplaint>
       customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
     }
 
-    final AuthService _auth = AuthService();
+    customerList.forEach((element) {
+      if(element.customerName == nameController.text) {
+        setState(() {
+          isDupName = true;
+        });
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
@@ -286,7 +294,14 @@ class _AddNewComplaintState extends State<AddNewComplaint>
               },
 
             ),
-  
+            const SizedBox(height: 5.0),
+              Container(
+                margin: const EdgeInsets.only(left: 110),
+                child: Text(
+                  nameErr,
+                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                ),
+              ),
 
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -464,8 +479,17 @@ class _AddNewComplaintState extends State<AddNewComplaint>
                         children: [
                           ElevatedButton(
                             onPressed: () async {
+                              if(!isDupName) {
+                                setState(() {
+                                  nameErr = 'Entered customer is not registerd. Please Register and Try again';
+                                });
+                              } else {
+                                setState(() {
+                                  nameErr = '';
+                                });
+                              }
                               if (_formkey.currentState!.validate() &&
-                                  complaintDate != 'Select Date') {
+                                  complaintDate != 'Select Date' && nameErr == '') {
                                 setState(() {
                                   loading = true;
                                 });

@@ -108,6 +108,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   String error = '';
   String dateError = '';
   String productError = '';
+  String nameErr = '';
 
   String subTotal = '0';
   String cgst = '0.09';
@@ -243,6 +244,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
 
   var salesExecutive;
 
+  var isDupName = false;
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
@@ -252,10 +255,9 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     List<CustomerModel> details = [];
     if(args.uid == ''){
-    customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+      customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
     }else {
-    customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
-
+      customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
     }
 
 
@@ -342,6 +344,14 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
         }
       });
     }
+
+    customerList.forEach((element) {
+      if(element.customerName == nameController.text) {
+        setState(() {
+          isDupName = true;
+        });
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -478,6 +488,15 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               },
 
             ),
+                        const SizedBox(height: 5.0),
+              Container(
+                margin: const EdgeInsets.only(left: 110),
+                child: Text(
+                  nameErr,
+                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                ),
+              ),
+
                 const SizedBox(height: 20.0),
                 const SizedBox(
                     height: 20.0,
@@ -951,13 +970,22 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                           children: [
                             ElevatedButton(
                               onPressed: () async {
+                              if(!isDupName) {
+                                setState(() {
+                                  nameErr = 'Entered customer is not registerd. Please Register and Try again';
+                                });
+                              } else {
+                                setState(() {
+                                  nameErr = '';
+                                });
+                              }
                                 if (_formkey.currentState!.validate() &&
                                     customerId != '' &&
                                     callDate != 'Select Date' &&
                                     selectedOptions[
                                             selectedOptions.length - 1] !=
                                         'Select Product' &&
-                                    productError == '') {
+                                    productError == '' && nameErr == '') {
                                   setState(() {
                                     loading = true;
                                     dateError = '';

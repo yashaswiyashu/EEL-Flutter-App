@@ -225,6 +225,38 @@ Future<bool> updateAddressFields() async {
 
   }
 
+  void confirmDeletion(String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Do you want to delete entire document?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        SalesPersonDatabase(docid: uid).deleteUserData();
+        Navigator.pop(context);
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     if(prevEmail != email || prevPassword != password) {
@@ -654,7 +686,7 @@ Future<bool> updateAddressFields() async {
                       width: 420,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           loading
@@ -739,7 +771,7 @@ Future<bool> updateAddressFields() async {
                                     backgroundColor: Color(0xff4d47c3),
                                   ),
                                   child: Container(
-                                    width: 100,
+                                    width: 70,
                                     height: 59,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(9),
@@ -780,9 +812,43 @@ Future<bool> updateAddressFields() async {
                                     ),
                                   ),
                                 ),
-                          const SizedBox(
-                            width: 65,
-                          ),
+                          ElevatedButton(
+                              // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                              onPressed: () {
+                                confirmDeletion(args.uid);
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Container(
+                                width: 110,
+                                height: 59,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff4d47c3),
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      offset: Offset(0, 4),
+                                      blurRadius: 30.5,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Delete',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.5,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -791,7 +857,7 @@ Future<bool> updateAddressFields() async {
                               backgroundColor: Color(0xff4d47c3),
                             ),
                             child: Container(
-                              width: 100,
+                              width: 70,
                               height: 59,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),
