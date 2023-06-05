@@ -15,6 +15,7 @@ import 'package:flutter_app/screens/sales%20Executive/complaints/complaint_detai
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/order_details_list_view.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/pending_order_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales%20Details/sales_details_list_view.dart';
 // import 'package:flutter_app/screens/salesPerson/executive/call_details.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -324,7 +325,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'pendingOrderList');
+                    Navigator.pushNamed(
+                        context, PendingOrdersList.routeName,
+                        arguments: Parameter(
+                          '',
+                        ));
                   },
                   child: Container(
                     width: 323,

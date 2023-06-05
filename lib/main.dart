@@ -98,7 +98,7 @@ class MyApp extends StatelessWidget {
             ViewSalesOrder.routeName:(context) => const ViewSalesOrder(),
 
             //Pending orders
-            'pendingOrderList':(context) => const PendingOrdersList(),
+            PendingOrdersList.routeName:(context) => const PendingOrdersList(),
             EditPendingOrder.routeName:(context) => const EditPendingOrder(),
             ViewPendingOrder.routeName:(context) => const ViewPendingOrder(),
 

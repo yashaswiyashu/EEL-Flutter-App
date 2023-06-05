@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
-import 'package:flutter_app/models/complaint_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -45,7 +44,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as ComplaintParameter;
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel>(context);
     final complaintDetails = Provider.of<List<ComplaintDetailsModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);

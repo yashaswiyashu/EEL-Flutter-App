@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -285,8 +286,9 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
                                 });
                                 Navigator.of(context).pushNamed(
                                   EditOrder.routeName,
-                                  arguments: Parameter(
+                                  arguments: EditParameters(
                                     character,
+                                    args.uid
                                   )
                                 ).then((_) { setState(() {
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
-import 'package:flutter_app/models/complaint_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
@@ -44,7 +44,7 @@ class _PendingComplaintDetailsListState extends State<PendingComplaintDetailsLis
 
     if (salesTable != null) {
       salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
+        if (element?.coOrdinatorId == currentUser?.uid) {
           salesExecList.add(element);
         }
       });
@@ -56,6 +56,7 @@ class _PendingComplaintDetailsListState extends State<PendingComplaintDetailsLis
     salesExecList.forEach((element) {
       complaintDetailsList.forEach((e) => ((element?.coOrdinatorId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
     });
+
 
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
@@ -215,7 +216,7 @@ class _PendingComplaintDetailsListState extends State<PendingComplaintDetailsLis
                             });
                             Navigator.pushNamed(
                                 context, ViewComplaintDetails.routeName,
-                                arguments: ComplaintParameter(
+                                arguments: Parameter(
                                   character,
                                 ));
                           }
@@ -269,8 +270,9 @@ class _PendingComplaintDetailsListState extends State<PendingComplaintDetailsLis
                             });
                             Navigator.pushNamed(
                                 context, EditComplaintDetails.routeName,
-                                arguments: ComplaintParameter(
+                                arguments: EditParameters(
                                   character,
+                                  args.uid
                                 ));
                           }
                         },

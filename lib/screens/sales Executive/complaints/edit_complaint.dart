@@ -1,8 +1,8 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
-import 'package:flutter_app/models/complaint_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -182,11 +182,12 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
 
   String date = '';
 
+  var firstTime = true;
 
   @override
   Widget build(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as ComplaintParameter;
+        ModalRoute.of(context)!.settings.arguments as EditParameters;
     final currentUser = Provider.of<UserModel?>(context);
     final complaintDetailslist = Provider.of<List<ComplaintDetailsModel>>(context);
     final ComplaintDetailsTable =
@@ -207,19 +208,27 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     }
 
 
-    if (salesTable != null) {
+    if (salesTable != null && args.exec == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable.forEach((element) {
+        if (element?.uid == args.exec) {
           salesExecutive = element;
         }
       });
     }
 
 
-    if (obj != null) {
+    if (obj != null && firstTime) {
+      setState(() {
+        firstTime = false;
+      });
       customerName= obj?.customerName;
       customerNumber = obj?.mobileNumber;
-
       controllerResult.text = obj?.complaintResult;
       res = obj?.complaintResult;
       date = obj?.complaintDate;
@@ -512,7 +521,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                       await ComplaintDetailsDatabaseService(
                                               docid: obj!.uid)
                                           .updateUserData(
-                                            currentUser!.uid,
+                                            (args.exec == '' ? currentUser?.uid : args.exec)!,
                                             customerName,
                                             customerNumber,
                                             complaintDate == '' ? date : complaintDate,

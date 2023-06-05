@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
@@ -288,8 +289,9 @@ class _CustomerListViewState extends State<CustomerListView> {
                                 });
                                 Navigator.pushNamed(
                                     context, EditCustomerDetails.routeName,
-                                    arguments: Parameter(
+                                    arguments: EditParameters(
                                       character,
+                                      args.uid
                                     ));
                               }
                             },

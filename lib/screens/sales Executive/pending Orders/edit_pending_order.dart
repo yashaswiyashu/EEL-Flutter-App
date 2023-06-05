@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
@@ -312,7 +313,7 @@ class _EditPendingOrderState extends State<EditPendingOrder> with RestorationMix
   var firstTime = true;
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
+    final args = ModalRoute.of(context)!.settings.arguments as EditParameters;
     final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
@@ -497,9 +498,15 @@ class _EditPendingOrderState extends State<EditPendingOrder> with RestorationMix
       ];
     }
 
-    if (salesTable != null) {
+    if (salesTable != null && args.exec == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable.forEach((element) {
+        if (element?.uid == args.exec) {
           salesExecutive = element;
         }
       });
@@ -1115,7 +1122,7 @@ class _EditPendingOrderState extends State<EditPendingOrder> with RestorationMix
                                       await OrderDetailsDatabaseService(
                                               docid: args.uid)
                                           .updateOrderData(
-                                              currentUser!.uid,
+                                              args.exec == '' ? currentUser!.uid : args.exec,
                                               customerId,
                                               customerName,
                                               shipmentID,

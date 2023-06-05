@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -162,11 +163,12 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
   }
   var salesExecutive;
 
+  var firstTime = true;
 
   @override
   Widget build(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as Parameter;
+        ModalRoute.of(context)!.settings.arguments as EditParameters;
     final currentUser = Provider.of<UserModel?>(context);
     final customerTable = Provider.of<List<CustomerModel>>(context);
         final salesTable = Provider.of<List<SalesPersonModel?>>(context);
@@ -181,9 +183,15 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
       });
     }
 
-    if (salesTable != null) {
+    if (salesTable != null && args.exec == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable.forEach((element) {
+        if (element?.uid == args.exec) {
           salesExecutive = element;
         }
       });
@@ -199,7 +207,10 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
     String uses3 = '';
     String uses4 = '';
 
-    if (obj != null) {
+    if (obj != null && firstTime) {
+      setState(() {
+        firstTime = false;
+      });
       controllerName.text = obj.customerName;
       controllerNumber.text = obj.mobileNumber;
       controllerEmail.text = obj.email;
@@ -1033,7 +1044,7 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                                 });
                                 await CustomerDatabaseService(docid: args.uid)
                                     .updateUserData(
-                                      currentUser!.uid,
+                                      args.exec == '' ? currentUser!.uid : args.exec,
                                       customerName,
                                       mobileNumber,
                                       email,

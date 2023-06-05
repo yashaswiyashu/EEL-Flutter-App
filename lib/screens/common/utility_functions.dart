@@ -31,12 +31,12 @@ SaleOrderDashBoard getSalesOrderCountAmtThisMonth(List orderDetailsList) {
         }
       });
       sdb.bonus = (sdb.salesAmount / 10).toStringAsFixed(2);
-  orderDetailsList.forEach((element) {
-        if ((element.dropdown == 'Delivered') && (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
-          sdb.salesCount++;
-          sdb.salesAmount += element.totalAmount;
-        }
-      });
+  // orderDetailsList.forEach((element) {
+  //       if ((element.dropdown == 'Delivered') && (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
+  //         sdb.salesCount++;
+  //         sdb.salesAmount += double.parse(element.totalAmount);
+  //       }
+  //     });
   return sdb;
 }
 

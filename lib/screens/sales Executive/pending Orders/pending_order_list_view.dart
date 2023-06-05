@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -45,9 +46,9 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
     var obj;
     // var productsList = [];
     if (args.uid == '') {
-    orderDetails.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) &&  (e.dropdown != 'Delivered')) ? details.add(e) : []);
+      orderDetails.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) &&  (e.dropdown != 'Delivered')) ? details.add(e) : []);
     } else {
-    orderDetails.forEach((e) => ((e.salesExecutiveId == args.uid) &&  (e.dropdown != 'Delivered')) ? details.add(e) : []);
+      orderDetails.forEach((e) => ((e.salesExecutiveId == args.uid) &&  (e.dropdown != 'Delivered')) ? details.add(e) : []);
     }
     // details.forEach((element) {
     //   productsList.add(element.products);
@@ -288,8 +289,9 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                                 });
                                 Navigator.of(context).pushNamed(
                                   EditPendingOrder.routeName,
-                                  arguments: Parameter(
+                                  arguments: EditParameters(
                                     character,
+                                    args.uid
                                   )
                                 ).then((_) { setState(() {
 
