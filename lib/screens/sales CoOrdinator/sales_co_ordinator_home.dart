@@ -118,13 +118,8 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
           ],
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.only(
-            left: 30,
-            right: 30,
-            top: 18,
-          ),
           child: Container(
-            width: 360,
+            width: 440,
             color: Colors.white,
             padding: const EdgeInsets.only(
               left: 19,
@@ -143,7 +138,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                   child: Image.asset('assets/logotm.jpg'),
                 ),
                 SizedBox(height: 20.80),
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   SizedBox(
                     height: 55,
                     width: 180,
