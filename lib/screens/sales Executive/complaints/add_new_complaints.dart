@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -137,7 +138,7 @@ final AuthService _auth = AuthService();
 
 
   var salesExecutive;
-  var isDupName = false;
+
   @override
   Widget build(BuildContext context) {
     //[Viru:27/5/23] Added to support customer name search list
@@ -146,6 +147,10 @@ final AuthService _auth = AuthService();
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    var InDb = false;
+    var isDupName = false;
+    
     if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
@@ -172,10 +177,21 @@ final AuthService _auth = AuthService();
     customerList.forEach((element) {
       if(element.customerName == nameController.text) {
         setState(() {
+          // nameErr = '';
+          InDb = true;
+        });
+      }
+    });
+
+    complaintDetailsList.forEach((e) {
+      if(e.customerName == nameController.text) {
+        setState(() {
+          // nameErr = '';
           isDupName = true;
         });
       }
     });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
@@ -262,13 +278,16 @@ final AuthService _auth = AuthService();
                       hintText: 'Enter Customer Name',
                       fillColor: const Color(0xfff0efff),
                     ),
-                    /* onChanged: (val) {
-                      customerName = val;
-                    }, */
+                    onChanged: (val) {
+                      setState(() {
+                        nameErr = '';
+                      });
+                    }, 
                   ),
 
                   suggestionsCallback: (pattern) async {
                     // Filter the customer list based on the search pattern
+        
                     return details
                     .where((customer) =>
                     customer != null &&
@@ -296,7 +315,6 @@ final AuthService _auth = AuthService();
             ),
             const SizedBox(height: 5.0),
               Container(
-                margin: const EdgeInsets.only(left: 110),
                 child: Text(
                   nameErr,
                   style: const TextStyle(color: Colors.red, fontSize: 14.0),
@@ -479,13 +497,19 @@ final AuthService _auth = AuthService();
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              if(!isDupName) {
+                              setState(() {
+                                nameErr = '';
+                              });
+                              print(isDupName);
+                              print(InDb);
+                              if(isDupName) {
+                                setState(() {
+                                  nameErr = 'Entered customer complaint already exists. Please edit existing complaint';
+                                });
+                              } 
+                              if(!InDb) {
                                 setState(() {
                                   nameErr = 'Entered customer is not registerd. Please Register and Try again';
-                                });
-                              } else {
-                                setState(() {
-                                  nameErr = '';
                                 });
                               }
                               if (_formkey.currentState!.validate() &&
