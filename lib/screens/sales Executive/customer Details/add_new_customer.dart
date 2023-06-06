@@ -1176,7 +1176,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                               } else {
                                 if (isDupNum) {
                                   setState(() {
-                                    numError = 'SalesPerson with this number already exists';
+                                    numError = 'Customer with this number already exists';
                                   });
                                 }
                               }

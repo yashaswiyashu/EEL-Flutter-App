@@ -1,15 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/customer_database.dart';
 import 'package:flutter_app/shared/constants.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+
+import '../common/location.dart';
 
 class CustomerRegistration extends StatefulWidget {
   const CustomerRegistration({super.key});
+  static const routeName = '/addCustomerDetails';
 
   @override
   State<CustomerRegistration> createState() => _CustomerRegistrationState();
@@ -19,6 +27,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
+  String numError = '';
   String dropdownInt1 = 'Suraksha';
   String dropdownInt2 = 'Suraksha';
   String dropdownInt3 = 'Suraksha';
@@ -38,22 +47,149 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   String city = '';
   String state = 'Select State';
   String pincode = '';
+  String pincodeError = '';
 
   String error = '';
   bool _passwordVisible = false;
 
+  final nameController = TextEditingController();
+  final talukController = TextEditingController();
+  final cityController = TextEditingController();
+  final stateController = TextEditingController();
+  final numberController = TextEditingController();
+  //final custNameController = TextEditingController();
+
   void initState() {
     _passwordVisible = false;
+    cityController.addListener(_cityLatestValue);
+    talukController.addListener(_talukLatestValue);
+    nameController.addListener(_nameLatestValue);
+    stateController.addListener(_stateLatestValue);
+    //custNameController.addListener(_custNameLatestValue);
+    numberController.addListener(_numberLatestValue);
   }
 
-  // var customer;
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    // This also removes the _printLatestValue listener.
+    cityController.dispose();
+    stateController.dispose();
+    nameController.dispose();
+    talukController.dispose();
+    //custNameController.dispose();
+    numberController.dispose();
+    super.dispose();
+  }
+
+  void _cityLatestValue() {
+    print('Viru:: ${cityController.text}');
+  }
+
+  void _stateLatestValue() {
+    print('Viru:: ${stateController.text}');
+  }
+
+  void _nameLatestValue() {
+    print('Viru:: ${nameController.text}');
+  }
+
+  void _talukLatestValue() {
+    print('Viru:: ${talukController.text}');
+  }
+
+  void _numberLatestValue() {
+    mobileNumber = numberController.text;
+  }
+
+  var customer;
+  var salesExecutive;
+
+  Future<bool> updateAddressFields() async {
+    Location? loc = await getLocation(pincode);
+
+    if (loc != null) {
+      setState(() {
+        city = loc.district;
+        cityController.text = loc.district;
+        state = loc.state;
+        stateController.text = loc.state;
+        address1 = loc.name;
+        nameController.text = loc.name;
+        address2 = loc.taluk;
+        talukController.text = loc.taluk;
+      });
+      return true;
+    } else {
+      return false;
+    }
+    /*  print("Viru: $city");
+    print("Viru: $state");
+    print("Viru: $address1");
+    print("Viru: $address2"); */
+  }
+
+  var isDupNum = false;
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
+    final currentUser = Provider.of<UserModel?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+
+    //[Viru:2/6/23] Added to support customer mob search list
+    List<CustomerModel> details = [];
+    final customerList = Provider.of<List<CustomerModel>>(context);
+    if (args.uid == '') {
+      customerList.forEach(
+          (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    } else {
+      customerList
+          .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+    }
+
+    if (salesTable != null && args.uid == '') {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable.forEach((element) {
+        if (element?.uid == args.uid) {
+          salesExecutive = element;
+        }
+      });
+    }
+
+    customerList.forEach((element) {
+      if(element.mobileNumber == numberController.text) {
+        isDupNum = true;
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
         backgroundColor: const Color(0xff4d47c3),
+        actions: currentUser?.uid != null
+            ? [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          'authWrapper', (Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ]
+            : null,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
@@ -105,7 +241,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       fontWeight: FontWeight.w500,
                     ),
                   )),
-              TextFormField(
+/*               TextFormField(
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter Customer Mobile Number',
@@ -115,6 +251,75 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 onChanged: (val) {
                   mobileNumber = val;
                 },
+              ),
+ */
+              //[Viru:2/6/23] Added to support customer name search list
+              TypeAheadFormField(
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: numberController,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Customer Mobile Number',
+                    fillColor: const Color(0xfff0efff),
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[0-9]')), // Only allow numerical values
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      numError = ''; // Clear the error message
+                      // numberController.text = value;
+                    });
+                  },
+                ),
+                suggestionsCallback: (pattern) async {
+                  // Filter the customer list based on the search pattern
+                  return details
+                      .where((customer) =>
+                          customer != null &&
+                          customer.mobileNumber.contains(pattern))
+                      .toList();
+                },
+                itemBuilder: (context, CustomerModel? suggestion) {
+                  if (suggestion == null) return const SizedBox.shrink();
+                  return ListTile(
+                    title: Text(suggestion.mobileNumber),
+                  );
+                },
+                onSuggestionSelected: (CustomerModel? suggestion) {
+                  if (suggestion != null) {
+                    setState(() {
+                      numError = 'Customer with this number already exists';
+                      numberController.clear();
+                    });
+                  } else {
+                    numberController.text.length != 10
+                        ? 'Enter Customer Mobile Number'
+                        : null;
+                    setState(() {
+                      numError = '';
+                    });
+                  }
+                },
+                validator: (value) {
+                  if (value != null && value.length != 10) {
+                    return 'Enter a valid 10-digit mobile number';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  setState(() {
+                    numError = ''; // Clear the error message
+                  });
+                },
+              ),
+              SizedBox(
+                child: Text(
+                  numError,
+                  style: TextStyle(
+                    color: Color.fromARGB(190, 193, 2, 2),
+                  ),
+                ),
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -199,8 +404,10 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   )),
               const SizedBox(height: 10.0),
               TextFormField(
-                decoration:
-                    textInputDecoration.copyWith(hintText: 'house#, area'),
+                controller: nameController,
+                decoration: textInputDecoration.copyWith(
+                    hintText:
+                        'Please enter the pincode to autofill postal address'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
                 onChanged: (val) {
@@ -211,6 +418,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: talukController,
                 decoration:
                     textInputDecoration.copyWith(hintText: 'town, taluk'),
                 validator: (value) =>
@@ -223,17 +431,31 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: cityController,
                 decoration: textInputDecoration.copyWith(hintText: 'city'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
                 onChanged: (val) {
+                  //updateCity(val);
                   setState(() {
                     city = val;
                   });
                 },
               ),
               const SizedBox(height: 10.0),
-              DropdownButtonFormField(
+              TextFormField(
+                controller: stateController,
+                decoration: textInputDecoration.copyWith(hintText: 'state'),
+                validator: (value) =>
+                    value!.isEmpty ? 'Enter Customer Full Address' : null,
+                onChanged: (val) {
+                  //updateCity(val);
+                  setState(() {
+                    state = val;
+                  });
+                },
+              ),
+              /* DropdownButtonFormField(
                 decoration: const InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     //<-- SEE HERE
@@ -268,20 +490,35 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     ),
                   );
                 }).toList(),
-              ),
+              ), */
               const SizedBox(height: 10.0),
               TextFormField(
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                 validator: (value) =>
-                    pincode.length != 6 ? 'Enter Valid pincode' : null,
+                    RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
+                        ? null
+                        : 'Enter Valid pincode',
                 onChanged: (val) {
                   setState(() {
                     pincode = val;
                   });
+                  if (pincode.length == 6) {
+                    updateAddressFields().then((value) {
+                      if (!value) {
+                        setState(() {
+                          pincodeError = 'Please enter valid pincode';
+                        });
+                      }
+                    });
+                  }
                 },
               ),
-
+              const SizedBox(height: 12.0),
+              Text(
+                pincodeError,
+                style: const TextStyle(color: Colors.red, fontSize: 14.0),
+              ),
               const SizedBox(height: 10.0),
               const SizedBox(
                 height: 20.0,
@@ -840,9 +1077,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              if (_formkey.currentState!.validate()) {
+                              if (_formkey.currentState!.validate() &&
+                                  state != 'Select State' && !isDupNum) {
                                 setState(() {
                                   loading = true;
+                                  numError = '';
                                 });
                                 dynamic result =
                                     await _auth.registerWithEmailAndPassword(
@@ -895,6 +1134,12 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                       error = 'Please fill all the fields';
                                     });
                                   }
+                                }
+                              } else {
+                                if (isDupNum) {
+                                  setState(() {
+                                    numError = 'Customer with this number already exists';
+                                  });
                                 }
                               }
                             },
