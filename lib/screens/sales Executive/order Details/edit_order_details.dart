@@ -495,7 +495,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
       });
     } else {
       salesTable.forEach((element) {
-        if (element?.uid == args.uid) {
+        if (element?.uid == args.exec) {
           salesExecutive = element;
         }
       });

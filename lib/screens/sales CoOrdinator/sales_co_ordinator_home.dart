@@ -392,7 +392,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                                         height: 10,
                                       ),
                                       Text(
-                                        "Orders Delivered This Month: ${sdb.salesCount}\nTotal Sales Amount: ${sdb.salesAmount}\nBonus Earned: ${sdb.bonus}",
+                                        "Orders Delivered This Month: ${sdb.salesCount}\nTotal Sales Amount: ${sdb.salesAmount.toStringAsFixed(2)}\nBonus Earned: ${sdb.bonus}",
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           color: Colors.white,
