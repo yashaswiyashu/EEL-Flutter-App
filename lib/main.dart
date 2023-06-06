@@ -16,6 +16,7 @@ import 'package:flutter_app/screens/admin/products/view_product_details.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/co_ord_list.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
+import 'package:flutter_app/screens/admin/users/customer/customer_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/edit_sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/view_sales_exec.dart';
@@ -132,7 +133,7 @@ class MyApp extends StatelessWidget {
             PendingComplaintDetailsList.routeName:(context) => const PendingComplaintDetailsList(),
 
           //Customer =>
-          'customerRegistration':(context) => const CustomerRegistration(),
+          CustomerRegistration.routeName:(context) => const CustomerRegistration(),
             
 
           //Admin =>
@@ -154,6 +155,9 @@ class MyApp extends StatelessWidget {
               'salesExecList':(context) => const SalesExecList(),
               EditSalesExecutiveDetails.routeName:(context) => const EditSalesExecutiveDetails(),
               ViewExecutiveDetails.routeName:(context) => const ViewExecutiveDetails(),
+
+              //customer
+              'customerListAdmin':(context) => const CustomerListAdmin()
         },
       ),
     );

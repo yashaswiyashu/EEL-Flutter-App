@@ -19,27 +19,27 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 
 
-class SalesExecList extends StatefulWidget {
-  const SalesExecList({super.key});
+class CustomerListAdmin extends StatefulWidget {
+  const CustomerListAdmin({super.key});
 
 
   @override
-  State<SalesExecList> createState() => _SalesExecListState();
+  State<CustomerListAdmin> createState() => _CustomerListAdminState();
 }
 
 
 enum SingingCharacter { lafayette, jefferson, yash }
 
 
-class _SalesExecListState extends State<SalesExecList> {
+class _CustomerListAdminState extends State<CustomerListAdmin> {
   bool loading = false;
   String status = '';
   String? select = '';
   String error = '';
 
   final AuthService _auth = AuthService();
-  String salesCoOrdinator = 'Select Co-Ordinator';
-  String salesExec = 'Select Executive';
+  String salesCoOrdinator = 'Select Co-Ord';
+  String salesExec = 'Select Exec';
 
   @override
   Widget build(BuildContext context) {
@@ -88,11 +88,18 @@ class _SalesExecListState extends State<SalesExecList> {
       }
     });
 
-    customerList.forEach((element) { 
-      if(element.salesExecutiveId == execID) {
-        custList.add(element);
-      }
-    });
+
+    if(execID != '') {
+      customerList.forEach((element) { 
+        if(element.salesExecutiveId == execID) {
+          custList.add(element);
+        }
+      });
+    } else {
+      customerList.forEach((element) { 
+          custList.add(element);
+      });
+    }
 
 
 
@@ -210,10 +217,10 @@ class _SalesExecListState extends State<SalesExecList> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                   SizedBox(
                     height: 55,
-                    width: 190,
+                    width: 175,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -232,6 +239,7 @@ class _SalesExecListState extends State<SalesExecList> {
                       onChanged: (String? newValue) {
                         setState(() {
                           salesCoOrdinator = newValue!;
+                          salesExec = 'Select Exec';
                         });
                       },
                       items: salesCoOrdList
@@ -248,7 +256,7 @@ class _SalesExecListState extends State<SalesExecList> {
                   ),
                   SizedBox(
                     height: 55,
-                    width: 190,
+                    width: 175,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -263,13 +271,13 @@ class _SalesExecListState extends State<SalesExecList> {
                         fillColor: Color(0xffefefff),
                       ),
                       dropdownColor: const Color(0xffefefff),
-                      value: salesCoOrdinator,
+                      value: salesExec,
                       onChanged: (String? newValue) {
                         setState(() {
-                          salesCoOrdinator = newValue!;
+                          salesExec = newValue!;
                         });
                       },
-                      items: salesCoOrdList
+                      items: salesExecList
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,

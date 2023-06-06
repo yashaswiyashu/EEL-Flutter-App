@@ -17,7 +17,7 @@ import '../common/location.dart';
 
 class CustomerRegistration extends StatefulWidget {
   const CustomerRegistration({super.key});
-  static const routeName = '/addCustomerDetails';
+  static const routeName = '/customerRegistration';
 
   @override
   State<CustomerRegistration> createState() => _CustomerRegistrationState();
@@ -321,7 +321,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
