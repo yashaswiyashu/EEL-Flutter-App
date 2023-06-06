@@ -422,7 +422,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                       Navigator.pushNamed(
                           context, FollowUpDetails.routeName,
                           arguments: Parameter(
-                            '',
+                            salesExecutiveId,
                           ));
                     } else {
                       setState(() {
@@ -535,7 +535,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                       Navigator.pushNamed(
                           context, PendingComplaintDetailsList.routeName,
                           arguments: Parameter(
-                            '',
+                            salesExecutiveId,
                           ));
                     } else {
                       setState(() {

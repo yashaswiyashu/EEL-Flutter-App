@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
@@ -249,8 +250,9 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                                 Navigator.pushNamed(
                                   context, 
                                   EditCallDetails.routeName,
-                                  arguments: Parameter(
+                                  arguments: EditParameters(
                                     character,
+                                    args.uid
                                   )
                                 );
                               }
