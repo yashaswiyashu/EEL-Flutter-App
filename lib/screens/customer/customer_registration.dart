@@ -274,7 +274,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                 validator: (value) =>
-                    pincode.length == 6 ? 'Enter Valid pincode' : null,
+                    pincode.length != 6 ? 'Enter Valid pincode' : null,
                 onChanged: (val) {
                   setState(() {
                     pincode = val;

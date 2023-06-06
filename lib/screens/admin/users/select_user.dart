@@ -94,7 +94,7 @@ class _UserSelectionState extends State<UserSelection> {
               const SizedBox(height: 38.20),
               TextButton(
                 onPressed: (){
-                  
+                  Navigator.pushNamed(context, 'salesExecList');
                 },
                 child: Container(
                     width: 322,

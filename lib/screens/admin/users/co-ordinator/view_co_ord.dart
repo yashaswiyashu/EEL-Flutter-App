@@ -198,10 +198,6 @@ Future<bool> updateAddressFields() async {
     } else {
       return false;
     }
-   /*  print("Viru: $city");
-    print("Viru: $state");
-    print("Viru: $address1");
-    print("Viru: $address2"); */
   }
 
   void fillFields(SalesPersonModel salesCoOrd) {

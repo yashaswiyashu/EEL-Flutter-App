@@ -245,7 +245,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                   status = '';
                                 });
                                 Navigator.pushNamed(
-                                  context, EditSalesPersonDetails.routeName,
+                                  context, EditCoOrdinatorDetails.routeName,
                                   arguments: Parameter(
                                     select!,
                                   )

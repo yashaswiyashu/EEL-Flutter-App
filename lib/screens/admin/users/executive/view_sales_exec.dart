@@ -12,16 +12,16 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
-class EditCoOrdinatorDetails extends StatefulWidget {
-  const EditCoOrdinatorDetails({super.key});
-  static const routeName = '/EditCoOrdinatorDetails';
+class ViewExecutiveDetails extends StatefulWidget {
+  const ViewExecutiveDetails({super.key});
+  static const routeName = '/ViewExecutiveDetails';
 
   @override
-  State<EditCoOrdinatorDetails> createState() =>
-      _EditCoOrdinatorDetailsState();
+  State<ViewExecutiveDetails> createState() =>
+      _ViewExecutiveDetailsState();
 }
 
-class _EditCoOrdinatorDetailsState extends State<EditCoOrdinatorDetails> {
+class _ViewExecutiveDetailsState extends State<ViewExecutiveDetails> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
@@ -46,6 +46,7 @@ class _EditCoOrdinatorDetailsState extends State<EditCoOrdinatorDetails> {
   String coOrdNameErr = '';
   String salesCoordId = '';
   bool authCredEdited = false;
+  String coOrdName = '';
 
   bool firstTime = true;
 
@@ -53,105 +54,20 @@ class _EditCoOrdinatorDetailsState extends State<EditCoOrdinatorDetails> {
   bool _passwordVisible = false;
   late FocusNode myFocusNode;
 
-  final nameController = TextEditingController();
-  final educationController = TextEditingController();  
-  final aadharController = TextEditingController();  
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final coOrdinatorName = TextEditingController();
-  final address1Controller = TextEditingController();
-  final talukController = TextEditingController();
-  final cityController = TextEditingController();
-  final stateController = TextEditingController();
-  final numberController = TextEditingController();
-  final pincodeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
     myFocusNode = FocusNode();
-    nameController.addListener(_nameLatestValue);
-    educationController.addListener(_educationValue);
-    aadharController.addListener(_aadharValue);
-    emailController.addListener(_emailValue);
-    passwordController.addListener(_passwordValue);
-    coOrdinatorName.addListener(_coOrdinatorName);
-    address1Controller.addListener(_address1Value);
-    cityController.addListener(_cityLatestValue);
-    talukController.addListener(_talukLatestValue);
-    stateController.addListener(_stateLatestValue);
-    numberController.addListener(_numberLatestValue);
-    pincodeController.addListener(_pincodeValue);
   }
 
   @override
   void dispose() {
     // Clean up the focus node when the Form is disposed.
     myFocusNode.dispose();
-    nameController.dispose();
-    educationController.dispose();
-    aadharController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    coOrdinatorName.dispose();
-    address1Controller.dispose();
-    cityController.dispose();
-    stateController.dispose();
-    talukController.dispose();
-    numberController.dispose();
-    pincodeController.dispose();
     super.dispose();
   }
-
-  void _cityLatestValue() {
-    city = cityController.text;
-  }
-
-  void _educationValue() {
-    education = educationController.text;
-  }
-
-  void _aadharValue() {
-    adhaarNumber = aadharController.text;
-  }
-
-  void _emailValue() {
-    email = emailController.text;
-  }
-
-  void _passwordValue() {
-    password = passwordController.text;
-  }
-
-  void _stateLatestValue() {
-    state = stateController.text;
-  }
-
-  void _talukLatestValue() {
-    address2 = talukController.text;
-  }
-
-  void _nameLatestValue() {
-    name = nameController.text;
-  }
-
-  void _coOrdinatorName() {
-    print(coOrdinatorName.text);
-  }
-
-  void _address1Value() {
-    address1 = address1Controller.text;
-  }
-
-  void _numberLatestValue() {
-    phoneNumber = numberController.text;
-  }
-
-  void _pincodeValue() {
-    pincode = pincodeController.text;
-  }
-
 
   var snackBar = SnackBar(
     content: Text('Registered Successfully!!!'),
@@ -185,14 +101,9 @@ Future<bool> updateAddressFields() async {
     if(loc != null){
       setState(() {
         city = loc.district;
-        cityController.text = loc.district;
         state = loc.state;
-        stateController.text = loc.state;
         address1 = loc.name;
-        address1Controller.text = loc.name;
         address2 = loc.taluk;
-        talukController.text = loc.taluk;
-
       });
       return true;
     } else {
@@ -202,64 +113,26 @@ Future<bool> updateAddressFields() async {
 
   void fillFields(SalesPersonModel salesCoOrd) {
     setState(() {
-      nameController.text = salesCoOrd.name;
-      numberController.text = salesCoOrd.phoneNumber;
-      educationController.text = salesCoOrd.education;
+      name = salesCoOrd.name;
+      phoneNumber = salesCoOrd.phoneNumber;
+      education= salesCoOrd.education;
       role = salesCoOrd.role;
-      aadharController.text = salesCoOrd.adhaarNumber;
-      emailController.text = salesCoOrd.email;
-      prevEmail = salesCoOrd.email;
-      passwordController.text = salesCoOrd.password;
-      prevPassword = salesCoOrd.password;
-      address1Controller.text = salesCoOrd.address1;
-      talukController.text = salesCoOrd.address2;
-      cityController.text = salesCoOrd.district;
-      stateController.text = salesCoOrd.state;
-      pincodeController.text = salesCoOrd.pincode;
+      salesCoordId = salesCoOrd.coOrdinatorId;
+      adhaarNumber = salesCoOrd.adhaarNumber;
+      email = salesCoOrd.email;
+      password = salesCoOrd.password;
+      address1 = salesCoOrd.address1;
+      address2 = salesCoOrd.address2;
+      city = salesCoOrd.district;
+      state = salesCoOrd.state;
+      pincode = salesCoOrd.pincode;
       approve = salesCoOrd.approved;
     });
 
   }
 
-  void confirmDeletion(String uid) {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            title: Text('Do you want to delete entire document?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false), // passing false
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true), // passing true
-                child: Text('Yes'),
-              ),
-            ],
-          );
-        }).then((exit) {
-      if (exit == null) return;
-      if (exit) {
-        // user pressed Yes button
-        SalesPersonDatabase(docid: uid).deleteUserData();
-        Navigator.pop(context);
-      } else {
-        // user pressed No button
-        // Navigator.pop(context);
-        return;
-      }
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    if(prevEmail != email || prevPassword != password) {
-      setState(() {
-        authCredEdited = true;
-      });
-    }
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
 
@@ -273,11 +146,17 @@ Future<bool> updateAddressFields() async {
         firstTime = false;
       });
       salesTable.forEach((e) {
-        if(e!.role == 'Sales Co-Ordinator' && e.uid == args.uid){
+        if(e!.role == 'Sales Executive' && e.uid == args.uid){
           fillFields(e);
         }
       });
     }
+
+    salesTable.forEach((e) {
+      if(e?.uid == salesCoordId) {
+        coOrdName = e!.name;
+      } 
+    });
     
     return Scaffold(
       appBar: AppBar(
@@ -328,9 +207,9 @@ Future<bool> updateAddressFields() async {
                             return Switch(
                               value: approve,
                               onChanged: (bool value) {
-                                setState(() {
-                                  approve = value;
-                                });
+                                // setState(() {
+                                //   approve = value;
+                                // });
                               },
                             );
                           }),
@@ -351,7 +230,8 @@ Future<bool> updateAddressFields() async {
                 ),
               ),
               TextFormField(
-                controller: nameController,
+                initialValue: name,
+                readOnly: true,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Your Name',
@@ -374,7 +254,8 @@ Future<bool> updateAddressFields() async {
                   )),
 
               TextFormField(
-                controller: numberController,
+                initialValue: phoneNumber,
+                readOnly: true,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Your Number',
@@ -399,7 +280,8 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
-                controller: educationController,
+                initialValue:  education,
+                readOnly: true,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter Education Details',
@@ -408,16 +290,30 @@ Future<bool> updateAddressFields() async {
                 //   education = val;
                 // },
               ),
-              Container(
-                child: Text(
-                  coOrdNameErr,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 13.0,
-                  ),
+              const SizedBox(height: 20.0),
+              const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Sales Co-Ordinator:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
+                  TextFormField(
+                initialValue:  coOrdName,
+                readOnly: true,
+                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                decoration: textInputDecoration.copyWith(
+                  hintText: 'Enter Education Details',
                 ),
+                // onChanged: (val) {
+                //   education = val;
+                // },
               ),
-              //const SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -430,7 +326,8 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
-                controller: aadharController,
+                initialValue: adhaarNumber,
+                readOnly: true,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value?.length == 12 ? null : 'Enter valid Aadhar number',
@@ -478,7 +375,8 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
-                controller: emailController,
+                initialValue: email,
+                readOnly: true,
                 focusNode: myFocusNode,
                 validator: (value) =>
                     RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -507,7 +405,8 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
-                controller: passwordController,
+                initialValue: password,
+                readOnly: true,
                 validator: (value) => value!.length < 6
                     ? 'Enter a password of more than 6 characters'
                     : null,
@@ -550,7 +449,8 @@ Future<bool> updateAddressFields() async {
                     ),
                   )),
               TextFormField(
-                controller: address1Controller,
+                initialValue: address1,
+                readOnly: true,
                 validator: (value) =>
                     value!.isEmpty ? 'Missing address field' : null,
                 decoration: textInputDecoration.copyWith(
@@ -562,7 +462,8 @@ Future<bool> updateAddressFields() async {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
-                controller: talukController,
+                initialValue: address2,
+                readOnly: true,
                 validator: (value) =>
                     value!.isEmpty ? 'Missing address field' : null,
                 decoration: textInputDecoration.copyWith(hintText: 'talluk'),
@@ -572,7 +473,8 @@ Future<bool> updateAddressFields() async {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
-                controller: cityController,
+                initialValue: city,
+                readOnly: true,
                 validator: (value) =>
                     value!.isEmpty ? 'Enter valid city' : null,
                 decoration: textInputDecoration.copyWith(hintText: 'District'),
@@ -620,7 +522,8 @@ Future<bool> updateAddressFields() async {
               //     }).toList(),
               //   ),
               TextFormField(
-                controller: stateController,
+                initialValue: state,
+                readOnly: true,
                 decoration: textInputDecoration.copyWith(hintText: 'state'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
@@ -633,7 +536,8 @@ Future<bool> updateAddressFields() async {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
-                controller: pincodeController,
+                initialValue: pincode,
+                readOnly: true,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
@@ -655,7 +559,7 @@ Future<bool> updateAddressFields() async {
                 //   // }
                 // },
               ),
-                            const SizedBox(height: 12.0),
+              const SizedBox(height: 12.0),
               Text(
                 pincodeError,
                 style: const TextStyle(color: Colors.red, fontSize: 14.0),
@@ -674,176 +578,15 @@ Future<bool> updateAddressFields() async {
               const SizedBox(
                 height: 20.0,
               ),
-              loading
-                  ? CircularProgressIndicator()
-                  : SizedBox(
+              SizedBox(
                       height: 59,
                       width: 420,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          loading
-                              ? const Loading()
-                              : ElevatedButton(
-                                  onPressed: () async {
-                                    if (_formkey.currentState!.validate()) {
-                                      setState(() {
-                                        loading = true;
-                                        coOrdNameErr = '';
-                                      });
-                                      
-                                      if(authCredEdited) {
-                                        dynamic result = await _auth.updateEmailAndPassword(args.uid, email, password);
-                                        // dynamic result = '';
-                                        if (!result) {
-                                          setState(() {
-                                            error = 'Failed to update Email and Password';
-                                            loading = false;
-                                          });
-                                        } else {
-                                        if (result) {
-                                          await SalesPersonDatabase(docid: args.uid)
-                                              .updateUserData(
-                                                  name,
-                                                  education,
-                                                  role,
-                                                  salesCoordId,
-                                                  adhaarNumber,
-                                                  phoneNumber,
-                                                  email,
-                                                  password,
-                                                  address1,
-                                                  address2,
-                                                  city,
-                                                  state,
-                                                  pincode,
-                                                  approve
-                                                  )
-                                              .then((value) {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                              content: Text('Co-Ordinator Details Updated Successfully!!!'),
-                                              ));
-                                              Navigator.pop(context);
-                                          });
-                                        }
-                                      }
-                                      } else {
-                                        await SalesPersonDatabase(docid: args.uid)
-                                              .updateUserData(
-                                                  name,
-                                                  education,
-                                                  role,
-                                                  salesCoordId,
-                                                  adhaarNumber,
-                                                  phoneNumber,
-                                                  email,
-                                                  password,
-                                                  address1,
-                                                  address2,
-                                                  city,
-                                                  state,
-                                                  pincode,
-                                                  approve
-                                                  )
-                                              .then((value) {
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                              content: Text('Co-Ordinator Details Updated Successfully!!!'),
-                                              ));
-                                              Navigator.pop(context);
-                                          });
-                                      } 
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xff4d47c3),
-                                  ),
-                                  child: Container(
-                                    width: 70,
-                                    height: 59,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(9),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Color(0x664d47c3),
-                                          blurRadius: 61,
-                                          offset: Offset(0, 4),
-                                        ),
-                                      ],
-                                      color: const Color(0xff4d47c3),
-                                    ),
-                                    padding: const EdgeInsets.only(
-                                      top: 18,
-                                      bottom: 17,
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: const [
-                                        SizedBox(
-                                          width: 90,
-                                          child: Text(
-                                            "Register",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontFamily: "Poppins",
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                          ElevatedButton(
-                              // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
-                              onPressed: () {
-                                confirmDeletion(args.uid);
-                              },
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                              ),
-                              child: Container(
-                                width: 110,
-                                height: 59,
-                                decoration: BoxDecoration(
-                                  color: Color(0xff4d47c3),
-                                  borderRadius: BorderRadius.circular(9),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(0x664d47c3),
-                                      offset: Offset(0, 4),
-                                      blurRadius: 30.5,
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Delete',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: "Poppins",
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.5,
-                                      color: Color(0xffffffff),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                          
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -852,7 +595,7 @@ Future<bool> updateAddressFields() async {
                               backgroundColor: Color(0xff4d47c3),
                             ),
                             child: Container(
-                              width: 70,
+                              width: 100,
                               height: 59,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),
@@ -877,7 +620,7 @@ Future<bool> updateAddressFields() async {
                                   SizedBox(
                                     width: 70,
                                     child: Text(
-                                      "Cancel",
+                                      "Back",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,

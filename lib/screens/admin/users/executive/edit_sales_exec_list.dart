@@ -12,16 +12,16 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
-class EditCoOrdinatorDetails extends StatefulWidget {
-  const EditCoOrdinatorDetails({super.key});
-  static const routeName = '/EditCoOrdinatorDetails';
+class EditSalesExecutiveDetails extends StatefulWidget {
+  const EditSalesExecutiveDetails({super.key});
+  static const routeName = '/EditSalesExecutiveDetails';
 
   @override
-  State<EditCoOrdinatorDetails> createState() =>
-      _EditCoOrdinatorDetailsState();
+  State<EditSalesExecutiveDetails> createState() =>
+      _EditSalesExecutiveDetailsState();
 }
 
-class _EditCoOrdinatorDetailsState extends State<EditCoOrdinatorDetails> {
+class _EditSalesExecutiveDetailsState extends State<EditSalesExecutiveDetails> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
@@ -206,6 +206,7 @@ Future<bool> updateAddressFields() async {
       numberController.text = salesCoOrd.phoneNumber;
       educationController.text = salesCoOrd.education;
       role = salesCoOrd.role;
+      salesCoordId = salesCoOrd.coOrdinatorId;
       aadharController.text = salesCoOrd.adhaarNumber;
       emailController.text = salesCoOrd.email;
       prevEmail = salesCoOrd.email;
@@ -265,16 +266,39 @@ Future<bool> updateAddressFields() async {
 
         //[Viru:2/6/23] Added to support customer mob search list
     List<SalesPersonModel?> details = [];
+    List<String> salesCoOrd = [];
+
     salesTable.forEach((e) => details.add(e));
 
+    salesTable.forEach((element) {
+      if(element!.name == coOrdinatorName.text) {
+        salesCoordId = element.uid;
+      }
+    });
 
     if(firstTime) {
       setState(() {
         firstTime = false;
       });
       salesTable.forEach((e) {
-        if(e!.role == 'Sales Co-Ordinator' && e.uid == args.uid){
+        if(e!.role == 'Sales Executive' && e.uid == args.uid){
           fillFields(e);
+        }
+      });
+    }
+
+    if(salesTable != null) {
+      salesTable.forEach((e) {
+        if(e!.role == 'Sales Co-Ordinator'){
+          salesCoOrd.add(e.name);
+        }
+      });
+    }
+
+    if(salesTable != null) {
+      salesTable.forEach((e) {
+        if(e!.uid == salesCoordId){
+          coOrdinatorName.text = e.name;
         }
       });
     }
@@ -408,14 +432,58 @@ Future<bool> updateAddressFields() async {
                 //   education = val;
                 // },
               ),
-              Container(
-                child: Text(
-                  coOrdNameErr,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 13.0,
+              const SizedBox(height: 20.0),
+              const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Sales Co-Ordinator:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
+              SizedBox(
+                child: TypeAheadFormField(
+                  
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: coOrdinatorName,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Co-ordinator Name',
+                      fillColor: const Color(0xfff0efff),
+                    ),
+                    /* onChanged: (val) {
+                      customerName = val;
+                    }, */
                   ),
-                ),
+
+                  suggestionsCallback: (pattern) async {
+                    // Filter the customer list based on the search pattern
+                    return salesCoOrd
+                    .where((customer) =>
+                    customer != null &&
+                    customer.toLowerCase().contains(pattern.toLowerCase()))
+                    .toList();
+                  },
+
+                  itemBuilder: (context, String? suggestion) {
+                    if (suggestion == null) return const SizedBox.shrink();
+                    return ListTile(
+                      title: Text(suggestion),
+                    );
+                  },
+
+                  onSuggestionSelected: (String? suggestion) {
+                    if (suggestion != null) {
+                      setState(() {
+                        //customerName = suggestion.customerName;
+                        coOrdinatorName.text = suggestion;
+                        coOrdNameErr = '';
+                    });
+                  }
+              },
+            ),
               ),
               //const SizedBox(height: 20.0),
               const SizedBox(
@@ -726,7 +794,7 @@ Future<bool> updateAddressFields() async {
                                               loading = false;
                                             });
                                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                              content: Text('Co-Ordinator Details Updated Successfully!!!'),
+                                              content: Text('Executive Details Updated Successfully!!!'),
                                               ));
                                               Navigator.pop(context);
                                           });
@@ -755,7 +823,7 @@ Future<bool> updateAddressFields() async {
                                               loading = false;
                                             });
                                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                              content: Text('Co-Ordinator Details Updated Successfully!!!'),
+                                              content: Text('Executive Details Updated Successfully!!!'),
                                               ));
                                               Navigator.pop(context);
                                           });

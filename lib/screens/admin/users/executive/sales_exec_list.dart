@@ -8,6 +8,8 @@ import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
+import 'package:flutter_app/screens/admin/users/executive/edit_sales_exec_list.dart';
+import 'package:flutter_app/screens/admin/users/executive/view_sales_exec.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -16,35 +18,66 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 
 
-class SalesCoOrdinatorList extends StatefulWidget {
-  const SalesCoOrdinatorList({super.key});
+class SalesExecList extends StatefulWidget {
+  const SalesExecList({super.key});
 
 
   @override
-  State<SalesCoOrdinatorList> createState() => _SalesCoOrdinatorListState();
+  State<SalesExecList> createState() => _SalesExecListState();
 }
 
 
 enum SingingCharacter { lafayette, jefferson, yash }
 
 
-class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
+class _SalesExecListState extends State<SalesExecList> {
   bool loading = false;
   String status = '';
   String? select = '';
+  String error = '';
+
   final AuthService _auth = AuthService();
+  String salesCoOrdinator = 'Select Co-Ordinator';
+
   @override
   Widget build(BuildContext context) {
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var obj;
-    var coOrdList = [];
+    var execList = [];
+    String coOrdId = '';
+    List<String> salesCoOrdList = ['Select Co-Ordinator',];
+
+    salesTable.forEach((element) {
+      if (element!.name == salesCoOrdinator) {
+        setState(() {
+          coOrdId = element.uid;
+        });
+      }
+    });
+
+
+    if(coOrdId == '') {
+      salesTable.forEach((element) {
+        if(element?.role == 'Sales Executive'){
+          execList.add(element);
+        }
+      });
+    } else {
+      salesTable.forEach((element) {
+        if(element?.role == 'Sales Executive' && element?.coOrdinatorId == coOrdId){
+          execList.add(element);
+        }
+      });
+    }
 
     salesTable.forEach((element) {
       if(element?.role == 'Sales Co-Ordinator'){
-        coOrdList.add(element);
+        salesCoOrdList.add(element!.name);
       }
     });
+
+
 
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
@@ -54,7 +87,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Co-Ord Name')),
+        DataColumn(label: Text('Exec Name')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Mob No.')),
         DataColumn(label: _verticalDivider),
@@ -64,7 +97,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
 
 
     List<DataRow> _createRows() {
-      return coOrdList
+      return execList
           .map((element) => DataRow(cells: [
                 DataCell(Text(element.name)),
                 DataCell(_verticalDivider),
@@ -80,7 +113,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                     onChanged: (value) {
                       setState(() {
                         select = value;
-                        coOrdList.forEach((element) {
+                        execList.forEach((element) {
                           if (element.uid == select) {
                             obj = element;
                           }
@@ -99,7 +132,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: coOrdList.isNotEmpty ? _createRows() : []);
+          rows: execList.isNotEmpty ? _createRows() : []);
     }
 
 
@@ -153,12 +186,61 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                         onPressed: () {
                           Navigator.pushNamed(
                             context, SalesPersonRegistration.routeName,
-                            arguments: 'Sales Co-Ordinator');
+                            arguments: 'Sales Executive');
                           },
                         child: Text('Add New +'),
                       ),
                     ),
                     SizedBox(height: 10),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  SizedBox(
+                    height: 55,
+                    width: 190,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: salesCoOrdinator,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          salesCoOrdinator = newValue!;
+                        });
+                      },
+                      items: salesCoOrdList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ]),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 110),
+                    child: Text(
+                      error,
+                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                  ),
+                ]),
+                SizedBox(
+                  height: 10.0,
+                ),
                     _createDataTable(),
                     SizedBox(
                       height: 20,
@@ -190,7 +272,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                   status = '';
                                 });
                                 Navigator.pushNamed(
-                                  context, ViewCoOrdinatorDetails.routeName,
+                                  context, ViewExecutiveDetails.routeName,
                                   arguments: Parameter(
                                     select!,
                                   )
@@ -245,7 +327,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                   status = '';
                                 });
                                 Navigator.pushNamed(
-                                  context, EditSalesPersonDetails.routeName,
+                                  context, EditSalesExecutiveDetails.routeName,
                                   arguments: Parameter(
                                     select!,
                                   )

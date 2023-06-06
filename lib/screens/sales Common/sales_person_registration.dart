@@ -260,7 +260,7 @@ Future<bool> updateAddressFields() async {
                     onChanged: (value) {
                       setState(() {
                         numError = ''; // Clear the error message
-                        // numberController.text = value;
+                        isDupNum = false;// numberController.text = value;
                       });
                     },
                   ),
@@ -374,6 +374,9 @@ Future<bool> updateAddressFields() async {
                   },
 
                   onSuggestionSelected: (String? suggestion) {
+                    if(suggestion == null) {
+                      coOrdNameErr = 'Please select a Co-Ordinator from the list';
+                    }
                     if (suggestion != null) {
                       setState(() {
                         //customerName = suggestion.customerName;
