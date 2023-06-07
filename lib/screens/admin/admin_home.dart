@@ -275,7 +275,7 @@ class _AdminHomeState extends State<AdminHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    // Navigator.pushNamed(context, 'pendingOrderList');
+                    Navigator.pushNamed(context, 'complaintDetialsAdmin');
                   },
                   child: Container(
                     width: 323,
@@ -369,7 +369,7 @@ class _AdminHomeState extends State<AdminHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    
+                    Navigator.pushNamed(context, 'ordersListAdmin');
                   },
                   child: Container(
                     width: 323,
@@ -464,7 +464,7 @@ class _AdminHomeState extends State<AdminHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    
+                    Navigator.pushNamed(context, 'callDetailsListAdmin');
                   },
                   child: Container(
                     width: 323,

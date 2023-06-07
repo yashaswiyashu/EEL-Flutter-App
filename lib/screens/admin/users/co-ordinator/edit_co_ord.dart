@@ -696,7 +696,6 @@ Future<bool> updateAddressFields() async {
                                       
                                       if(authCredEdited) {
                                         dynamic result = await _auth.updateEmailAndPassword(args.uid, email, password);
-                                        // dynamic result = '';
                                         if (!result) {
                                           setState(() {
                                             error = 'Failed to update Email and Password';

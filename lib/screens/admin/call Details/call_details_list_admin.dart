@@ -2,91 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
-import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
-import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
-import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
-import 'package:flutter_app/screens/admin/products/view_product_details.dart';
-import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
-import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
-import 'package:flutter_app/screens/admin/users/customer/edit_customer_details.dart';
-import 'package:flutter_app/screens/admin/users/customer/view_customer_details.dart';
-import 'package:flutter_app/screens/admin/users/executive/edit_sales_exec_list.dart';
-import 'package:flutter_app/screens/admin/users/executive/view_sales_exec.dart';
-import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
-import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
+import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/add_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_app/services/auth.dart';
-import 'package:flutter_app/models/product_details_model.dart';
-import 'package:flutter_app/models/user_model.dart';
 
-
-class CustomerListAdmin extends StatefulWidget {
-  const CustomerListAdmin({super.key});
-
-
+class CallDetailsAdmin extends StatefulWidget {
+  const CallDetailsAdmin({super.key});
   @override
-  State<CustomerListAdmin> createState() => _CustomerListAdminState();
+  State<CallDetailsAdmin> createState() => _CallDetailsAdminState();
 }
 
 
-enum SingingCharacter { lafayette, jefferson, yash }
 
-
-class _CustomerListAdminState extends State<CustomerListAdmin> {
+class _CallDetailsAdminState extends State<CallDetailsAdmin> {
   bool loading = false;
   String status = '';
-  String? select = '';
-  String error = '';
 
+  String character = '';
   final AuthService _auth = AuthService();
-  String salesCoOrdinator = 'Select Co-Ord';
-  String salesExec = 'Select Exec';
-  String execID = '';
+String salesExec = 'Select Exec';
+  var salesExecutive;
+    String execID = '';
+  String callStatus = 'Interested';
 
   @override
   Widget build(BuildContext context) {
-    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
-    final customerList = Provider.of<List<CustomerModel>>(context);
+    final callDetails = Provider.of<List<CallDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
-    CustomerModel obj;
-    List<CustomerModel> custList = [];
-    String coOrdId = '';
-    List<String> salesCoOrdList = ['Select Co-Ord',];
+    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+
+    var details = [];
+    var obj;
     List<String> salesExecList = ['Select Exec',];
 
-    salesTable.forEach((element) {
-      if (element!.name == salesCoOrdinator) {
-        setState(() {
-          coOrdId = element.uid;
-        });
-      }
-    });
-
-
-    if(coOrdId == '') {
+    if (salesTable != null) {
       salesTable.forEach((element) {
-        if(element?.role == 'Sales Executive'){
-          salesExecList.add(element!.name);
-        }
-      });
-    } else {
-      salesTable.forEach((element) {
-        if(element?.role == 'Sales Executive' && element?.coOrdinatorId == coOrdId){
+        if (element?.role == 'Sales Executive') {
           salesExecList.add(element!.name);
         }
       });
     }
 
-    salesTable.forEach((element) {
-      if(element?.role == 'Sales Co-Ordinator'){
-        salesCoOrdList.add(element!.name);
-      }
-    });
-
-    salesTable.forEach((element) {
+    salesTable?.forEach((element) {
       if(element!.name == salesExec) {
         execID = element.uid;
       }
@@ -94,15 +58,9 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
 
 
     if(execID != '') {
-      customerList.forEach((element) { 
-        if(element.salesExecutiveId == execID) {
-          custList.add(element);
-        }
-      });
+      callDetails.forEach((e) => e.salesExecutiveId == execID && e.callResult == callStatus ? details.add(e) : []);
     } else {
-      customerList.forEach((element) { 
-          custList.add(element);
-      });
+      callDetails.forEach((e) => e.callResult == callStatus ? details.add(e) : []);
     }
 
     void setExec(String id) {
@@ -111,100 +69,131 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
       });
     }
 
-
-
     Widget _verticalDivider = const VerticalDivider(
-      color: Colors.black,
-      thickness: 0.5,
+        color: Colors.black,
+        thickness: 0.5,
     );
-
 
     List<DataColumn> _createColumns() {
       return [
+        DataColumn(label: Text('Call Date')),
+        DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust. Name')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Mob No.')),
+        DataColumn(label: Text('Cust Mob.')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Select')),
       ];
     }
-
-
     List<DataRow> _createRows() {
-      return custList
-          .map((element) => DataRow(cells: [
-                DataCell(Text(element.customerName)),
-                DataCell(_verticalDivider),
-                DataCell(Text(element.mobileNumber)),
-                DataCell(_verticalDivider),
-                DataCell(
-                  RadioListTile(
-                    contentPadding: EdgeInsets.only(
-                      bottom: 30,
-                    ),
-                    value: element.uid,
-                    groupValue: select,
-                    onChanged: (value) {
-                      setState(() {
-                        select = value;
-                        custList.forEach((element) {
-                          if (element.uid == select) {
-                            obj = element;
-                            setExec(element.salesExecutiveId!);
-                          }
-                        });
-                      });
-                    },
-                  ),
-                ),
-              ]))
-          .toList();
+        return details.map((element) => DataRow(cells: [
+          DataCell(Text(element.callDate)),
+          DataCell(_verticalDivider),          
+          DataCell(Text(element.customerName)),
+          DataCell(_verticalDivider),
+          DataCell(Text(element.mobileNumber)),
+          DataCell(_verticalDivider),
+          DataCell(RadioListTile(
+            contentPadding: EdgeInsets.only(bottom: 30, ),
+            value: element.uid,
+            groupValue: character,
+            onChanged: (value) {
+              setState(() {
+                character = value;
+                details.forEach((element) {
+                  if(element.uid == character){
+                    obj = element;
+                    setExec(element.salesExecutiveId!);
+                  }
+                });
+              });
+            },
+          ),),
+        ]))
+        .toList();
     }
-
-
     DataTable _createDataTable() {
       return DataTable(
-          columnSpacing: 0.0,
-          dataRowHeight: 40.0,
-          columns: _createColumns(),
-          rows: custList.isNotEmpty ? _createRows() : []);
+        columnSpacing: 0.0,
+        dataRowHeight: 40.0,
+        columns: _createColumns(), 
+        rows: callDetails.isNotEmpty ? _createRows() : []
+      );
+    }
+
+    // void showSettingsPanel(String name) {
+    //   showModalBottomSheet(
+    //     context: context, 
+    //     builder: (context) {
+    //       return Container(
+    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+    //         child: SingleCallDetailsView(name: name),
+    //       );
+    //     }
+    //   );
+    // }
+
+    
+    if ((salesTable != null) && (execID == '')) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else if (salesTable != null){
+      salesTable.forEach((element) {
+        if (element?.uid == execID) {
+          salesExecutive = element;
+        }
+      });
     }
 
 
-    return loading
-        ? const Loading()
-        : Scaffold(
+
+    return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
-                    onPressed: () async {
-                      await _auth.signout();
-                      Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
-                    },
-                    icon: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      'logout',
-                      style: TextStyle(color: Colors.white),
-                    )),
+                  onPressed: () async {
+                    await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                      'authWrapper',
+                      (Route<dynamic> route) => false);
+                  }, 
+                  icon: const Icon(Icons.person, color: Colors.white,), 
+                  label: const Text('logout', style: TextStyle(color: Colors.white),)
+                ),
               ],
             ),
             body: SingleChildScrollView(
-                child: Container(
-              width: 440,
-              padding: const EdgeInsets.only(
-                top: 10,
-                bottom: 0.4,
-              ),
-              child: Column(
+              child: Container(
+                width: 440,
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 0.4,
+                ),
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    Container(
+                padding: EdgeInsets.only(right: 15, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                  Text(
+                    'Name: ${salesExecutive.name}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ]),
+              ),
                     Container(
                       width: 270,
                       height: 60,
@@ -216,58 +205,23 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                     Container(
                       margin: EdgeInsets.only(left: 250),
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff4d47c3)),
-                        onPressed: () {
+                        style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
+                        onPressed: (){
                           Navigator.pushNamed(
-                            context, AddNewCustomer.routeName,
-                            arguments: Parameter(
-                              execID
-                            ));
-                          },
+                                  context, 
+                                  AddCallDetails.routeName,
+                                  arguments: Parameter(
+                                    execID,
+                                  )
+                                );
+                        }, 
                         child: Text('Add New +'),
                       ),
                     ),
                     SizedBox(height: 10),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                   SizedBox(
-                    height: 55,
-                    width: 175,
-                    child: DropdownButtonFormField(
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          //<-- SEE HERE
-                          borderSide: BorderSide(color: Colors.black, width: 0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          //<-- SEE HERE
-                          borderSide: BorderSide(color: Colors.black, width: 2),
-                        ),
-                        filled: true,
-                        fillColor: Color(0xffefefff),
-                      ),
-                      dropdownColor: const Color(0xffefefff),
-                      value: salesCoOrdinator,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          salesCoOrdinator = newValue!;
-                          salesExec = 'Select Exec';
-                        });
-                      },
-                      items: salesCoOrdList
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 55,
+                    height: 60,
                     width: 175,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
@@ -287,6 +241,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                       onChanged: (String? newValue) {
                         setState(() {
                           salesExec = newValue!;
+                          execID = '';
                         });
                       },
                       items: salesExecList
@@ -301,31 +256,55 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                       }).toList(),
                     ),
                   ),
-                ]),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 110),
-                    child: Text(
-                      error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                  SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: callStatus,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          callStatus = newValue!;
+                        });
+                      },
+                      items: <String> [
+                        'Interested',
+                        'Later',
+                        'Not-Interested',
+                        'Converted'
+                      ]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ]),
-                SizedBox(
-                  height: 10.0,
-                ),
+                    SizedBox(height: 10),
                     _createDataTable(),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: 20,),
                     Text(
                       status,
-                      style:
-                          const TextStyle(color: Colors.pink, fontSize: 14.0),
+                      style: const TextStyle(color: Colors.pink, fontSize: 14.0),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: 20,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -336,19 +315,19 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                           child: TextButton(
                             onPressed: () async {
                               // showSettingsPanel(character);
-                              if (select == '') {
-                                setState(() {
-                                  status = 'Please select an option';
+                              if(character == ''){
+                                setState(() {  
+                                  status ='Please select an option';
                                 });
-                              } else {
+                              }else{
                                 setState(() {
-                                  status = '';
+                                  status ='';
                                 });
                                 Navigator.pushNamed(
-                                  context, ViewCustomerAdmin.routeName,
-                                  arguments: EditParameters(
-                                    select!,
-                                    execID
+                                  context, 
+                                  ViewCallDetails.routeName,
+                                  arguments: Parameter(
+                                    character,
                                   )
                                 );
                               }
@@ -390,20 +369,21 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                           // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
                           margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
                           child: TextButton(
-                            onPressed: () {
+                            onPressed: ()  {
                               // showSettingsPanel(character);
-                              if (select == '') {
+                              if(character == ''){
                                 setState(() {
-                                  status = 'Please select an option';
+                                  status ='Please select an option';
                                 });
-                              } else {
+                              }else{
                                 setState(() {
-                                  status = '';
+                                  status ='';
                                 });
                                 Navigator.pushNamed(
-                                  context, EditCustomerAdmin.routeName,
+                                  context, 
+                                  EditCallDetails.routeName,
                                   arguments: EditParameters(
-                                    select!,
+                                    character,
                                     execID,
                                   )
                                 );
@@ -443,6 +423,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                           ),
                         ),
                         TextButton(
+                          // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -480,10 +461,11 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ]),
-            )));
+                    SizedBox(height: 20,),
+                  ]
+                ),
+              )
+        )
+    );
   }
 }

@@ -9,6 +9,9 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/admin/admin_home.dart';
+import 'package:flutter_app/screens/admin/call%20Details/call_details_list_admin.dart';
+import 'package:flutter_app/screens/admin/complaints/complaints_list_admin.dart';
+import 'package:flutter_app/screens/admin/orders/orders_list_admin.dart';
 import 'package:flutter_app/screens/admin/products/add_new_product.dart';
 import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
 import 'package:flutter_app/screens/admin/products/product_list_view.dart';
@@ -17,6 +20,8 @@ import 'package:flutter_app/screens/admin/users/co-ordinator/co_ord_list.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/customer/customer_list.dart';
+import 'package:flutter_app/screens/admin/users/customer/edit_customer_details.dart';
+import 'package:flutter_app/screens/admin/users/customer/view_customer_details.dart';
 import 'package:flutter_app/screens/admin/users/executive/edit_sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/view_sales_exec.dart';
@@ -157,7 +162,18 @@ class MyApp extends StatelessWidget {
               ViewExecutiveDetails.routeName:(context) => const ViewExecutiveDetails(),
 
               //customer
-              'customerListAdmin':(context) => const CustomerListAdmin()
+              'customerListAdmin':(context) => const CustomerListAdmin(),
+              EditCustomerAdmin.routeName:(context) => const EditCustomerAdmin(),
+              ViewCustomerAdmin.routeName:(context) => const ViewCustomerAdmin(),
+
+              //Complants
+              'complaintDetialsAdmin':(context) => const ComplaintDetailsAdmin(),
+
+              //orders
+              'ordersListAdmin':(context) => const OrderDetailsAdmin(),
+
+              //call Details
+              'callDetailsListAdmin':(context) => const CallDetailsAdmin(),
         },
       ),
     );

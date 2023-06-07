@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
+import 'package:flutter_app/models/orders_product_model.dart';
+import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/services/auth.dart';
+import 'package:flutter_app/services/firebase_storage.dart';
 import 'package:provider/provider.dart';
 
 
@@ -17,6 +21,72 @@ class _CustomerHomeState extends State<CustomerHome> {
 
   @override
   Widget build(BuildContext context) {
+    final StorageService storage = StorageService(); 
+    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
+    final currentUser = Provider.of<UserModel?>(context);
+    OrderDetailsModel obj = OrderDetailsModel(uid: '', salesExecutiveId: '', customerId: '', customerName: '', shipmentID: '', mobileNumber: '', address1: '', address2: '', district: '', state: '', pincode: '', deliveryDate: '', dropdown: '', subTotal: '', totalAmount: '', orderedDate: '', products: []);
+
+    orderDetails.forEach((element) {
+      if(element.customerId == currentUser?.uid) {
+        obj = element;
+      }
+    });
+
+    Widget showProducts(List<OrdersProductModel?> productList) {
+      List<ProductDetailsModel> products = [];
+      productDetails.forEach((element) {
+        productList.forEach((e) {
+          if(e?.productName == element.name) {
+            products.add(element);
+          }
+        });
+      });
+      
+      products.map((e) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              child: FutureBuilder(
+              future: storage.downloadURL(e.imageUrl),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData){
+                  return CircularProgressIndicator();
+                }
+
+                if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+                  return Image.network(
+                    snapshot.data!,
+                    fit: BoxFit.cover,
+                  );
+                } 
+
+                return Container();
+              },
+            ),
+            ),
+            SizedBox(
+              width: 86,
+              height: 16,
+              child: Text(
+                  e.name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontFamily: "Poppins",
+                      fontWeight: FontWeight.w500,
+                  ),
+              ),
+          ),
+          ],
+        );
+      });
+      return Container();
+    }
+
+
     //return home or auth widget
     return WillPopScope(
       onWillPop: () async => false,
@@ -120,87 +190,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                               ),
                               child: Stack(
                                   children:[
-                                      Positioned(
-                                          left: 196.12,
-                                          top: 21,
-                                          child: Container(
-                                              width: 58,
-                                              height: 68,
-                                              color: Color(0xffd9d9d9),
-                                          ),
-                                      ),
-                                      Positioned(
-                                          left: 182.12,
-                                          top: 97,
-                                          child: SizedBox(
-                                              width: 86,
-                                              height: 16,
-                                              child: Text(
-                                                  "Product N",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12,
-                                                      fontFamily: "Poppins",
-                                                      fontWeight: FontWeight.w500,
-                                                  ),
-                                              ),
-                                          ),
-                                      ),
-                                      Positioned(
-                                          left: 111.12,
-                                          top: 21,
-                                          child: Container(
-                                              width: 58,
-                                              height: 68,
-                                              color: Color(0xffd9d9d9),
-                                          ),
-                                      ),
-                                      Positioned(
-                                          left: 97.12,
-                                          top: 97,
-                                          child: SizedBox(
-                                              width: 86,
-                                              height: 16,
-                                              child: Text(
-                                                  "Product N",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12,
-                                                      fontFamily: "Poppins",
-                                                      fontWeight: FontWeight.w500,
-                                                  ),
-                                              ),
-                                          ),
-                                      ),
-                                      Positioned(
-                                          left: 26.12,
-                                          top: 21,
-                                          child: Container(
-                                              width: 58,
-                                              height: 68,
-                                              color: Color(0xffd9d9d9),
-                                          ),
-                                      ),
-                                      Positioned(
-                                          left: 12.12,
-                                          top: 97,
-                                          child: SizedBox(
-                                              width: 86,
-                                              height: 16,
-                                              child: Text(
-                                                  "Product N",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12,
-                                                      fontFamily: "Poppins",
-                                                      fontWeight: FontWeight.w500,
-                                                  ),
-                                              ),
-                                          ),
-                                      ),
+                                      showProducts(obj.products),
                                       Positioned(
                                           left: 260.12,
                                           top: 55,
