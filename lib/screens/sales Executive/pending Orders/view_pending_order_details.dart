@@ -69,7 +69,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
     0.00,
   ];
 
-  void populateTable(List<ProductDetailsModel> product) {
+  void populateTable(product) {
     print(tableData.length);
     setState(() {
       for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
@@ -85,38 +85,11 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                 double productPrice = double.parse(tableData[rowIndex][2]);
                 double productDiscount = double.parse(tableData[rowIndex][3]);
                 double amount = productPrice * productQuantity;
-                print(productQuantity);
-                print(productPrice);
-                print(productDiscount);
                 tableData[rowIndex][cellIndex] =
                     (amount - (amount * (productDiscount / 100))).toString();
                 amountList[rowIndex] = double.parse(
                     (amount - (amount * (productDiscount / 100)))
                         .toStringAsFixed(2));
-              }
-            }
-          });
-        }
-      }
-      updateSubTotal();
-      total = (double.parse(subTotal) +
-              (double.parse(subTotal) * double.parse(cgst)) +
-              (double.parse(subTotal) * double.parse(sgst)))
-          .toStringAsFixed(2);
-    });
-  }
-  void populateProductTable(List<ProductDetailsModel> product) {
-    setState(() {
-      for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
-        for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
-          product.forEach((element) {
-            if (selectedOptions[rowIndex] == element.name) {
-              if (cellIndex == 2) {
-                tableData[rowIndex][cellIndex] = element.price;
-              } else if (cellIndex == 3) {
-                tableData[rowIndex][cellIndex] = element.offers;
-              } else if (cellIndex == 4) {
-                tableData[rowIndex][cellIndex] = amountList[rowIndex].toString();
               }
             }
           });
@@ -179,23 +152,27 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
 
       var salesExecutive;
 
-
+  var firstTime = true;
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
     final orderedProductList = [];
+    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
 
     var orderedProductsName = [];
 
     var obj;
-    if (products.length != productDetails.length + 1) {
-      productDetails.forEach((element) {
-        products.add(element.name);
+
+
+    if (salesTable != null) {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
       });
     }
 
@@ -240,8 +217,9 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
       }
     });
 
-    if (tableData.length != orderedProductList.length) {
+    if (tableData.length != orderedProductList.length || firstTime) {
       setState(() {
+        firstTime = false;
         orderedProductsName = [];
         productUidList = [];
         selectedOptions = [products[0],];
@@ -272,13 +250,6 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
       populateTable(productDetails);
     }
 
-    if (salesTable != null) {
-      salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    }
 
     
 
