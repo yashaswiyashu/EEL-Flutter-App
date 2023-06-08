@@ -135,19 +135,6 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
     }
 
 
-    // void showSettingsPanel(String name) {
-    //   showModalBottomSheet(
-    //     context: context,
-    //     builder: (context) {
-    //       return Container(
-    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-    //         child: SingleCallDetailsView(name: name),
-    //       );
-    //     }
-    //   );
-    // }
-
-
 
     return Scaffold(
         appBar: AppBar(
@@ -195,11 +182,20 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff4d47c3)),
                     onPressed: () {
-                      Navigator.pushNamed(
+                      if (execID == '') {
+                            setState(() {
+                              status = 'Please select an executive';
+                            });
+                          } else {
+                            setState(() {
+                              status = '';
+                            });
+                            Navigator.pushNamed(
                                 context, AddNewComplaint.routeName,
                                 arguments: Parameter(
                                   execID,
                                 ));
+                          }
                     },
                     child: Text('Add New +'),
                   ),
@@ -228,6 +224,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                         setState(() {
                           salesExec = newValue!;
                           execID = '';
+                          status = '';
                         });
                       },
                       items: salesExecList

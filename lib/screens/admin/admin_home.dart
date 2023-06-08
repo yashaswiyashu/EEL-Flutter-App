@@ -559,7 +559,7 @@ class _AdminHomeState extends State<AdminHome> {
                 SizedBox(height: 20.80),
                 TextButton(
                   onPressed: () {
-                    
+                    Navigator.pushNamed(context, 'feedbackDetailsAdmin');
                   },
                   child: Container(
                     width: 323,

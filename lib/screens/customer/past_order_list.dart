@@ -31,7 +31,7 @@ class _PastCustomerOrdersListState extends State<PastCustomerOrdersList> {
 
   String character = '';
   final AuthService _auth = AuthService();
-
+  String orderStatus = 'All Orders';
   @override
   Widget build(BuildContext context) {
     final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
@@ -39,7 +39,11 @@ class _PastCustomerOrdersListState extends State<PastCustomerOrdersList> {
     var details = [];
     var obj;
 
-    orderDetails.forEach((e) => e.customerId == currentUser?.uid && (e.dropdown == 'Cancelled' || e.dropdown == 'Delivered' )? details.add(e) : []);
+    if(orderStatus == 'All Orders') {
+    orderDetails.forEach((e) => e.customerId == currentUser?.uid && (e.dropdown == 'Cancelled' || e.dropdown == 'Delivered'  || e.dropdown == 'Returnerd')? details.add(e) : []);
+    } else {
+    orderDetails.forEach((e) => e.customerId == currentUser?.uid && (e.dropdown == orderStatus)? details.add(e) : []);
+    }
 
     Widget _verticalDivider = const VerticalDivider(
         color: Colors.black,
@@ -130,6 +134,47 @@ class _PastCustomerOrdersListState extends State<PastCustomerOrdersList> {
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
+                    SizedBox(height: 10),
+                    SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: orderStatus,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          orderStatus = newValue!;
+                        });
+                      },
+                      items: <String> [
+                        'All Orders',
+                        'Delivered',
+                        'Cancelled',
+                        'Returned'
+                      ]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                     SizedBox(height: 10),
                     _createDataTable(),
                     SizedBox(height: 20,),

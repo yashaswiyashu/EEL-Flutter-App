@@ -9,6 +9,7 @@ import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
 import 'package:flutter_app/screens/customer/complaints/customer_complaints_list.dart';
 import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
+import 'package:flutter_app/screens/customer/feedback/customer_feedback_list.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
 import 'package:flutter_app/services/auth.dart';
@@ -517,7 +518,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                             onPressed: () {
                               Navigator.pushNamed(
                                   context, 
-                                  CustomerFeedback.routeName,
+                                  CustomerFeedbackList.routeName,
                                   arguments: Parameter(
                                     execId,
                                   )

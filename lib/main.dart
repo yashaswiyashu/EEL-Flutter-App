@@ -12,6 +12,7 @@ import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/admin/admin_home.dart';
 import 'package:flutter_app/screens/admin/call%20Details/call_details_list_admin.dart';
 import 'package:flutter_app/screens/admin/complaints/complaints_list_admin.dart';
+import 'package:flutter_app/screens/admin/feedBack/feedback_details_admin.dart';
 import 'package:flutter_app/screens/admin/orders/orders_list_admin.dart';
 import 'package:flutter_app/screens/admin/products/add_new_product.dart';
 import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
@@ -30,6 +31,8 @@ import 'package:flutter_app/screens/admin/users/select_user.dart';
 import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/customer/complaints/customer_complaints_list.dart';
 import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
+import 'package:flutter_app/screens/customer/feedback/customer_feedback_list.dart';
+import 'package:flutter_app/screens/customer/feedback/view_feedback_details.dart';
 import 'package:flutter_app/screens/customer/past_order_list.dart';
 import 'package:flutter_app/screens/customer/present_orders_list.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/complaints/pending_complaints_list.dart';
@@ -148,6 +151,8 @@ class MyApp extends StatelessWidget {
           'pastCustomerOrdersList':(context) => const PastCustomerOrdersList(),
           CustomerFeedback.routeName:(context) => const CustomerFeedback(),
           CustomerComplaintDetailsList.routeName:(context) => const CustomerComplaintDetailsList(),
+          CustomerFeedbackList.routeName:(context) => const CustomerFeedbackList(),
+          ViewCustomerFeedback.routeName:(context) => const ViewCustomerFeedback(),
           
           //Admin =>
             //Products
@@ -182,6 +187,9 @@ class MyApp extends StatelessWidget {
 
             //call Details
             'callDetailsListAdmin':(context) => const CallDetailsAdmin(),
+
+            //feedBack
+            'feedbackDetailsAdmin':(context) => const FeedbackDetailsAdmin(),
         },
       ),
     );

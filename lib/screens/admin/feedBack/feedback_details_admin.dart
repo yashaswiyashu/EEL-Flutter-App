@@ -5,8 +5,11 @@ import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
+import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
+import 'package:flutter_app/screens/customer/feedback/view_feedback_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/view_complaint_details.dart';
@@ -15,16 +18,15 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 
-class CustomerComplaintDetailsList extends StatefulWidget {
-  const CustomerComplaintDetailsList({super.key});
-static const routeName = '/CustomerComplaintDetailsList';
+class FeedbackDetailsAdmin extends StatefulWidget {
+  const FeedbackDetailsAdmin({super.key});
 
   @override
-  State<CustomerComplaintDetailsList> createState() => _CustomerComplaintDetailsListState();
+  State<FeedbackDetailsAdmin> createState() => _FeedbackDetailsAdminState();
 }
 
 
-class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsList> {
+class _FeedbackDetailsAdminState extends State<FeedbackDetailsAdmin> {
   bool loading = false;
   String status = '';
 
@@ -35,52 +37,45 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
 
   var salesExecutive;
   String custName = '';
-
+  String salesExec = 'Select Exec';
+  String execId = '';
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    final feedbackDetails = Provider.of<List<FeedbackDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
     final customerList = Provider.of<List<CustomerModel>>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    List<String> salesExecList = ['Select Exec',];
+    var details = [];
+    var obj;
 
-    if (salesTable != null && args.uid == '') {
+
+    if (salesTable != null) {
       salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    } else {
-      salesTable!.forEach((element) {
-        if (element?.uid == args.uid) {
-          salesExecutive = element;
+        if (element?.role == 'Sales Executive') {
+          salesExecList.add(element!.name);
         }
       });
     }
 
-    customerList.forEach((element) {
-      if(element.uid == currentUser?.uid) {
-        custName = element.customerName;
+    salesTable?.forEach((element) {
+      if(element!.name == salesExec) {
+        execId = element.uid;
       }
     });
 
-    var details = [];
-    var obj;
 
-    // if (args.uid == '') {
-    //   complaintDetailsList.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
-    // } else {
-    //   complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
-    // }
+    if(execId == '') {
+      feedbackDetails.forEach((e) => details.add(e));
+    } else {
+      feedbackDetails.forEach((e) => e.salesExecutiveId == execId ? details.add(e) : []);
+    }
 
-
-    complaintDetailsList.forEach((e) => ((e.complaintResult != 'Closed') && (e.customerName == custName)) ? details.add(e) : []);
-    // customerList.forEach((element) {
-    //     if(e.customerName == element.customerName){
-
-    //     }
-    // });
-
+    void setExec(String id) {
+      setState(() {
+        execId = id;
+      });
+    }
 
 
     Widget _verticalDivider = const VerticalDivider(
@@ -91,11 +86,11 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Compl. Date')),
+        DataColumn(label: Text('FeedBack Date')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Name')),
+        DataColumn(label: Text('Cust. Name')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Mob.')),
+        DataColumn(label: Text('Cust. Mob')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Select')),
       ];
@@ -105,7 +100,7 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
     List<DataRow> _createRows() {
       return details
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.complaintDate)),
+                DataCell(Text(element.feedbackDate)),
                 DataCell(_verticalDivider),
                 DataCell(Text(element.customerName)),
                 DataCell(_verticalDivider),
@@ -124,6 +119,7 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
                         details.forEach((element) {
                           if (element.uid == character) {
                             obj = element;
+                            setExec(element.salesExecutiveId!);
                           }
                         });
                       });
@@ -140,21 +136,9 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: complaintDetailsList.isNotEmpty ? _createRows() : []);
+          rows: feedbackDetails.isNotEmpty ? _createRows() : []);
     }
 
-
-    // void showSettingsPanel(String name) {
-    //   showModalBottomSheet(
-    //     context: context,
-    //     builder: (context) {
-    //       return Container(
-    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-    //         child: SingleCallDetailsView(name: name),
-    //       );
-    //     }
-    //   );
-    // }
     return Scaffold(
         appBar: AppBar(
           title: const Text('Energy Efficient Lights'),
@@ -201,17 +185,65 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff4d47c3)),
                     onPressed: () {
-                      Navigator.pushNamed(
+                      if (execId == '') {
+                            setState(() {
+                              status = 'Please select an executive';
+                            });
+                          } else {
+                            setState(() {
+                              status = '';
+                            });
+                            Navigator.pushNamed(
                                   context, 
-                                  AddNewComplaint.routeName,
+                                  CustomerFeedback.routeName,
                                   arguments: Parameter(
-                                    args.uid,
+                                    execId,
                                   )
                                 );
+                          }
+                      
                     },
                     child: Text('Add New +'),
                   ),
                 ),
+                SizedBox(height: 10),
+                SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: salesExec,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          salesExec = newValue!;
+                          execId = '';
+                          status = '';
+                        });
+                      },
+                      items: salesExecList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 SizedBox(height: 10),
                 _createDataTable(),
                 SizedBox(
@@ -243,7 +275,7 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
                               status = '';
                             });
                             Navigator.pushNamed(
-                                context, ViewComplaintDetails.routeName,
+                                context, ViewCustomerFeedback.routeName,
                                 arguments: Parameter(
                                   character,
                                 ));

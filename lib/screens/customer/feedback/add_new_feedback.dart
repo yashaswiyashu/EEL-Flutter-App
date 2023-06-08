@@ -156,21 +156,21 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
     List<CustomerModel> details = [];
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
-    final feedbackTable = Provider.of<List<SalesPersonModel?>>(context);
-    final FeedbackDetailsList =
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    final feedbackDetailsList =
         Provider.of<List<FeedbackDetailsModel>>(context);
     var InDb = false;
     var isDupName = false;
 
 
-    if (feedbackTable != null && args.uid == '') {
-      feedbackTable.forEach((element) {
+    if (salesTable != null && args.uid == '') {
+      salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
         }
       });
     } else {
-      feedbackTable.forEach((element) {
+      salesTable.forEach((element) {
         if (element?.uid == args.uid) {
           salesExecutive = element;
         }
@@ -199,7 +199,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
     });
 
 
-    FeedbackDetailsList.forEach((e) {
+    feedbackDetailsList.forEach((e) {
       if (e.customerName == nameController.text) {
         setState(() {
           // nameErr = '';
@@ -238,19 +238,6 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(right: 15, top: 10),
-                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Text(
-                    'Name: ${salesExecutive.name}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ]),
-              ),
               SizedBox(
                 height: 10,
               ),
