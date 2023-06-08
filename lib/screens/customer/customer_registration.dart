@@ -57,7 +57,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   final cityController = TextEditingController();
   final stateController = TextEditingController();
   final numberController = TextEditingController();
-  //final custNameController = TextEditingController();
+  final executiveController = TextEditingController();
 
   void initState() {
     _passwordVisible = false;
@@ -65,7 +65,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     talukController.addListener(_talukLatestValue);
     nameController.addListener(_nameLatestValue);
     stateController.addListener(_stateLatestValue);
-    //custNameController.addListener(_custNameLatestValue);
+    executiveController.addListener(_execNameLatestValue);
     numberController.addListener(_numberLatestValue);
   }
 
@@ -77,7 +77,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     stateController.dispose();
     nameController.dispose();
     talukController.dispose();
-    //custNameController.dispose();
+    executiveController.dispose();
     numberController.dispose();
     super.dispose();
   }
@@ -92,6 +92,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
 
   void _nameLatestValue() {
     print('Viru:: ${nameController.text}');
+  }
+  void _execNameLatestValue() {
+    print('Viru:: ${executiveController.text}');
   }
 
   void _talukLatestValue() {
@@ -130,13 +133,14 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   }
 
   var isDupNum = false;
-
+  String execNameErr = '';
+  String execId = '';
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
-
+    List<String> salesExecutives = [];
     //[Viru:2/6/23] Added to support customer mob search list
     List<CustomerModel> details = [];
     final customerList = Provider.of<List<CustomerModel>>(context);
@@ -147,6 +151,21 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
       customerList
           .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
     }
+
+    salesTable.forEach((element) {
+      if(element!.name == executiveController.text) {
+        execId = element.uid;
+      }
+    });
+
+    if(salesTable != null) {
+      salesTable.forEach((e) {
+        if(e!.role == 'Sales Executive'){
+          salesExecutives.add(e.name);
+        }
+      });
+    }
+
 
     if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
@@ -318,6 +337,72 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   numError,
                   style: TextStyle(
                     color: Color.fromARGB(190, 193, 2, 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Sales Executive:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )),
+              SizedBox(
+                child: TypeAheadFormField(
+                  
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: executiveController,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Co-ordinator Name',
+                      fillColor: const Color(0xfff0efff),
+                    ),
+                    /* onChanged: (val) {
+                      customerName = val;
+                    }, */
+                  ),
+
+                  suggestionsCallback: (pattern) async {
+                    // Filter the customer list based on the search pattern
+                    return salesExecutives
+                    .where((customer) =>
+                    customer != null &&
+                    customer.toLowerCase().contains(pattern.toLowerCase()))
+                    .toList();
+                  },
+
+                  itemBuilder: (context, String? suggestion) {
+                    if (suggestion == null) return const SizedBox.shrink();
+                    return ListTile(
+                      title: Text(suggestion),
+                    );
+                  },
+
+                  onSuggestionSelected: (String? suggestion) {
+                    if(suggestion == null) {
+                      execNameErr = 'Please select a Co-Ordinator from the list';
+                    }
+                    if (suggestion != null) {
+                      setState(() {
+                        //customerName = suggestion.customerName;
+                        executiveController.text = suggestion;
+                        execNameErr = '';
+                    });
+                  }
+              },
+
+            ),
+              ),
+              Container(
+                child: Text(
+                  execNameErr,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 13.0,
                   ),
                 ),
               ),
@@ -1097,7 +1182,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                             docid: result.uid)
                                         .setUserData(
                                       result?.uid,
-                                      '',
+                                      execId,
                                       customerName,
                                       mobileNumber,
                                       email,
