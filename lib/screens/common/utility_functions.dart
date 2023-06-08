@@ -1,6 +1,9 @@
 //import 'package:provider/provider.dart';
 //import 'package:flutter_app/models/order_details_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
+import 'package:flutter_app/models/user_model.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 //final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
 class SaleOrderDashBoard {
@@ -97,4 +100,24 @@ int getFollowUpCount(List callDetailsList) {
         }
       });
   return _followUpCount;
+}
+
+int getTotalPendingOrders(String id, List<OrderDetailsModel> orders) {
+  var orderCount = 0;
+  orders.forEach((element) {
+    if(element.customerId == id && element.dropdown != 'Delivered' && element.dropdown != 'Cancelled' && element.dropdown != 'Returned') {
+      orderCount++;
+    }
+  });
+  return orderCount;
+}
+
+int getTotalOrders(String id, List<OrderDetailsModel> orders) {
+  var totalOrder = 0;
+  orders.forEach((element) {
+    if(element.customerId == id && (element.dropdown == 'Delivered' || element.dropdown == 'Cancelled' || element.dropdown == 'Returned')) {
+      totalOrder++;
+    }
+  });
+  return totalOrder;
 }

@@ -232,7 +232,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                     Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                   SizedBox(
                     height: 55,
-                    width: 175,
+                    width: 185,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -252,6 +252,8 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                         setState(() {
                           salesCoOrdinator = newValue!;
                           salesExec = 'Select Exec';
+                          coOrdId = '';
+                          execID = '';
                         });
                       },
                       items: salesCoOrdList
@@ -268,7 +270,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                   ),
                   SizedBox(
                     height: 55,
-                    width: 175,
+                    width: 185,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -287,6 +289,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                       onChanged: (String? newValue) {
                         setState(() {
                           salesExec = newValue!;
+                          execID = '';
                         });
                       },
                       items: salesExecList

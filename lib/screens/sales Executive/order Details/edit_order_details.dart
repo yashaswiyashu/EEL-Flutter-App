@@ -1081,7 +1081,6 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                               onPressed: () async {
                                 if (_formkey.currentState!.validate() &&
                                     customerId != '' &&
-                                    callDate != 'Select Date' &&
                                     selectedOptions[
                                             selectedOptions.length - 1] !=
                                         'Select Product' &&
@@ -1117,7 +1116,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                               city,
                                               state,
                                               pincode,
-                                              callDate == date ? date : callDate,
+                                              callDate == 'Select Date' ? date : callDate,
                                               dropDown == prevDropDown ? prevDropDown : dropDown,
                                               subTotal,
                                               total, 
@@ -1146,7 +1145,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                     });
                                   }
 
-                                  if (callDate == 'Select Date') {
+                                  if (callDate == 'Select Date' && date == '') {
                                     setState(() {
                                       dateError = 'Please enter delivery date';
                                       loading = false;

@@ -7,6 +7,7 @@ import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
+import 'package:flutter_app/screens/common/utility_functions.dart';
 import 'package:flutter_app/screens/customer/complaints/customer_complaints_list.dart';
 import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
 import 'package:flutter_app/screens/customer/feedback/customer_feedback_list.dart';
@@ -67,6 +68,8 @@ class _CustomerHomeState extends State<CustomerHome> {
         obj = element;
       }
     });
+    var pendingOrders = getTotalPendingOrders(currentUser!.uid, orderDetails);
+    var totalOrders = getTotalOrders(currentUser.uid, orderDetails);
 
     var tileHeight = 100 * productDetails.length;
 
@@ -247,7 +250,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Pending Orders: ",
+                                      "Total Pending Orders: $pendingOrders",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -413,7 +416,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Orders: ",
+                                      "Total Past Orders: $totalOrders",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,

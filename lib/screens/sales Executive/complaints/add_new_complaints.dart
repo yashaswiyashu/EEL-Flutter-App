@@ -185,7 +185,7 @@ final AuthService _auth = AuthService();
     });
 
     complaintDetailsList.forEach((e) {
-      if(e.customerName == nameController.text) {
+      if(e.customerName == nameController.text && e.complaintResult != 'Closed') {
         setState(() {
           // nameErr = '';
           isDupName = true;

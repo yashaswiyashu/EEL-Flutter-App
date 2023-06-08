@@ -345,7 +345,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -389,7 +388,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
 
                   onSuggestionSelected: (String? suggestion) {
                     if(suggestion == null) {
-                      execNameErr = 'Please select a Co-Ordinator from the list';
+                      execNameErr = 'Please select a Executive from the list';
                     }
                     if (suggestion != null) {
                       setState(() {
@@ -411,6 +410,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   ),
                 ),
               ),
+              const SizedBox(height: 20.0,),
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -1167,7 +1167,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           ElevatedButton(
                             onPressed: () async {
                               if (_formkey.currentState!.validate() &&
-                                  state != 'Select State' && !isDupNum) {
+                                  state != 'Select State' && !isDupNum && execId != '') {
                                 setState(() {
                                   loading = true;
                                   numError = '';
@@ -1227,7 +1227,14 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                               } else {
                                 if (isDupNum) {
                                   setState(() {
+                                    loading = false;
                                     numError = 'Customer with this number already exists';
+                                  });
+                                }
+                                if(execId == '') {
+                                  setState(() {
+                                    loading = false;
+                                    execNameErr = 'Please select a executive from the list';
                                   });
                                 }
                               }

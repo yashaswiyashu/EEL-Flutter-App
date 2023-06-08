@@ -510,7 +510,6 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               },
 
             ),
-            const SizedBox(height: 5.0),
               Container(
                 margin: const EdgeInsets.only(left: 110),
                 child: Text(

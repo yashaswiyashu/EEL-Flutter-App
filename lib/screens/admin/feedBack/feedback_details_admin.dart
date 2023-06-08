@@ -119,7 +119,6 @@ class _FeedbackDetailsAdminState extends State<FeedbackDetailsAdmin> {
                         details.forEach((element) {
                           if (element.uid == character) {
                             obj = element;
-                            setExec(element.salesExecutiveId!);
                           }
                         });
                       });
