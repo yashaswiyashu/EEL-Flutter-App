@@ -69,7 +69,7 @@ class _ViewSalesOrderState extends State<ViewSalesOrder>{
     0.00,
   ];
 
-  void populateTable(List<ProductDetailsModel> product) {
+  void populateTable( product) {
     print(tableData.length);
     setState(() {
       for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
@@ -105,7 +105,7 @@ class _ViewSalesOrderState extends State<ViewSalesOrder>{
           .toStringAsFixed(2);
     });
   }
-  void populateProductTable(List<ProductDetailsModel> product) {
+  void populateProductTable( product) {
     setState(() {
       for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
         for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
@@ -178,7 +178,7 @@ class _ViewSalesOrderState extends State<ViewSalesOrder>{
   List<String> productUidList = [];
 
       var salesExecutive;
-
+  var firstTime = true;
 
   @override
   Widget build(BuildContext context) {
@@ -240,8 +240,9 @@ class _ViewSalesOrderState extends State<ViewSalesOrder>{
       }
     });
 
-    if (tableData.length != orderedProductList.length) {
+    if (tableData.length != orderedProductList.length || firstTime) {
       setState(() {
+        firstTime = false;
         orderedProductsName = [];
         productUidList = [];
         selectedOptions = [products[0],];

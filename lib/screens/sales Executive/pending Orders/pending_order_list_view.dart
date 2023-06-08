@@ -13,7 +13,7 @@ import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/edit_pending_order.dart';
-import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/view_sales_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/view_pending_order_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';

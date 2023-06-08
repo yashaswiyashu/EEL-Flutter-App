@@ -3,9 +3,13 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
+import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
+import 'package:flutter_app/screens/customer/feedback/view_feedback_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/view_complaint_details.dart';
@@ -14,16 +18,16 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 
-class ComplaintDetailsList extends StatefulWidget {
-  const ComplaintDetailsList({super.key});
-static const routeName = '/ComplaintDetailsList';
+class CustomerFeedbackList extends StatefulWidget {
+  const CustomerFeedbackList({super.key});
+static const routeName = '/CustomerFeedbackList';
 
   @override
-  State<ComplaintDetailsList> createState() => _ComplaintDetailsListState();
+  State<CustomerFeedbackList> createState() => _CustomerFeedbackListState();
 }
 
 
-class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
+class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
   bool loading = false;
   String status = '';
 
@@ -33,37 +37,55 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
 
   var salesExecutive;
-
-
+  String custName = '';
+  String execId = '';
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    final feedbackDetails = Provider.of<List<FeedbackDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    final customerList = Provider.of<List<CustomerModel>>(context);
 
     if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
+          execId = element!.uid;
         }
       });
     } else {
       salesTable!.forEach((element) {
         if (element?.uid == args.uid) {
           salesExecutive = element;
+          execId = element!.uid;
         }
       });
     }
 
+    customerList.forEach((element) {
+      if(element.uid == currentUser?.uid) {
+        custName = element.customerName;
+      }
+    });
+
     var details = [];
     var obj;
 
-    if (args.uid == '') {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
-    } else {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
-    }
+    // if (args.uid == '') {
+    //   complaintDetailsList.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+    // } else {
+    //   complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+    // }
+
+
+    feedbackDetails.forEach((e) => ((e.customerName == custName)) ? details.add(e) : []);
+    // customerList.forEach((element) {
+    //     if(e.customerName == element.customerName){
+
+    //     }
+    // });
+
 
 
     Widget _verticalDivider = const VerticalDivider(
@@ -74,11 +96,11 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Compl. Date')),
+        DataColumn(label: Text('FeedBack Date')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Name')),
+        DataColumn(label: Text('Cust. Name')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Mob.')),
+        DataColumn(label: Text('Cust. Mob')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Select')),
       ];
@@ -88,7 +110,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
     List<DataRow> _createRows() {
       return details
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.complaintDate)),
+                DataCell(Text(element.feedbackDate)),
                 DataCell(_verticalDivider),
                 DataCell(Text(element.customerName)),
                 DataCell(_verticalDivider),
@@ -123,7 +145,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: complaintDetailsList.isNotEmpty ? _createRows() : []);
+          rows: feedbackDetails.isNotEmpty ? _createRows() : []);
     }
 
 
@@ -147,7 +169,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                 onPressed: () async {
                   await _auth.signout();
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                          'authWrapper', (Route<dynamic> route) => false);
+                        'authWrapper', (Route<dynamic> route) => false);
                 },
                 icon: const Icon(
                   Icons.person,
@@ -172,20 +194,6 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(right: 15, top: 10),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      'Name: ${salesExecutive.name}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]),
-                ),
-                Container(
                   width: 270,
                   height: 60,
                   decoration: BoxDecoration(
@@ -201,9 +209,9 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                     onPressed: () {
                       Navigator.pushNamed(
                                   context, 
-                                  AddNewComplaint.routeName,
+                                  CustomerFeedback.routeName,
                                   arguments: Parameter(
-                                    args.uid,
+                                    execId,
                                   )
                                 );
                     },
@@ -241,7 +249,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                               status = '';
                             });
                             Navigator.pushNamed(
-                                context, ViewComplaintDetails.routeName,
+                                context, ViewCustomerFeedback.routeName,
                                 arguments: Parameter(
                                   character,
                                 ));
@@ -267,61 +275,6 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                           child: Center(
                             child: Text(
                               'View',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: "Poppins",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                height: 1.5,
-                                color: Color(0xffffffff),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
-                      margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
-                      child: TextButton(
-                        onPressed: () {
-                          // showSettingsPanel(character);
-                          if (character == '') {
-                            setState(() {
-                              status = 'Please select an option';
-                            });
-                          } else {
-                            setState(() {
-                              status = '';
-                            });
-                            Navigator.pushNamed(
-                                context, EditComplaintDetails.routeName,
-                                arguments: EditParameters(
-                                  character,
-                                  args.uid,
-                                ));
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        child: Container(
-                          width: 95.63,
-                          height: 59,
-                          decoration: BoxDecoration(
-                            color: Color(0xff4d47c3),
-                            borderRadius: BorderRadius.circular(9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x664d47c3),
-                                offset: Offset(0, 4),
-                                blurRadius: 30.5,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Edit',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: "Poppins",

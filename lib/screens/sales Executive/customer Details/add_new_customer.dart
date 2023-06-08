@@ -140,13 +140,9 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
     //[Viru:2/6/23] Added to support customer mob search list
     List<CustomerModel> details = [];
     final customerList = Provider.of<List<CustomerModel>>(context);
-    if (args.uid == '') {
       customerList.forEach(
-          (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
-    } else {
-      customerList
-          .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
-    }
+          (e) => details.add(e));
+
 
     if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {

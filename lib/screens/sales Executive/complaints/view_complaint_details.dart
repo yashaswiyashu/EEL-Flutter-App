@@ -81,7 +81,8 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                 TextButton.icon(
                     onPressed: () async {
                       await _auth.signout();
-                      Navigator.pushNamed(context, 'home');
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          'authWrapper', (Route<dynamic> route) => false);
                     },
                     icon: const Icon(
                       Icons.person,
@@ -110,7 +111,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      salesExecutive != null ? Container(
                         padding: EdgeInsets.only(right: 15, top: 10),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -124,7 +125,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                                 ),
                               ),
                             ]),
-                      ),
+                      ) : SizedBox(width: 0, height: 0,),
                       SizedBox(
                         height: 10,
                       ),

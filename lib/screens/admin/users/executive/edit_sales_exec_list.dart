@@ -307,6 +307,21 @@ Future<bool> updateAddressFields() async {
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
         backgroundColor: const Color(0xff4d47c3),
+        actions: [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
@@ -436,7 +451,7 @@ Future<bool> updateAddressFields() async {
               const SizedBox(
                   height: 20.0,
                   child: Text(
-                    'Sales Co-Ordinator:',
+                    'Role:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
                       fontSize: 16,
@@ -444,7 +459,55 @@ Future<bool> updateAddressFields() async {
                       fontWeight: FontWeight.w500,
                     ),
                   )),
-              SizedBox(
+                  Container(
+                    height: 60,
+                    child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            //<-- SEE HERE
+                            borderSide: BorderSide(color: Colors.black, width: 0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            //<-- SEE HERE
+                            borderSide: BorderSide(color: Colors.black, width: 2),
+                          ),
+                          filled: true,
+                          fillColor: Color(0xffefefff),
+                        ),
+                        dropdownColor: const Color(0xffefefff),
+                        value: role,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            role = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'Sales Executive',
+                          'Sales Co-Ordinator'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                  ),
+              role == 'Sales Executive' ? const SizedBox(height: 20.0) : const SizedBox(width: 0, height: 0,),
+              role == 'Sales Executive' ? const SizedBox(
+                  height: 20.0,
+                  child: Text(
+                    'Sales Co-Ordinator:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: 16,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )) : const SizedBox(width: 0, height: 0,),
+              role == 'Sales Executive' ? SizedBox(
                 child: TypeAheadFormField(
                   
                   textFieldConfiguration: TextFieldConfiguration(
@@ -484,8 +547,8 @@ Future<bool> updateAddressFields() async {
                   }
               },
             ),
-              ),
-              //const SizedBox(height: 20.0),
+              ) : const SizedBox(width: 0, height: 0,),
+              const SizedBox(height: 20.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -756,6 +819,12 @@ Future<bool> updateAddressFields() async {
                               ? const Loading()
                               : ElevatedButton(
                                   onPressed: () async {
+                                    if(role == 'Sales Co-Ordinator') {
+                                      setState(() {
+                                        coOrdinatorName.text = '';
+                                        salesCoordId = '';
+                                      });
+                                    }
                                     if (_formkey.currentState!.validate()) {
                                       setState(() {
                                         loading = true;

@@ -56,7 +56,7 @@ dependencies:
 
 flutter_icons:
   android: true
-  image_path: "assets/logotm.jpg"
+  image_path: "assets/icon.png"
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +88,7 @@ flutter:
   assets:
     - assets/logotm.jpg
     - assets/upload.png
+    - assets/icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

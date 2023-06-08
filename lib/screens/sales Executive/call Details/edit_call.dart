@@ -591,12 +591,10 @@ class _EditCallDetailsState extends State<EditCallDetails>
                                         .updateUserData(
                                           args.exec == '' ? currentUser!.uid : args.exec,
                                           customerName,
-                                          customerType == 'Individual'
-                                              ? type
-                                              : customerType,
+                                          type,
                                           customerNumber,
                                           callDate == '' ? date : callDate,
-                                          callResult == 'Interested'
+                                          callResult == result
                                               ? result
                                               : callResult,
                                           followUp,

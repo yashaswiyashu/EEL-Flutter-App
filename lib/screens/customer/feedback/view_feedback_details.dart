@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/customer_database.dart';
+import 'package:flutter_app/services/feedback_database.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -21,36 +23,39 @@ import 'package:flutter_app/models/sales_person_model.dart';
 
 import 'package:flutter_app/services/complaint_details_database.dart';
 
+
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class AddNewComplaint extends StatefulWidget {
-  const AddNewComplaint({super.key, this.restorationId});
+
+class ViewCustomerFeedback extends StatefulWidget {
+  const ViewCustomerFeedback({super.key, this.restorationId});
   final String? restorationId;
-  static const routeName = '/addComplaintDetails';
+  static const routeName = '/ViewCustomerFeedback';
+
 
   @override
-  State<AddNewComplaint> createState() => _AddNewComplaintState();
+  State<ViewCustomerFeedback> createState() => _ViewCustomerFeedbackState();
 }
 
 
-class _AddNewComplaintState extends State<AddNewComplaint>
+class _ViewCustomerFeedbackState extends State<ViewCustomerFeedback>
     with RestorationMixin {
   final _formkey = GlobalKey<FormState>();
-final AuthService _auth = AuthService();
+  final AuthService _auth = AuthService();
+
 
   bool loading = false;
 
 
   String customerName = '';
   String customerNumber = '';
-  String complaintDate = 'Select Date';
-  String complaintResult = 'Open';
-  String complaintDetails = '';
-  String error = '';
-  String status = '';
-  String nameErr = '';
+  String feedbackDate = 'Select Date';
+
+
+  String feedbackDetails = '';
   final numberController = TextEditingController();
   final nameController = TextEditingController();
+
 
   @override
   String? get restorationId => widget.restorationId;
@@ -61,7 +66,8 @@ final AuthService _auth = AuthService();
     nameController.addListener(_nameLatestValue);
   }
 
-@override
+
+  @override
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
@@ -70,15 +76,18 @@ final AuthService _auth = AuthService();
     super.dispose();
   }
 
+
   void _numberLatestValue() {
     customerNumber = numberController.text;
     //print('Viru:: ${numberController.text}');
   }
 
+
   void _nameLatestValue() {
     customerName = nameController.text;
     //print('Viru:: ${numberController.text}');
   }
+
 
   final RestorableDateTime _selectedDate = RestorableDateTime(
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
@@ -130,15 +139,22 @@ final AuthService _auth = AuthService();
         //   content: Text(
         //       'Selected: ${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'),
         // ));
-        complaintDate =
+        feedbackDate =
             '${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}';
       });
     }
   }
 
+  var status = '';
 
-  var salesExecutive;
-  var isCust = false;
+  void setFields(FeedbackDetailsModel feedback ) {
+    setState(() {
+      customerName = feedback.customerName;
+      customerNumber = feedback.mobileNumber;
+      feedbackDate = feedback.feedbackDate;
+      feedbackDetails = feedback.feedbackDetails;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,36 +163,31 @@ final AuthService _auth = AuthService();
     List<CustomerModel> details = [];
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
-    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
-    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    final feedbackDetailsList =
+        Provider.of<List<FeedbackDetailsModel>>(context);
     var InDb = false;
     var isDupName = false;
-    
-    if (salesTable != null && args.uid == '') {
-      salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    } else {
-      salesTable.forEach((element) {
-        if (element?.uid == args.uid) {
-          salesExecutive = element;
-        }
-      });
-    }
+
+    feedbackDetailsList.forEach((element) {
+      if(element.uid == args.uid) {
+        setFields(element);
+      }
+    });
 
 
     //[Viru:27/5/23] Added to support customer name search list
     final customerList = Provider.of<List<CustomerModel>>(context);
-    if(args.uid == '') {
-      customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    if (args.uid == '') {
+      customerList.forEach(
+          (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
     } else {
-      customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+      customerList
+          .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
     }
 
+
     customerList.forEach((element) {
-      if(element.customerName == nameController.text) {
+      if (element.customerName == nameController.text) {
         setState(() {
           // nameErr = '';
           InDb = true;
@@ -184,22 +195,6 @@ final AuthService _auth = AuthService();
       }
     });
 
-    complaintDetailsList.forEach((e) {
-      if(e.customerName == nameController.text && e.complaintResult != 'Closed') {
-        setState(() {
-          // nameErr = '';
-          isDupName = true;
-        });
-      }
-    });
-
-    customerList.forEach((element) {
-      if(element.uid == currentUser?.uid) {
-        setState(() {
-          isCust = true;
-        });
-      }
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -210,7 +205,7 @@ final AuthService _auth = AuthService();
               onPressed: () async {
                 await _auth.signout();
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                          'authWrapper', (Route<dynamic> route) => false);
+                        'authWrapper', (Route<dynamic> route) => false);
               },
               icon: const Icon(
                 Icons.person,
@@ -231,19 +226,6 @@ final AuthService _auth = AuthService();
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              !isCust ? Container(
-                padding: EdgeInsets.only(right: 15, top: 10),
-                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Text(
-                    'Name: ${salesExecutive.name}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ]),
-              ) : const SizedBox(height: 0.0),
               SizedBox(
                 height: 10,
               ),
@@ -269,67 +251,23 @@ final AuthService _auth = AuthService();
               SizedBox(
                 height: 10,
               ),
-    /*            TextFormField(
+              TextFormField(
+                initialValue: customerName,
+                readOnly: true,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Customer Name',
                     fillColor: const Color(0xfff0efff)),
-                onChanged: (val) {
-                  customerName = val;
-                },
+                // onChanged: (val) {
+                //   customerName = val;
+                // },
               ),
- */ 
+
               //[Viru:27/5/23] Added to support customer name search list
-                TypeAheadFormField(
-                  
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: nameController,
-                    decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Customer Name',
-                      fillColor: const Color(0xfff0efff),
-                    ),
-                    onChanged: (val) {
-                      setState(() {
-                        nameErr = '';
-                      });
-                    }, 
-                  ),
+              
+              const SizedBox(height: 5.0),
+             
 
-                  suggestionsCallback: (pattern) async {
-                    // Filter the customer list based on the search pattern
-        
-                    return details
-                    .where((customer) =>
-                    customer != null &&
-                    customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
-                    .toList();
-                  },
-
-                  itemBuilder: (context, CustomerModel? suggestion) {
-                    if (suggestion == null) return const SizedBox.shrink();
-                    return ListTile(
-                      title: Text(suggestion.customerName),
-                    );
-                  },
-
-                  onSuggestionSelected: (CustomerModel? suggestion) {
-                    if (suggestion != null) {
-                      setState(() {
-                        //customerName = suggestion.customerName;
-                        nameController.text = suggestion.customerName;
-                        numberController.text = suggestion.mobileNumber;
-                    });
-                  }
-              },
-
-            ),
-            const SizedBox(height: 5.0),
-              Container(
-                child: Text(
-                  nameErr,
-                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                ),
-              ),
 
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -345,7 +283,8 @@ final AuthService _auth = AuthService();
                   )),
               const SizedBox(height: 10.0),
               TextFormField(
-                controller: numberController,
+                initialValue: customerNumber,
+                readOnly: true,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value?.length == 10 ? null : 'Enter valid number',
@@ -360,7 +299,7 @@ final AuthService _auth = AuthService();
               const SizedBox(
                 height: 20.0,
                 child: Text(
-                  "Complaint Date:",
+                  "Feedback Date:",
                   style: TextStyle(
                     color: Color(0xff090a0a),
                     fontSize: 16,
@@ -380,10 +319,10 @@ final AuthService _auth = AuthService();
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffe3e4e5)),
                     onPressed: () {
-                      _restorableDatePickerRouteFuture.present();
+                      // _restorableDatePickerRouteFuture.present();
                     },
                     child: Text(
-                      complaintDate,
+                      feedbackDate,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -392,53 +331,8 @@ final AuthService _auth = AuthService();
                   ),
                 ]),
               ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Complaint Status:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xffefefff),
-                ),
-                dropdownColor: const Color(0xffefefff),
-                value: complaintResult,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    complaintResult = newValue!;
-                  });
-                },
-                items: <String>[
-                  'Open',
-                  'ReOpen',
-                  'Closed',
-                  'In Process'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  );
-                }).toList(),
-              ),
+
+
               const SizedBox(height: 30.0),
               SizedBox(
                 height: 20,
@@ -447,7 +341,7 @@ final AuthService _auth = AuthService();
                 // complaintDetailsjeX (32:1762)
                 margin: EdgeInsets.fromLTRB(1, 0, 0, 12),
                 child: Text(
-                  'Complaint Details:',
+                  'Feedback Details:',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 16,
@@ -467,12 +361,14 @@ final AuthService _auth = AuthService();
                   color: Color(0xfff0efff),
                 ),
                 child: TextFormField(
+                  initialValue: feedbackDetails,
+                  readOnly: true,
                   validator: (value) => value!.isEmpty ? 'Missing Field' : null,
-                  onChanged: (val) {
-                    setState(() {
-                      complaintDetails = val;
-                    });
-                  },
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     feedbackDetails = val;
+                  //   });
+                  // },
                   maxLines: null,
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -495,9 +391,7 @@ final AuthService _auth = AuthService();
               const SizedBox(
                 height: 20.0,
               ),
-              loading
-                  ? CircularProgressIndicator()
-                  : SizedBox(
+              SizedBox(
                       height: 59,
                       width: 420,
                       child: Row(
@@ -505,100 +399,7 @@ final AuthService _auth = AuthService();
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              setState(() {
-                                nameErr = '';
-                              });
-                              print(isDupName);
-                              print(InDb);
-                              if(isDupName) {
-                                setState(() {
-                                  nameErr = 'Entered customer complaint already exists. Please edit existing complaint';
-                                });
-                              } 
-                              if(!InDb) {
-                                setState(() {
-                                  nameErr = 'Entered customer is not registerd. Please Register and Try again';
-                                });
-                              }
-                              if (_formkey.currentState!.validate() &&
-                                  complaintDate != 'Select Date' && nameErr == '') {
-                                setState(() {
-                                  loading = true;
-                                });
-                                await ComplaintDetailsDatabaseService(docid: '')
-                                    .setUserData(
-                                  (args.uid == '' ? currentUser?.uid : args.uid)!,
-                                  customerName,
-                                  customerNumber,
-                                  complaintDate,
-                                  complaintResult,
-                                  complaintDetails,
-                                )
-                                    .then((value) => setState(() {
-                                    loading = false;
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text(
-                                          'Compliaint Details added Successfully!!!'),
-                                    ));
-                                  
-                                  Navigator.pop(context);
-                                }));
-                              } else {
-                                setState(() {
-                                  loading = false;
-                                  status = 'Please fill all the fields';
-                                });
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff4d47c3),
-                            ),
-                            child: Container(
-                              width: 100,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    blurRadius: 61,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                                color: const Color(0xff4d47c3),
-                              ),
-                              padding: const EdgeInsets.only(
-                                top: 18,
-                                bottom: 17,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  SizedBox(
-                                    width: 90,
-                                    child: Text(
-                                      "Save",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: "Poppins",
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 65,
-                          ),
+                          
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -632,7 +433,7 @@ final AuthService _auth = AuthService();
                                   SizedBox(
                                     width: 70,
                                     child: Text(
-                                      "Cancel",
+                                      "Back",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -659,3 +460,5 @@ final AuthService _auth = AuthService();
     );
   }
 }
+
+

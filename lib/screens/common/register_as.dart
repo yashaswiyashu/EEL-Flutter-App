@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/screens/customer/customer_registration.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 
 
@@ -119,7 +121,11 @@ class _RegisterAsState extends State<RegisterAs> {
             const SizedBox(height: 38.20),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, 'customerRegistration');
+                Navigator.pushNamed(
+                        context, CustomerRegistration.routeName,
+                        arguments: Parameter(
+                          ''
+                        ));
               },
               child: Container(
                   width: 322,

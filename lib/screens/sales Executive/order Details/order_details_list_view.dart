@@ -72,7 +72,7 @@ class _OrderDetailsListState extends State<OrderDetailsList> {
         return details.map((element) => DataRow(cells: [
           DataCell(Text(element.customerName)),
           DataCell(_verticalDivider),          
-          DataCell(Text(element.shipmentID)),
+          DataCell(Text(element.shipmentID == '' ? '' : element.shipmentID)),
           DataCell(_verticalDivider),
           DataCell(Text(element.mobileNumber)),
           DataCell(_verticalDivider),

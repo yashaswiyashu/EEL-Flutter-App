@@ -31,7 +31,9 @@ class AuthWrapper extends StatelessWidget {
           obj = e;
         }
       });
-    } else if (customerTable.isNotEmpty) {
+    } 
+    
+    if (customerTable.isNotEmpty) {
       customerTable.forEach((e) {
         if (e.uid == currentUser?.uid) {
           cust = true;

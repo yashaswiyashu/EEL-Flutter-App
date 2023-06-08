@@ -2,81 +2,151 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
-import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
-import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
-import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
-import 'package:flutter_app/screens/sales%20Executive/complaints/view_complaint_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
+import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/services/auth.dart';
+import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-
-class ComplaintDetailsList extends StatefulWidget {
-  const ComplaintDetailsList({super.key});
-static const routeName = '/ComplaintDetailsList';
+class PresentCustomerOrdersList extends StatefulWidget {
+  const PresentCustomerOrdersList({super.key});
 
   @override
-  State<ComplaintDetailsList> createState() => _ComplaintDetailsListState();
+  State<PresentCustomerOrdersList> createState() =>
+      _PresentCustomerOrdersListState();
 }
 
-
-class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
+class _PresentCustomerOrdersListState extends State<PresentCustomerOrdersList> {
   bool loading = false;
   String status = '';
-
 
   String character = '';
   final AuthService _auth = AuthService();
 
-
-  var salesExecutive;
-
-
+  var canCancel = false;
+  String orderStatus = 'All Orders';
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
-
-    if (salesTable != null && args.uid == '') {
-      salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    } else {
-      salesTable!.forEach((element) {
-        if (element?.uid == args.uid) {
-          salesExecutive = element;
-        }
-      });
-    }
-
     var details = [];
     var obj;
 
-    if (args.uid == '') {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
-    } else {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+    void showConfirmation(String uid) {
+      showDialog(
+          context: context,
+          builder: (_) {
+            String warn = '';
+            orderDetails.forEach((element) {
+              if (element.uid == uid) {
+                if (element.dropdown == 'Order Placed') {
+                  warn = 'Do you want to cancel this order?';
+                  canCancel = true;
+                } else {
+                  warn = 'Cannot cancel Order';
+                  canCancel = false;
+                }
+              }
+            });
+
+            return AlertDialog(
+              title: Text(warn),
+              actions: canCancel
+                  ? [
+                      TextButton(
+                        onPressed: () =>
+                            Navigator.pop(context, false), // passing false
+                        child: Text('No'),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            Navigator.pop(context, true), // passing true
+                        child: Text('Yes'),
+                      ),
+                    ]
+                  : [
+                      TextButton(
+                        onPressed: () =>
+                            Navigator.pop(context, false), // passing false
+                        child: Text('Ok'),
+                      ),
+                    ],
+            );
+          }).then((exit) {
+        if (exit == null) return;
+        if (exit && canCancel) {
+          // user pressed Yes button
+          orderDetails.forEach((element) {
+            if (element.uid == character) {
+              OrderDetailsDatabaseService(docid: character)
+                  .updateOrderData(
+                      element.salesExecutiveId,
+                      element.customerId,
+                      element.customerName,
+                      element.shipmentID,
+                      element.mobileNumber,
+                      element.address1,
+                      element.address2,
+                      element.district,
+                      element.state,
+                      element.pincode,
+                      element.deliveryDate,
+                      'Cancelled',
+                      element.subTotal,
+                      element.totalAmount,
+                      element.orderedDate,
+                      element.products)
+                  .then((value) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Order cancelled Successfully!!!'),
+                ));
+                Navigator.pop(context);
+              });
+            }
+          });
+        } else {
+          // user pressed No button
+          // Navigator.pop(context);
+          return;
+        }
+      });
     }
 
+    if(orderStatus != 'All Orders') {
+      orderDetails.forEach((e) => e.customerId == currentUser?.uid &&
+              e.dropdown != 'Cancelled' &&
+              e.dropdown != 'Delivered' &&
+              e.dropdown != 'Returned' && e.dropdown == orderStatus
+          ? details.add(e)
+          : []);
+    } else {
+      orderDetails.forEach((e) => e.customerId == currentUser?.uid &&
+              e.dropdown != 'Cancelled' &&
+              e.dropdown != 'Delivered' &&
+              e.dropdown != 'Returned' 
+          ? details.add(e)
+          : []);
+    }
 
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
       thickness: 0.5,
     );
 
-
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Compl. Date')),
+        DataColumn(label: Text('Cust. Name')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Name')),
+        DataColumn(label: Text('Shipment Id')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust Mob.')),
         DataColumn(label: _verticalDivider),
@@ -84,13 +154,12 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
       ];
     }
 
-
     List<DataRow> _createRows() {
       return details
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.complaintDate)),
-                DataCell(_verticalDivider),
                 DataCell(Text(element.customerName)),
+                DataCell(_verticalDivider),
+                DataCell(Text(element.shipmentID)),
                 DataCell(_verticalDivider),
                 DataCell(Text(element.mobileNumber)),
                 DataCell(_verticalDivider),
@@ -117,27 +186,14 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
           .toList();
     }
 
-
     DataTable _createDataTable() {
       return DataTable(
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: complaintDetailsList.isNotEmpty ? _createRows() : []);
+          rows: orderDetails.isNotEmpty ? _createRows() : []);
     }
 
-
-    // void showSettingsPanel(String name) {
-    //   showModalBottomSheet(
-    //     context: context,
-    //     builder: (context) {
-    //       return Container(
-    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-    //         child: SingleCallDetailsView(name: name),
-    //       );
-    //     }
-    //   );
-    // }
     return Scaffold(
         appBar: AppBar(
           title: const Text('Energy Efficient Lights'),
@@ -147,7 +203,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                 onPressed: () async {
                   await _auth.signout();
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                          'authWrapper', (Route<dynamic> route) => false);
+                      'authWrapper', (Route<dynamic> route) => false);
                 },
                 icon: const Icon(
                   Icons.person,
@@ -172,20 +228,6 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(right: 15, top: 10),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      'Name: ${salesExecutive.name}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]),
-                ),
-                Container(
                   width: 270,
                   height: 60,
                   decoration: BoxDecoration(
@@ -193,23 +235,48 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                   ),
                   child: Image.asset('assets/logotm.jpg'),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 250),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff4d47c3)),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                                  context, 
-                                  AddNewComplaint.routeName,
-                                  arguments: Parameter(
-                                    args.uid,
-                                  )
-                                );
-                    },
-                    child: Text('Add New +'),
+                SizedBox(height: 10),
+                SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: orderStatus,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          orderStatus = newValue!;
+                        });
+                      },
+                      items: <String> [
+                        'All Orders',
+                        'Order Placed',
+                        'Payment Pending',
+                        'Shipped',
+                        'Out for Delivery',
+                      ]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
                 SizedBox(height: 10),
                 _createDataTable(),
                 SizedBox(
@@ -240,8 +307,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                             setState(() {
                               status = '';
                             });
-                            Navigator.pushNamed(
-                                context, ViewComplaintDetails.routeName,
+                            Navigator.pushNamed(context, ViewOrder.routeName,
                                 arguments: Parameter(
                                   character,
                                 ));
@@ -280,56 +346,47 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                         ),
                       ),
                     ),
-                    Container(
-                      // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
-                      margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
-                      child: TextButton(
-                        onPressed: () {
-                          // showSettingsPanel(character);
-                          if (character == '') {
-                            setState(() {
-                              status = 'Please select an option';
-                            });
-                          } else {
-                            setState(() {
-                              status = '';
-                            });
-                            Navigator.pushNamed(
-                                context, EditComplaintDetails.routeName,
-                                arguments: EditParameters(
-                                  character,
-                                  args.uid,
-                                ));
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
+                    TextButton(
+                      // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                      onPressed: () {
+                        if (character == '') {
+                          setState(() {
+                            status = 'Please select an option';
+                          });
+                        } else {
+                          setState(() {
+                            status = '';
+                          });
+                          showConfirmation(character);
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Container(
+                        width: 120.63,
+                        height: 59,
+                        decoration: BoxDecoration(
+                          color: Color(0xff4d47c3),
+                          borderRadius: BorderRadius.circular(9),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x664d47c3),
+                              offset: Offset(0, 4),
+                              blurRadius: 30.5,
+                            ),
+                          ],
                         ),
-                        child: Container(
-                          width: 95.63,
-                          height: 59,
-                          decoration: BoxDecoration(
-                            color: Color(0xff4d47c3),
-                            borderRadius: BorderRadius.circular(9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x664d47c3),
-                                offset: Offset(0, 4),
-                                blurRadius: 30.5,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Edit',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: "Poppins",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                height: 1.5,
-                                color: Color(0xffffffff),
-                              ),
+                        child: Center(
+                          child: Text(
+                            'Cancel Order',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              height: 1.5,
+                              color: Color(0xffffffff),
                             ),
                           ),
                         ),

@@ -3,12 +3,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/models/order_details_model.dart';
-import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
-import 'package:flutter_app/screens/admin/admin_home.dart';
+import 'package:flutter_app/screens/admin/call%20Details/call_details_list_admin.dart';
+import 'package:flutter_app/screens/admin/complaints/complaints_list_admin.dart';
+import 'package:flutter_app/screens/admin/feedBack/feedback_details_admin.dart';
+import 'package:flutter_app/screens/admin/orders/orders_list_admin.dart';
 import 'package:flutter_app/screens/admin/products/add_new_product.dart';
 import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
 import 'package:flutter_app/screens/admin/products/product_list_view.dart';
@@ -16,12 +19,20 @@ import 'package:flutter_app/screens/admin/products/view_product_details.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/co_ord_list.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
+import 'package:flutter_app/screens/admin/users/customer/customer_list.dart';
+import 'package:flutter_app/screens/admin/users/customer/edit_customer_details.dart';
+import 'package:flutter_app/screens/admin/users/customer/view_customer_details.dart';
 import 'package:flutter_app/screens/admin/users/executive/edit_sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/view_sales_exec.dart';
 import 'package:flutter_app/screens/admin/users/select_user.dart';
 import 'package:flutter_app/screens/common/home.dart';
-import 'package:flutter_app/screens/customer/customer_home.dart';
+import 'package:flutter_app/screens/customer/complaints/customer_complaints_list.dart';
+import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
+import 'package:flutter_app/screens/customer/feedback/customer_feedback_list.dart';
+import 'package:flutter_app/screens/customer/feedback/view_feedback_details.dart';
+import 'package:flutter_app/screens/customer/past_order_list.dart';
+import 'package:flutter_app/screens/customer/present_orders_list.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/complaints/pending_complaints_list.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/follow%20up/follow_up_details_list.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
@@ -38,21 +49,20 @@ import 'package:flutter_app/screens/customer/customer_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/order_details_list_view.dart';
-import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/add_call_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/call_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/edit_pending_order.dart';
 import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/pending_order_list_view.dart';
-import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/view_sales_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/pending%20Orders/view_pending_order_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales%20Details/sales_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales%20Details/view_sales_details.dart';
-import 'package:flutter_app/screens/sales%20Executive/sales_executive_home.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/call_details_database.dart';
 import 'package:flutter_app/services/complaint_details_database.dart';
 import 'package:flutter_app/services/customer_database.dart';
+import 'package:flutter_app/services/feedback_database.dart';
 import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/services/products_database.dart';
 import 'package:flutter_app/services/sales_database.dart';
@@ -78,7 +88,7 @@ class MyApp extends StatelessWidget {
       StreamProvider<List<CallDetailsModel>>.value(value: CallDetailsDatabaseService(docid: '').callDetailsTable, initialData: const []),
       StreamProvider<List<ProductDetailsModel>>.value(value: ProductDatabaseService(docid: '').productDetailsTable, initialData: const []),
       StreamProvider<List<OrderDetailsModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderDetailsTable, initialData: const []),
-      // StreamProvider<List<OrdersProductModel>>.value(value: OrderDetailsDatabaseService(docid: '').orderedProductDetailsTable, initialData: const []),
+      StreamProvider<List<FeedbackDetailsModel>>.value(value: FeedBackDatabaseService(docid: '').feedbackDetailsTable, initialData: const []),
       StreamProvider<List<ComplaintDetailsModel>>.value(value: ComplaintDetailsDatabaseService(docid: '').complaintDetailsTable, initialData: const []),
       StreamProvider<UserModel?>.value(value: AuthService().user, initialData: null),
       ],
@@ -88,7 +98,8 @@ class MyApp extends StatelessWidget {
         routes: {
           'home': (context) => const Home(),
           'authWrapper':(context) => const AuthWrapper(),
-          
+
+    //---------------------------------------------------------------------------      
           //Sales Executive =>
           SalesPersonRegistration.routeName:(context) => const SalesPersonRegistration(),
             //Call details  
@@ -124,6 +135,7 @@ class MyApp extends StatelessWidget {
             EditComplaintDetails.routeName:(context) => const EditComplaintDetails(restorationId: 'main'),
             ViewComplaintDetails.routeName:(context) => ViewComplaintDetails(),
 
+    //------------------------------------------------------------------------------------------------
           //sales Co-ordinator =>          
             //Follow Up
             FollowUpDetails.routeName:(context) => const FollowUpDetails(),
@@ -131,10 +143,20 @@ class MyApp extends StatelessWidget {
             //Pending Complaints
             PendingComplaintDetailsList.routeName:(context) => const PendingComplaintDetailsList(),
 
+    //----------------------------------------------------------------------------------------------------------
           //Customer =>
-          'customerRegistration':(context) => const CustomerRegistration(),
-            
+          CustomerRegistration.routeName:(context) => const CustomerRegistration(),
+            //Orders
+            'presentCustomerOrdersList':(context) => const PresentCustomerOrdersList(),
+            'pastCustomerOrdersList':(context) => const PastCustomerOrdersList(),
+            //feedback
+            CustomerFeedback.routeName:(context) => const CustomerFeedback(),
+            CustomerFeedbackList.routeName:(context) => const CustomerFeedbackList(),
+            ViewCustomerFeedback.routeName:(context) => const ViewCustomerFeedback(),
+            //complaints
+            CustomerComplaintDetailsList.routeName:(context) => const CustomerComplaintDetailsList(),
 
+    //----------------------------------------------------------------------------------------------------------
           //Admin =>
             //Products
             'addNewProduct':(context) => const AddProductAdmin(),
@@ -154,6 +176,23 @@ class MyApp extends StatelessWidget {
               'salesExecList':(context) => const SalesExecList(),
               EditSalesExecutiveDetails.routeName:(context) => const EditSalesExecutiveDetails(),
               ViewExecutiveDetails.routeName:(context) => const ViewExecutiveDetails(),
+
+              //customer
+              'customerListAdmin':(context) => const CustomerListAdmin(),
+              EditCustomerAdmin.routeName:(context) => const EditCustomerAdmin(),
+              ViewCustomerAdmin.routeName:(context) => const ViewCustomerAdmin(),
+
+            //Complants
+            'complaintDetialsAdmin':(context) => const ComplaintDetailsAdmin(),
+
+            //orders
+            'ordersListAdmin':(context) => const OrderDetailsAdmin(),
+
+            //call Details
+            'callDetailsListAdmin':(context) => const CallDetailsAdmin(),
+
+            //feedBack
+            'feedbackDetailsAdmin':(context) => const FeedbackDetailsAdmin(),
         },
       ),
     );

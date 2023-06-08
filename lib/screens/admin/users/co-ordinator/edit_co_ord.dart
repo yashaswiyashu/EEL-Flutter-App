@@ -283,6 +283,21 @@ Future<bool> updateAddressFields() async {
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
         backgroundColor: const Color(0xff4d47c3),
+        actions: [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
@@ -696,7 +711,6 @@ Future<bool> updateAddressFields() async {
                                       
                                       if(authCredEdited) {
                                         dynamic result = await _auth.updateEmailAndPassword(args.uid, email, password);
-                                        // dynamic result = '';
                                         if (!result) {
                                           setState(() {
                                             error = 'Failed to update Email and Password';

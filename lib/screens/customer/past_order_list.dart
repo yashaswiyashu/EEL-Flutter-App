@@ -4,53 +4,46 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class FollowUpDetails extends StatefulWidget {
-  const FollowUpDetails({super.key});
-  static const routeName = '/FollowUpDetails';
+class PastCustomerOrdersList extends StatefulWidget {
+  const PastCustomerOrdersList({super.key});
+
   @override
-  State<FollowUpDetails> createState() => _FollowUpDetailsState();
+  State<PastCustomerOrdersList> createState() => _PastCustomerOrdersListState();
 }
 
 
 
-class _FollowUpDetailsState extends State<FollowUpDetails> {
+class _PastCustomerOrdersListState extends State<PastCustomerOrdersList> {
   bool loading = false;
   String status = '';
 
   String character = '';
   final AuthService _auth = AuthService();
-
-
+  String orderStatus = 'All Orders';
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final callDetails = Provider.of<List<CallDetailsModel>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
-
-    List<SalesPersonModel?> salesExecList = [];
     var details = [];
     var obj;
 
-    if (salesTable != null) {
-      salesTable.forEach((element) {
-        if (element?.coOrdinatorId == currentUser?.uid) {
-          salesExecList.add(element);
-        }
-      });
+    if(orderStatus == 'All Orders') {
+    orderDetails.forEach((e) => e.customerId == currentUser?.uid && (e.dropdown == 'Cancelled' || e.dropdown == 'Delivered'  || e.dropdown == 'Returnerd')? details.add(e) : []);
+    } else {
+    orderDetails.forEach((e) => e.customerId == currentUser?.uid && (e.dropdown == orderStatus)? details.add(e) : []);
     }
-    
-    salesExecList.forEach((element) {
-      callDetails.forEach((e) => element!.uid == e.salesExecutiveId && e.followUp ? details.add(e) : []);
-    });
 
     Widget _verticalDivider = const VerticalDivider(
         color: Colors.black,
@@ -59,9 +52,9 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Call Date')),
-        DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: _verticalDivider),
+        DataColumn(label: Text('Shipment Id')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust Mob.')),
         DataColumn(label: _verticalDivider),
@@ -70,9 +63,9 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
     }
     List<DataRow> _createRows() {
         return details.map((element) => DataRow(cells: [
-          DataCell(Text(element.callDate)),
-          DataCell(_verticalDivider),          
           DataCell(Text(element.customerName)),
+          DataCell(_verticalDivider),          
+          DataCell(Text(element.shipmentID)),
           DataCell(_verticalDivider),
           DataCell(Text(element.mobileNumber)),
           DataCell(_verticalDivider),
@@ -99,23 +92,9 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
         columnSpacing: 0.0,
         dataRowHeight: 40.0,
         columns: _createColumns(), 
-        rows: callDetails.isNotEmpty ? _createRows() : []
+        rows: orderDetails.isNotEmpty ? _createRows() : []
       );
     }
-
-    // void showSettingsPanel(String name) {
-    //   showModalBottomSheet(
-    //     context: context, 
-    //     builder: (context) {
-    //       return Container(
-    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-    //         child: SingleCallDetailsView(name: name),
-    //       );
-    //     }
-    //   );
-    // }
-
-
 
 
     return Scaffold(
@@ -155,16 +134,47 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    // Container(
-                    //   margin: EdgeInsets.only(left: 250),
-                    //   child: ElevatedButton(
-                    //     style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
-                    //     onPressed: (){
-                    //       Navigator.pushNamed(context, 'addCallDetails');
-                    //     }, 
-                    //     child: Text('Add New +'),
-                    //   ),
-                    // ),
+                    SizedBox(height: 10),
+                    SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: orderStatus,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          orderStatus = newValue!;
+                        });
+                      },
+                      items: <String> [
+                        'All Orders',
+                        'Delivered',
+                        'Cancelled',
+                        'Returned'
+                      ]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                     SizedBox(height: 10),
                     _createDataTable(),
                     SizedBox(height: 20,),
@@ -193,7 +203,7 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                                 });
                                 Navigator.pushNamed(
                                   context, 
-                                  ViewCallDetails.routeName,
+                                  ViewOrder.routeName,
                                   arguments: Parameter(
                                     character,
                                   )
@@ -220,63 +230,6 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                               child: Center(
                                 child: Text(
                                   'View',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.5,
-                                    color: Color(0xffffffff),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
-                          margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
-                          child: TextButton(
-                            onPressed: ()  {
-                              // showSettingsPanel(character);
-                              if(character == ''){
-                                setState(() {
-                                  status ='Please select an option';
-                                });
-                              }else{
-                                setState(() {
-                                  status ='';
-                                });
-                                Navigator.pushNamed(
-                                  context, 
-                                  EditCallDetails.routeName,
-                                  arguments: EditParameters(
-                                    character,
-                                    args.uid
-                                  )
-                                );
-                              }
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            child: Container(
-                              width: 95.63,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                color: Color(0xff4d47c3),
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    offset: Offset(0, 4),
-                                    blurRadius: 30.5,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Edit',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",

@@ -4,53 +4,77 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/edit_call.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/view_call_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/add_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/edit_order_details.dart';
+import 'package:flutter_app/screens/sales%20Executive/order%20Details/view_order_details.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class FollowUpDetails extends StatefulWidget {
-  const FollowUpDetails({super.key});
-  static const routeName = '/FollowUpDetails';
+class OrderDetailsAdmin extends StatefulWidget {
+  const OrderDetailsAdmin({super.key});
+
   @override
-  State<FollowUpDetails> createState() => _FollowUpDetailsState();
+  State<OrderDetailsAdmin> createState() => _OrderDetailsAdminState();
 }
 
 
 
-class _FollowUpDetailsState extends State<FollowUpDetails> {
+class _OrderDetailsAdminState extends State<OrderDetailsAdmin> {
   bool loading = false;
   String status = '';
 
   String character = '';
   final AuthService _auth = AuthService();
-
+  
+  String salesExec = 'Select Exec';
+  var salesExecutive;
+  String execID = '';
+  String orderStatus = 'Order Placed';
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final callDetails = Provider.of<List<CallDetailsModel>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
 
-    List<SalesPersonModel?> salesExecList = [];
     var details = [];
     var obj;
-
+    List<String> salesExecList = ['Select Exec',];
     if (salesTable != null) {
       salesTable.forEach((element) {
-        if (element?.coOrdinatorId == currentUser?.uid) {
-          salesExecList.add(element);
+        if (element?.role == 'Sales Executive') {
+          salesExecList.add(element!.name);
         }
       });
     }
-    
-    salesExecList.forEach((element) {
-      callDetails.forEach((e) => element!.uid == e.salesExecutiveId && e.followUp ? details.add(e) : []);
+
+    salesTable?.forEach((element) {
+      if(element!.name == salesExec) {
+        execID = element.uid;
+      }
     });
+
+
+    if(execID != '') {
+      orderDetails.forEach((e) => (e.salesExecutiveId == execID && e.dropdown == orderStatus) ? details.add(e) : []);
+    } else {
+      orderDetails.forEach((e) => (e.dropdown == orderStatus) ? details.add(e) : []);
+    }
+
+    // details.forEach((element) {
+    //   productsList.add(element.products);
+    // });
+    void setExec(String id) {
+      setState(() {
+        execID = id;
+      });
+    }
 
     Widget _verticalDivider = const VerticalDivider(
         color: Colors.black,
@@ -59,9 +83,9 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Call Date')),
-        DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: _verticalDivider),
+        DataColumn(label: Text('Shipment Id')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Cust Mob.')),
         DataColumn(label: _verticalDivider),
@@ -70,9 +94,9 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
     }
     List<DataRow> _createRows() {
         return details.map((element) => DataRow(cells: [
-          DataCell(Text(element.callDate)),
-          DataCell(_verticalDivider),          
           DataCell(Text(element.customerName)),
+          DataCell(_verticalDivider),          
+          DataCell(Text(element.shipmentID)),
           DataCell(_verticalDivider),
           DataCell(Text(element.mobileNumber)),
           DataCell(_verticalDivider),
@@ -86,6 +110,7 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                 details.forEach((element) {
                   if(element.uid == character){
                     obj = element;
+                    setExec(element.salesExecutiveId!);
                   }
                 });
               });
@@ -99,7 +124,7 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
         columnSpacing: 0.0,
         dataRowHeight: 40.0,
         columns: _createColumns(), 
-        rows: callDetails.isNotEmpty ? _createRows() : []
+        rows: orderDetails.isNotEmpty ? _createRows() : []
       );
     }
 
@@ -115,6 +140,20 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
     //   );
     // }
 
+    
+    if (salesTable != null  && execID == '') {
+      salesTable.forEach((element) {
+        if (element?.uid == currentUser?.uid) {
+          salesExecutive = element;
+        }
+      });
+    } else {
+      salesTable?.forEach((element) {
+        if (element?.uid == execID) {
+          salesExecutive = element;
+        }
+      });
+    }
 
 
 
@@ -148,6 +187,21 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
+                padding: EdgeInsets.only(right: 15, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                  Text(
+                    'Name: ${salesExecutive.name}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ]),
+              ),
+                    Container(
                       width: 270,
                       height: 60,
                       decoration: BoxDecoration(
@@ -155,16 +209,104 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    // Container(
-                    //   margin: EdgeInsets.only(left: 250),
-                    //   child: ElevatedButton(
-                    //     style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
-                    //     onPressed: (){
-                    //       Navigator.pushNamed(context, 'addCallDetails');
-                    //     }, 
-                    //     child: Text('Add New +'),
-                    //   ),
-                    // ),
+                    Container(
+                      margin: EdgeInsets.only(left: 250),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
+                        onPressed: (){
+                          Navigator.pushNamed(
+                                  context, 
+                                  AddNewOrder.routeName,
+                                  arguments: Parameter(
+                                    execID,
+                                  )
+                                );
+                        }, 
+                        child: Text('Add New +'),
+                      ),
+                    ),
+                  SizedBox(height: 10),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: salesExec,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          salesExec = newValue!;
+                          execID = '';
+                        });
+                      },
+                      items: salesExecList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: orderStatus,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          orderStatus = newValue!;
+                        });
+                      },
+                      items: <String> [
+                        'Order Placed',
+                        'Payment Pending',
+                        'Shipped',
+                        'Out for Delivery',
+                        'Delivered',
+                        'Cancelled',
+                        'Returned'
+                      ]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ]),
                     SizedBox(height: 10),
                     _createDataTable(),
                     SizedBox(height: 20,),
@@ -193,7 +335,7 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                                 });
                                 Navigator.pushNamed(
                                   context, 
-                                  ViewCallDetails.routeName,
+                                  ViewOrder.routeName,
                                   arguments: Parameter(
                                     character,
                                   )
@@ -247,14 +389,15 @@ class _FollowUpDetailsState extends State<FollowUpDetails> {
                                 setState(() {
                                   status ='';
                                 });
-                                Navigator.pushNamed(
-                                  context, 
-                                  EditCallDetails.routeName,
+                                Navigator.of(context).pushNamed(
+                                  EditOrder.routeName,
                                   arguments: EditParameters(
                                     character,
-                                    args.uid
+                                    execID
                                   )
-                                );
+                                ).then((_) { setState(() {
+
+                                });});
                               }
                             },
                             style: TextButton.styleFrom(

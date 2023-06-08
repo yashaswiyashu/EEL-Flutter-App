@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/location.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/customer_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -13,17 +15,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
-import '../common/location.dart';
 
-class CustomerRegistration extends StatefulWidget {
-  const CustomerRegistration({super.key});
-  static const routeName = '/customerRegistration';
+class EditCustomerAdmin extends StatefulWidget {
+  const EditCustomerAdmin({super.key});
+  static const routeName = '/EditCustomerAdmin';
 
   @override
-  State<CustomerRegistration> createState() => _CustomerRegistrationState();
+  State<EditCustomerAdmin> createState() => _EditCustomerAdminState();
 }
 
-class _CustomerRegistrationState extends State<CustomerRegistration> {
+class _EditCustomerAdminState extends State<EditCustomerAdmin> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
   bool loading = false;
@@ -41,69 +42,100 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   String customerName = '';
   String mobileNumber = '';
   String email = '';
+  String prevEmail = '';
   String password = '';
+  String prevPassword = '';
   String address1 = '';
   String address2 = '';
   String city = '';
-  String state = 'Select State';
+  String state = '';
   String pincode = '';
   String pincodeError = '';
-
+  bool authCredEdited = false;
+  bool firstTime = true;
   String error = '';
   bool _passwordVisible = false;
 
-  final nameController = TextEditingController();
+  final custNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final address1Controller = TextEditingController();
   final talukController = TextEditingController();
   final cityController = TextEditingController();
   final stateController = TextEditingController();
   final numberController = TextEditingController();
-  final executiveController = TextEditingController();
+  final pincodeController = TextEditingController();
 
   void initState() {
     _passwordVisible = false;
+    custNameController.addListener(_nameLatestValue);
+    emailController.addListener(_emailLatestValue);
+    passwordController.addListener(_passwordLatestValue);
     cityController.addListener(_cityLatestValue);
     talukController.addListener(_talukLatestValue);
-    nameController.addListener(_nameLatestValue);
+    address1Controller.addListener(_address1LatestValue);
     stateController.addListener(_stateLatestValue);
-    executiveController.addListener(_execNameLatestValue);
+    custNameController.addListener(_custNameLatestValue);
     numberController.addListener(_numberLatestValue);
+    pincodeController.addListener(_pincodeLatestValue);
   }
 
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
+    custNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     cityController.dispose();
     stateController.dispose();
-    nameController.dispose();
+    address1Controller.dispose();
     talukController.dispose();
-    executiveController.dispose();
     numberController.dispose();
     super.dispose();
   }
 
   void _cityLatestValue() {
-    print('Viru:: ${cityController.text}');
-  }
-
-  void _stateLatestValue() {
-    print('Viru:: ${stateController.text}');
+    city = cityController.text;
   }
 
   void _nameLatestValue() {
-    print('Viru:: ${nameController.text}');
+    customerName =  custNameController.text;
   }
-  void _execNameLatestValue() {
-    print('Viru:: ${executiveController.text}');
+  
+  void _emailLatestValue() {
+    email = emailController.text;
+  }
+
+  void _passwordLatestValue() {
+    password = passwordController.text;
+  }
+
+  void _stateLatestValue() {
+    state = stateController.text;
+  }
+
+  void _address1LatestValue() {
+    address1 = address1Controller.text;
   }
 
   void _talukLatestValue() {
-    print('Viru:: ${talukController.text}');
+    address2 =  talukController.text;
   }
 
   void _numberLatestValue() {
     mobileNumber = numberController.text;
   }
+  
+  void _custNameLatestValue() {
+    customerName = custNameController.text;
+  }
+
+  void _pincodeLatestValue() {
+    pincode = pincodeController.text;
+  }
+
+
 
   var customer;
   var salesExecutive;
@@ -118,7 +150,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
         state = loc.state;
         stateController.text = loc.state;
         address1 = loc.name;
-        nameController.text = loc.name;
+        address1Controller.text = loc.name;
         address2 = loc.taluk;
         talukController.text = loc.taluk;
       });
@@ -132,47 +164,66 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     print("Viru: $address2"); */
   }
 
-  var isDupNum = false;
-  String execNameErr = '';
-  String execId = '';
+  void fillDetails(CustomerModel customer) {
+    custNameController.text = customer.customerName;
+    numberController.text = customer.mobileNumber;
+    emailController.text = customer.email;
+    prevEmail = customer.email;
+    passwordController.text = customer.password;
+    prevPassword = customer.password;
+    address1Controller.text = customer.address1;
+    talukController.text = customer.address2;
+    cityController.text = customer.city;
+    stateController.text = customer.state;
+    pincodeController.text = customer.pincode;
+    dropdownInt1 = customer.product1;
+    dropdownInt2 = customer.product2;
+    dropdownInt3 = customer.product3;
+    dropdownInt4 = customer.product4;
+    dropdownUses1 = customer.place1;
+    dropdownUses2 = customer.place2;
+    dropdownUses3 = customer.place3;
+    dropdownUses4 = customer.place4;
+  }
+
+  // var isDupNum = false;
+
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
+    if(prevEmail != email || prevPassword != password) {
+      setState(() {
+        authCredEdited = true;
+      });
+    }
+    final args = ModalRoute.of(context)!.settings.arguments as EditParameters;
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
-    List<String> salesExecutives = [];
+
     //[Viru:2/6/23] Added to support customer mob search list
     List<CustomerModel> details = [];
     final customerList = Provider.of<List<CustomerModel>>(context);
-    if (args.uid == '') {
-      customerList.forEach(
-          (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
-    } else {
-      customerList
-          .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
-    }
 
-    if(currentUser?.uid == null ) {
-      customerList.forEach(
-          (e) => details.add(e));
-    }
-
-    salesTable.forEach((element) {
-      if(element!.name == executiveController.text) {
-        execId = element.uid;
-      }
-    });
-
-    if(salesTable != null) {
-      salesTable.forEach((e) {
-        if(e!.role == 'Sales Executive'){
-          salesExecutives.add(e.name);
+    if(firstTime) {
+      setState(() {
+        firstTime = false;
+      });
+      customerList.forEach((element) {
+        if(element.uid == args.uid) {
+          fillDetails(element);
         }
       });
     }
 
 
-    if (salesTable != null && args.uid == '') {
+    if (args.exec == '') {
+      customerList.forEach(
+          (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+    } else {
+      customerList
+          .forEach((e) => e.salesExecutiveId == args.exec ? details.add(e) : []);
+    }
+
+    if (salesTable != null && args.exec == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
@@ -180,17 +231,17 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
       });
     } else {
       salesTable.forEach((element) {
-        if (element?.uid == args.uid) {
+        if (element?.uid == args.exec) {
           salesExecutive = element;
         }
       });
     }
 
-    customerList.forEach((element) {
-      if(element.mobileNumber == numberController.text) {
-        isDupNum = true;
-      }
-    });
+    // customerList.forEach((element) {
+    //   if(element.mobileNumber == numberController.text) {
+    //     isDupNum = true;
+    //   }
+    // });
 
     return Scaffold(
       appBar: AppBar(
@@ -244,14 +295,15 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 ),
               ),
               TextFormField(
+                controller: custNameController,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Customer Name',
                     fillColor: const Color(0xfff0efff)),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Name' : null,
-                onChanged: (val) {
-                  customerName = val;
-                },
+                // onChanged: (val) {
+                //   customerName = val;
+                // },
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -348,72 +400,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               const SizedBox(
                   height: 20.0,
                   child: Text(
-                    'Sales Executive:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              SizedBox(
-                child: TypeAheadFormField(
-                  
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: executiveController,
-                    decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Co-ordinator Name',
-                      fillColor: const Color(0xfff0efff),
-                    ),
-                    /* onChanged: (val) {
-                      customerName = val;
-                    }, */
-                  ),
-
-                  suggestionsCallback: (pattern) async {
-                    // Filter the customer list based on the search pattern
-                    return salesExecutives
-                    .where((customer) =>
-                    customer != null &&
-                    customer.toLowerCase().contains(pattern.toLowerCase()))
-                    .toList();
-                  },
-
-                  itemBuilder: (context, String? suggestion) {
-                    if (suggestion == null) return const SizedBox.shrink();
-                    return ListTile(
-                      title: Text(suggestion),
-                    );
-                  },
-
-                  onSuggestionSelected: (String? suggestion) {
-                    if(suggestion == null) {
-                      execNameErr = 'Please select a Executive from the list';
-                    }
-                    if (suggestion != null) {
-                      setState(() {
-                        //customerName = suggestion.customerName;
-                        executiveController.text = suggestion;
-                        execNameErr = '';
-                    });
-                  }
-              },
-
-            ),
-              ),
-              Container(
-                child: Text(
-                  execNameErr,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 13.0,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0,),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
                     'Email:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
@@ -423,6 +409,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     ),
                   )),
               TextFormField(
+                controller: emailController,
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Enter Customer Email',
                 ),
@@ -431,11 +418,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                             .hasMatch(value!)
                         ? null
                         : 'Enter Valid Email',
-                onChanged: (val) {
-                  setState(() {
-                    email = val;
-                  });
-                },
+                // onChanged: (val) {
+                //   setState(() {
+                //     email = val;
+                //   });
+                // },
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -450,6 +437,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     ),
                   )),
               TextFormField(
+                controller: passwordController,
                 keyboardType: TextInputType.text,
                 obscureText: !_passwordVisible,
                 decoration: textInputDecoration.copyWith(
@@ -473,11 +461,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 validator: (value) => value!.length < 6
                     ? 'Enter a password of more than 6 characters'
                     : null,
-                onChanged: (val) {
-                  setState(() {
-                    password = val;
-                  });
-                },
+                // onChanged: (val) {
+                //   setState(() {
+                //     password = val;
+                //   });
+                // },
               ),
               const SizedBox(height: 20.0),
               const SizedBox(
@@ -493,17 +481,17 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                   )),
               const SizedBox(height: 10.0),
               TextFormField(
-                controller: nameController,
+                controller: address1Controller,
                 decoration: textInputDecoration.copyWith(
                     hintText:
                         'Please enter the pincode to autofill postal address'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
-                onChanged: (val) {
-                  setState(() {
-                    address1 = val;
-                  });
-                },
+                // onChanged: (val) {
+                //   setState(() {
+                //     address1 = val;
+                //   });
+                // },
               ),
               const SizedBox(height: 10.0),
               TextFormField(
@@ -512,11 +500,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                     textInputDecoration.copyWith(hintText: 'town, taluk'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
-                onChanged: (val) {
-                  setState(() {
-                    address2 = val;
-                  });
-                },
+                // onChanged: (val) {
+                //   setState(() {
+                //     address2 = val;
+                //   });
+                // },
               ),
               const SizedBox(height: 10.0),
               TextFormField(
@@ -524,12 +512,12 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 decoration: textInputDecoration.copyWith(hintText: 'city'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
-                onChanged: (val) {
-                  //updateCity(val);
-                  setState(() {
-                    city = val;
-                  });
-                },
+                // onChanged: (val) {
+                //   //updateCity(val);
+                //   setState(() {
+                //     city = val;
+                //   });
+                // },
               ),
               const SizedBox(height: 10.0),
               TextFormField(
@@ -537,12 +525,12 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 decoration: textInputDecoration.copyWith(hintText: 'state'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter Customer Full Address' : null,
-                onChanged: (val) {
-                  //updateCity(val);
-                  setState(() {
-                    state = val;
-                  });
-                },
+                // onChanged: (val) {
+                //   //updateCity(val);
+                //   setState(() {
+                //     state = val;
+                //   });
+                // },
               ),
               /* DropdownButtonFormField(
                 decoration: const InputDecoration(
@@ -582,6 +570,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
               ), */
               const SizedBox(height: 10.0),
               TextFormField(
+                controller: pincodeController,
                 keyboardType: TextInputType.phone,
                 decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                 validator: (value) =>
@@ -589,9 +578,9 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         ? null
                         : 'Enter Valid pincode',
                 onChanged: (val) {
-                  setState(() {
-                    pincode = val;
-                  });
+                  // setState(() {
+                  //   pincode = val;
+                  // });
                   if (pincode.length == 6) {
                     updateAddressFields().then((value) {
                       if (!value) {
@@ -1167,27 +1156,24 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                           ElevatedButton(
                             onPressed: () async {
                               if (_formkey.currentState!.validate() &&
-                                  state != 'Select State' && !isDupNum && execId != '') {
+                                  state != 'Select State') {
                                 setState(() {
                                   loading = true;
                                   numError = '';
                                 });
-                                dynamic result =
-                                    await _auth.registerWithEmailAndPassword(
-                                        email, password);
-                                if (result == null) {
+                                if(authCredEdited) {
+                                  dynamic result = await _auth.updateEmailAndPassword(args.uid, email, password);
+                                if (!result) {
                                   setState(() {
-                                    error = 'please supply a valid email';
+                                    error = 'Failed to update Email and Password';
                                     loading = false;
                                   });
                                 } else {
-                                  if (result?.uid != null &&
-                                      state != 'Select State') {
+                                  if (result) {
                                       await CustomerDatabaseService(
-                                            docid: result.uid)
-                                        .setUserData(
-                                      result?.uid,
-                                      execId,
+                                            docid: args.uid)
+                                        .updateUserData(
+                                      args.exec,
                                       customerName,
                                       mobileNumber,
                                       email,
@@ -1211,11 +1197,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                           content:
-                                              Text('Logged In Successfully!!!'),
+                                              Text('Customer Details Updated Successfully!!!'),
                                         ));
                                       });
-                                      Navigator.pushNamed(
-                                                context, 'authWrapper');
+                                      Navigator.pop(
+                                          context);
                                     });
                                   } else {
                                     setState(() {
@@ -1224,18 +1210,47 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                     });
                                   }
                                 }
-                              } else {
-                                if (isDupNum) {
-                                  setState(() {
-                                    loading = false;
-                                    numError = 'Customer with this number already exists';
-                                  });
-                                }
-                                if(execId == '') {
-                                  setState(() {
-                                    loading = false;
-                                    execNameErr = 'Please select a executive from the list';
-                                  });
+                                } else {
+                                  if (args.uid != null) {
+                                      await CustomerDatabaseService(
+                                            docid: args.uid)
+                                        .updateUserData(
+                                      args.exec,
+                                      customerName,
+                                      mobileNumber,
+                                      email,
+                                      password,
+                                      address1,
+                                      address2,
+                                      city,
+                                      state,
+                                      pincode,
+                                      dropdownInt1,
+                                      dropdownInt2,
+                                      dropdownInt3,
+                                      dropdownInt4,
+                                      dropdownUses1,
+                                      dropdownUses2,
+                                      dropdownUses3,
+                                      dropdownUses4,
+                                    ).then((value) {
+                                      setState(() {
+                                        loading = false;
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content:
+                                              Text('Customer Details Updated Successfully!!!'),
+                                        ));
+                                      });
+                                      Navigator.pop(
+                                          context);
+                                    });
+                                  } else {
+                                    setState(() {
+                                      loading = false;
+                                      error = 'Please fill all the fields';
+                                    });
+                                  }
                                 }
                               }
                             },
@@ -1336,33 +1351,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       ),
                     ),
               const SizedBox(height: 20.0),
-              // ElevatedButton(
-              //   style:
-              //       ElevatedButton.styleFrom(backgroundColor: Colors.pink[400]),
-              //   onPressed: () async {
-              //     // if(_formkey.currentState!.validate()){
-              //     //   setState(() {
-              //     //     loading = true;
-              //     //   });
-              //     //   dynamic result = await _auth.signInWithEmailAndPassword(email, password);
-              //     //   if(result == null){
-              //     //     setState(() {
-              //     //       error = 'unknown user please register';
-              //     //       loading = false;
-              //     //     });
-              //     //   }
-              //     // }
-              //   },
-              //   child: const Text(
-              //     'Sign In',
-              //     style: TextStyle(color: Colors.white),
-              //   ),
-              // ),
-              // const SizedBox(height: 12.0),
-              // Text(
-              //   error,
-              //   style: const TextStyle(color: Colors.red, fontSize: 14.0),
-              // )
             ],
           ),
         ),

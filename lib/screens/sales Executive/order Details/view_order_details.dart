@@ -105,30 +105,30 @@ class _ViewOrderState extends State<ViewOrder>{
           .toStringAsFixed(2);
     });
   }
-  void populateProductTable(List<ProductDetailsModel> product) {
-    setState(() {
-      for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
-        for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
-          product.forEach((element) {
-            if (selectedOptions[rowIndex] == element.name) {
-              if (cellIndex == 2) {
-                tableData[rowIndex][cellIndex] = element.price;
-              } else if (cellIndex == 3) {
-                tableData[rowIndex][cellIndex] = element.offers;
-              } else if (cellIndex == 4) {
-                tableData[rowIndex][cellIndex] = amountList[rowIndex].toString();
-              }
-            }
-          });
-        }
-      }
-      updateSubTotal();
-      total = (double.parse(subTotal) +
-              (double.parse(subTotal) * double.parse(cgst)) +
-              (double.parse(subTotal) * double.parse(sgst)))
-          .toStringAsFixed(2);
-    });
-  }
+  // void populateProductTable(List<ProductDetailsModel> product) {
+  //   setState(() {
+  //     for (int rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
+  //       for (int cellIndex = 0; cellIndex < 5; cellIndex++) {
+  //         product.forEach((element) {
+  //           if (selectedOptions[rowIndex] == element.name) {
+  //             if (cellIndex == 2) {
+  //               tableData[rowIndex][cellIndex] = element.price;
+  //             } else if (cellIndex == 3) {
+  //               tableData[rowIndex][cellIndex] = element.offers;
+  //             } else if (cellIndex == 4) {
+  //               tableData[rowIndex][cellIndex] = amountList[rowIndex].toString();
+  //             }
+  //           }
+  //         });
+  //       }
+  //     }
+  //     updateSubTotal();
+  //     total = (double.parse(subTotal) +
+  //             (double.parse(subTotal) * double.parse(cgst)) +
+  //             (double.parse(subTotal) * double.parse(sgst)))
+  //         .toStringAsFixed(2);
+  //   });
+  // }
 
   void updateSubTotal() {
     setState(() {
@@ -178,32 +178,42 @@ class _ViewOrderState extends State<ViewOrder>{
   List<String> productUidList = [];
 
       var salesExecutive;
+      var firstTime = true;
 
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final orderDetailsList = Provider.of<List<OrderDetailsModel>>(context);
-    final orderedProductList = [];
+    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
+
+    var orderedProductList;
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
 
     var orderedProductsName = [];
 
-    var obj;
-    if (products.length != productDetails.length + 1) {
-      productDetails.forEach((element) {
-        products.add(element.name);
-      });
-    }
 
-    if (customerNamesList.length != customerList.length + 1) {
-      customerList.forEach((element) {
-        customerNamesList.add(element.customerName);
-      });
-    }
+    // orderDetailsList.forEach((element) {
+    //   if(element.uid == args.uid) {
+    //     orderedProductList = element.products;
+    //   }
+    // });
+
+
+    var obj;
+    // if (products.length != orderDetailsList.length + 1) {
+    //   orderedProductList.forEach((element) {
+    //     products.add(element.name);
+    //   });
+    // }
+
+    // if (customerNamesList.length != customerList.length + 1) {
+    //   customerList.forEach((element) {
+    //     customerNamesList.add(element.customerName);
+    //   });
+    // }
 
     void setCustomerData() {
       if (customerName != 'Select Name') {
@@ -233,15 +243,14 @@ class _ViewOrderState extends State<ViewOrder>{
           callDate = element.deliveryDate;
           dropDown = element.dropdown;
         });
-        for(var i=0; i < element.products.length; i++){
-          orderedProductList.add(element.products[i]);
-        }
+        orderedProductList = element.products;
         setCustomerData();
       }
     });
 
-    if (tableData.length != orderedProductList.length) {
+    if (tableData.length != orderedProductList.length || firstTime) {
       setState(() {
+        firstTime = false;
         orderedProductsName = [];
         productUidList = [];
         selectedOptions = [products[0],];
@@ -331,7 +340,7 @@ class _ViewOrderState extends State<ViewOrder>{
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
+                salesExecutive != null ? Container(
                   padding: EdgeInsets.only(right: 15, top: 10),
                   child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     Text(
@@ -343,7 +352,7 @@ class _ViewOrderState extends State<ViewOrder>{
                       ),
                     ),
                   ]),
-                ),
+                ) : const SizedBox(height: 0, width: 0,),
                 Container(
                   margin: const EdgeInsets.only(left: 100),
                   width: 180,

@@ -3,9 +3,13 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
+import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
+import 'package:flutter_app/screens/customer/feedback/view_feedback_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/view_complaint_details.dart';
@@ -14,16 +18,15 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 
-class ComplaintDetailsList extends StatefulWidget {
-  const ComplaintDetailsList({super.key});
-static const routeName = '/ComplaintDetailsList';
+class FeedbackDetailsAdmin extends StatefulWidget {
+  const FeedbackDetailsAdmin({super.key});
 
   @override
-  State<ComplaintDetailsList> createState() => _ComplaintDetailsListState();
+  State<FeedbackDetailsAdmin> createState() => _FeedbackDetailsAdminState();
 }
 
 
-class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
+class _FeedbackDetailsAdminState extends State<FeedbackDetailsAdmin> {
   bool loading = false;
   String status = '';
 
@@ -33,36 +36,45 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
 
   var salesExecutive;
-
-
+  String custName = '';
+  String salesExec = 'Select Exec';
+  String execId = '';
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
-    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    final feedbackDetails = Provider.of<List<FeedbackDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
+    final customerList = Provider.of<List<CustomerModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    List<String> salesExecList = ['Select Exec',];
+    var details = [];
+    var obj;
 
-    if (salesTable != null && args.uid == '') {
+
+    if (salesTable != null) {
       salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    } else {
-      salesTable!.forEach((element) {
-        if (element?.uid == args.uid) {
-          salesExecutive = element;
+        if (element?.role == 'Sales Executive') {
+          salesExecList.add(element!.name);
         }
       });
     }
 
-    var details = [];
-    var obj;
+    salesTable?.forEach((element) {
+      if(element!.name == salesExec) {
+        execId = element.uid;
+      }
+    });
 
-    if (args.uid == '') {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+
+    if(execId == '') {
+      feedbackDetails.forEach((e) => details.add(e));
     } else {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+      feedbackDetails.forEach((e) => e.salesExecutiveId == execId ? details.add(e) : []);
+    }
+
+    void setExec(String id) {
+      setState(() {
+        execId = id;
+      });
     }
 
 
@@ -74,11 +86,11 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Compl. Date')),
+        DataColumn(label: Text('FeedBack Date')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Name')),
+        DataColumn(label: Text('Cust. Name')),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Mob.')),
+        DataColumn(label: Text('Cust. Mob')),
         DataColumn(label: _verticalDivider),
         DataColumn(label: Text('Select')),
       ];
@@ -88,7 +100,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
     List<DataRow> _createRows() {
       return details
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.complaintDate)),
+                DataCell(Text(element.feedbackDate)),
                 DataCell(_verticalDivider),
                 DataCell(Text(element.customerName)),
                 DataCell(_verticalDivider),
@@ -123,21 +135,9 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
           columnSpacing: 0.0,
           dataRowHeight: 40.0,
           columns: _createColumns(),
-          rows: complaintDetailsList.isNotEmpty ? _createRows() : []);
+          rows: feedbackDetails.isNotEmpty ? _createRows() : []);
     }
 
-
-    // void showSettingsPanel(String name) {
-    //   showModalBottomSheet(
-    //     context: context,
-    //     builder: (context) {
-    //       return Container(
-    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-    //         child: SingleCallDetailsView(name: name),
-    //       );
-    //     }
-    //   );
-    // }
     return Scaffold(
         appBar: AppBar(
           title: const Text('Energy Efficient Lights'),
@@ -147,7 +147,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                 onPressed: () async {
                   await _auth.signout();
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                          'authWrapper', (Route<dynamic> route) => false);
+                        'authWrapper', (Route<dynamic> route) => false);
                 },
                 icon: const Icon(
                   Icons.person,
@@ -172,20 +172,6 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(right: 15, top: 10),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      'Name: ${salesExecutive.name}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]),
-                ),
-                Container(
                   width: 270,
                   height: 60,
                   decoration: BoxDecoration(
@@ -199,17 +185,65 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff4d47c3)),
                     onPressed: () {
-                      Navigator.pushNamed(
+                      if (execId == '') {
+                            setState(() {
+                              status = 'Please select an executive';
+                            });
+                          } else {
+                            setState(() {
+                              status = '';
+                            });
+                            Navigator.pushNamed(
                                   context, 
-                                  AddNewComplaint.routeName,
+                                  CustomerFeedback.routeName,
                                   arguments: Parameter(
-                                    args.uid,
+                                    execId,
                                   )
                                 );
+                          }
+                      
                     },
                     child: Text('Add New +'),
                   ),
                 ),
+                SizedBox(height: 10),
+                SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: salesExec,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          salesExec = newValue!;
+                          execId = '';
+                          status = '';
+                        });
+                      },
+                      items: salesExecList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 SizedBox(height: 10),
                 _createDataTable(),
                 SizedBox(
@@ -241,7 +275,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                               status = '';
                             });
                             Navigator.pushNamed(
-                                context, ViewComplaintDetails.routeName,
+                                context, ViewCustomerFeedback.routeName,
                                 arguments: Parameter(
                                   character,
                                 ));
@@ -267,61 +301,6 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                           child: Center(
                             child: Text(
                               'View',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: "Poppins",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                height: 1.5,
-                                color: Color(0xffffffff),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
-                      margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
-                      child: TextButton(
-                        onPressed: () {
-                          // showSettingsPanel(character);
-                          if (character == '') {
-                            setState(() {
-                              status = 'Please select an option';
-                            });
-                          } else {
-                            setState(() {
-                              status = '';
-                            });
-                            Navigator.pushNamed(
-                                context, EditComplaintDetails.routeName,
-                                arguments: EditParameters(
-                                  character,
-                                  args.uid,
-                                ));
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        child: Container(
-                          width: 95.63,
-                          height: 59,
-                          decoration: BoxDecoration(
-                            color: Color(0xff4d47c3),
-                            borderRadius: BorderRadius.circular(9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x664d47c3),
-                                offset: Offset(0, 4),
-                                blurRadius: 30.5,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Edit',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: "Poppins",

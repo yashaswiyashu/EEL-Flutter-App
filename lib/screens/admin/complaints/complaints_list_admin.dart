@@ -14,16 +14,15 @@ import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 
-class ComplaintDetailsList extends StatefulWidget {
-  const ComplaintDetailsList({super.key});
-static const routeName = '/ComplaintDetailsList';
+class ComplaintDetailsAdmin extends StatefulWidget {
+  const ComplaintDetailsAdmin({super.key});
 
   @override
-  State<ComplaintDetailsList> createState() => _ComplaintDetailsListState();
+  State<ComplaintDetailsAdmin> createState() => _ComplaintDetailsAdminState();
 }
 
 
-class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
+class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
   bool loading = false;
   String status = '';
 
@@ -33,38 +32,46 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
 
 
   var salesExecutive;
-
+  String complaintStatus = 'Open';
+  String salesExec = 'Select Exec';
+  String execID = '';
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    List<String> salesExecList = ['Select Exec',];
 
-    if (salesTable != null && args.uid == '') {
+    if (salesTable != null) {
       salesTable.forEach((element) {
-        if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
-        }
-      });
-    } else {
-      salesTable!.forEach((element) {
-        if (element?.uid == args.uid) {
-          salesExecutive = element;
+        if (element?.role == 'Sales Executive') {
+          salesExecList.add(element!.name);
         }
       });
     }
+
+    salesTable?.forEach((element) {
+      if(element!.name == salesExec) {
+        execID = element.uid;
+      }
+    });
+
 
     var details = [];
     var obj;
 
-    if (args.uid == '') {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == currentUser?.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+    if(execID != '') {
+      complaintDetailsList.forEach((e) => ((e.complaintResult == complaintStatus) && (e.salesExecutiveId == execID)) ? details.add(e) : []);
     } else {
-      complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
+      complaintDetailsList.forEach((e) => (e.complaintResult == complaintStatus) ? details.add(e) : []);
     }
 
+    void setExec(String id) {
+      setState(() {
+        execID = id;
+      });
+    }
 
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
@@ -107,6 +114,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                         details.forEach((element) {
                           if (element.uid == character) {
                             obj = element;
+                            setExec(element.salesExecutiveId!);
                           }
                         });
                       });
@@ -127,17 +135,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
     }
 
 
-    // void showSettingsPanel(String name) {
-    //   showModalBottomSheet(
-    //     context: context,
-    //     builder: (context) {
-    //       return Container(
-    //         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-    //         child: SingleCallDetailsView(name: name),
-    //       );
-    //     }
-    //   );
-    // }
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Energy Efficient Lights'),
@@ -147,7 +145,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                 onPressed: () async {
                   await _auth.signout();
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                          'authWrapper', (Route<dynamic> route) => false);
+                        'authWrapper', (Route<dynamic> route) => false);
                 },
                 icon: const Icon(
                   Icons.person,
@@ -172,20 +170,6 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(right: 15, top: 10),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      'Name: ${salesExecutive.name}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]),
-                ),
-                Container(
                   width: 270,
                   height: 60,
                   decoration: BoxDecoration(
@@ -199,18 +183,105 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff4d47c3)),
                     onPressed: () {
-                      Navigator.pushNamed(
-                                  context, 
-                                  AddNewComplaint.routeName,
-                                  arguments: Parameter(
-                                    args.uid,
-                                  )
-                                );
+                      if (execID == '') {
+                            setState(() {
+                              status = 'Please select an executive';
+                            });
+                          } else {
+                            setState(() {
+                              status = '';
+                            });
+                            Navigator.pushNamed(
+                                context, AddNewComplaint.routeName,
+                                arguments: Parameter(
+                                  execID,
+                                ));
+                          }
                     },
                     child: Text('Add New +'),
                   ),
                 ),
                 SizedBox(height: 10),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: salesExec,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          salesExec = newValue!;
+                          execID = '';
+                          status = '';
+                        });
+                      },
+                      items: salesExecList
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 60,
+                    width: 175,
+                    child: DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          //<-- SEE HERE
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffefefff),
+                      ),
+                      dropdownColor: const Color(0xffefefff),
+                      value: complaintStatus,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          complaintStatus = newValue!;
+                        });
+                      },
+                      items: <String> [
+                        'Open',
+                        'ReOpen',
+                        'Closed',
+                        'In Process'
+                      ]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ]),
+                SizedBox(height: 20),
                 _createDataTable(),
                 SizedBox(
                   height: 20,
@@ -298,7 +369,7 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
                                 context, EditComplaintDetails.routeName,
                                 arguments: EditParameters(
                                   character,
-                                  args.uid,
+                                  execID
                                 ));
                           }
                         },

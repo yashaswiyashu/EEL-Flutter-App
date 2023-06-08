@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
@@ -108,7 +109,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   String error = '';
   String dateError = '';
   String productError = '';
-  String nameErr = '';
+
 
   String subTotal = '0';
   String cgst = '0.09';
@@ -245,7 +246,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   var salesExecutive;
 
   var isDupName = false;
-
+  var dupOrder = false;
+  var isCust = false;
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
@@ -253,11 +255,21 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
+  String nameErr = '';
     List<CustomerModel> details = [];
     if(args.uid == ''){
       customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
     }else {
       customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+    }
+
+    if(orderDetails != null) {
+      orderDetails.forEach((element) {
+        if(element.customerName == nameController.text) {
+          dupOrder = true;
+        }
+      });
     }
 
 
@@ -315,6 +327,15 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     customerList.forEach(
         (e) => e.customerName == customerName ? customerId = e.uid : []);
 
+    customerList.forEach((element) {
+      if(element.uid == currentUser?.uid) {
+        setState(() {
+          isCust = true;
+          nameController.text = element.customerName;
+        });
+        setCustomerData();
+      }
+    });
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
       thickness: 0.5,
@@ -383,7 +404,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
+                args.uid != '' ? Container(
                   padding: EdgeInsets.only(right: 15, top: 10),
                   child:
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -396,7 +417,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                       ),
                     ),
                   ]),
-                ),
+                ) : Container(height: 0, width: 0,),
+                const SizedBox(height: 5.0),
                 Container(
                   margin: const EdgeInsets.only(left: 100),
                   width: 180,
@@ -488,7 +510,6 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               },
 
             ),
-                        const SizedBox(height: 5.0),
               Container(
                 margin: const EdgeInsets.only(left: 110),
                 child: Text(
@@ -496,9 +517,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                   style: const TextStyle(color: Colors.red, fontSize: 14.0),
                 ),
               ),
-
-                const SizedBox(height: 20.0),
-                const SizedBox(
+                !isCust ? const SizedBox(
                     height: 20.0,
                     child: Text(
                       'Shippment ID:',
@@ -508,19 +527,17 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                         fontFamily: "Inter",
                         fontWeight: FontWeight.w500,
                       ),
-                    )),
-                TextFormField(
+                    )) : const SizedBox(height: 0,),
+                !isCust ? TextFormField(
                   keyboardType: TextInputType.phone,
                   decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Shipment ID',
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter Shipment Id' : null,
                   onChanged: (val) {
                     shipmentID = val;
                   },
-                ),
-                const SizedBox(height: 20.0),
+                ) : const SizedBox(height: 0,),
+                !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0,),
                 const SizedBox(
                     height: 20.0,
                     child: Text(
@@ -649,14 +666,14 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                   decoration: textInputDecoration.copyWith(hintText: 'pincode'),
                   validator: (value) =>
                       value!.length != 6 ? 'Enter valid Pincode' : null,
-                  onChanged: (val) {
-                    setState(() {
-                      pincode = val;
-                    });
-                  },
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     pincode = val;
+                  //   });
+                  // },
                 ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
+                !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0.0),
+                !isCust ? const SizedBox(
                   height: 20.0,
                   child: Text(
                     "Delivery Date:",
@@ -667,8 +684,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                ),
-                ElevatedButton(
+                ) : const SizedBox(height: 0.0),
+                !isCust ? ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xffe3e4e5)),
                   onPressed: () {
@@ -678,15 +695,15 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                     callDate,
                     style: TextStyle(color: Colors.black),
                   ),
-                ),
+                ) : const SizedBox(height: 0.0),
                 Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                   Text(
                     dateError,
                     style: const TextStyle(color: Colors.red, fontSize: 14.0),
                   ),
                 ]),
-                const SizedBox(height: 20.0),
-                const SizedBox(
+                !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0.0),
+                !isCust ? const SizedBox(
                   height: 20.0,
                   child: Text(
                     "Order status",
@@ -697,8 +714,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                ),
-                DropdownButtonFormField(
+                ) : const SizedBox(height: 0.0),
+                !isCust ? DropdownButtonFormField(
                   decoration: const InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       //<-- SEE HERE
@@ -735,7 +752,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                       ),
                     );
                   }).toList(),
-                ),
+                ) : const SizedBox(height: 0.0),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -974,14 +991,10 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                 setState(() {
                                   nameErr = 'Entered customer is not registerd. Please Register and Try again';
                                 });
-                              } else {
-                                setState(() {
-                                  nameErr = '';
-                                });
                               }
                                 if (_formkey.currentState!.validate() &&
                                     customerId != '' &&
-                                    callDate != 'Select Date' &&
+                                    (callDate != 'Select Date' || isCust) &&
                                     selectedOptions[
                                             selectedOptions.length - 1] !=
                                         'Select Product' &&
@@ -1063,7 +1076,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                     });
                                   }
 
-                                  if (callDate == 'Select Date') {
+                                  if (callDate == 'Select Date' && !isCust) {
                                     setState(() {
                                       dateError = 'Please enter delivery date';
                                       loading = false;
