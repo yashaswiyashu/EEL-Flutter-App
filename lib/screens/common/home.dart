@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/common/globals.dart';
+import 'package:flutter_app/shared/loading.dart';
 import 'package:flutter_app/wrappers/home_wrapper.dart';
 
 class Home extends StatefulWidget {
@@ -17,6 +19,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
