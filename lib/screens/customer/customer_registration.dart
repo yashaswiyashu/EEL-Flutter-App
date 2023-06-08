@@ -152,6 +152,11 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
           .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
     }
 
+    if(currentUser?.uid == null ) {
+      customerList.forEach(
+          (e) => details.add(e));
+    }
+
     salesTable.forEach((element) {
       if(element!.name == executiveController.text) {
         execId = element.uid;
@@ -1210,7 +1215,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         ));
                                       });
                                       Navigator.pushNamed(
-                                          context, 'customerHomePage');
+                                                context, 'authWrapper');
                                     });
                                   } else {
                                     setState(() {

@@ -216,9 +216,9 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
         actions: [
           TextButton.icon(
               onPressed: () async {
-                await _auth.signout();
-                Navigator.pushNamed(context, 'home');
-              },
+                await _auth.signout();      
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                        'authWrapper', (Route<dynamic> route) => false);              },
               icon: const Icon(
                 Icons.person,
                 color: Colors.white,

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
+import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/common/location.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
@@ -161,6 +162,8 @@ Future<bool> updateAddressFields() async {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as String;
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    final currentUser = Provider.of<UserModel?>(context);
+
     List<String> salesCoOrd = [];
     setState(() {
       role = args;
@@ -196,6 +199,24 @@ Future<bool> updateAddressFields() async {
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
         backgroundColor: const Color(0xff4d47c3),
+        actions: currentUser?.uid != null
+            ? [
+                TextButton.icon(
+                    onPressed: () async {
+                      await _auth.signout();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          'authWrapper', (Route<dynamic> route) => false);
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'logout',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ]
+            : null
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),

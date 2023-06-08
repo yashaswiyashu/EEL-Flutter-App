@@ -21,7 +21,6 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text('Energy Efficient Lights'),
         backgroundColor:const Color(0xff4d47c3),
-        
       ),
       body: SingleChildScrollView(
         child: Container(

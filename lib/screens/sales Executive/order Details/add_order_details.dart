@@ -404,7 +404,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                args.uid == '' ? Container(
+                args.uid != '' ? Container(
                   padding: EdgeInsets.only(right: 15, top: 10),
                   child:
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [

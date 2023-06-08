@@ -244,7 +244,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
             TextButton.icon(
                 onPressed: () async {
                   await _auth.signout();
-                  Navigator.pushNamed(context, 'home');
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                          'authWrapper', (Route<dynamic> route) => false);
                 },
                 icon: const Icon(
                   Icons.person,
