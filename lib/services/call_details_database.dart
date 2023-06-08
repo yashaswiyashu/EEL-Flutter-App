@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
-import 'package:flutter_app/models/follow_up_model.dart';
+//import 'package:flutter_app/models/follow_up_model.dart';
 
 class CallDetailsDatabaseService {
 
@@ -19,7 +19,8 @@ class CallDetailsDatabaseService {
    String callDate,
    String callResult,
    bool? followUp,
-   String followUpdetails,
+   //String followUpdetails,
+   List<FollowUpDetail> details,
 
     ) async {
       var uniqid = userCollection.doc().id;
@@ -32,7 +33,7 @@ class CallDetailsDatabaseService {
       'callDate': callDate,
       'callResult': callResult,
       'followUp': followUp,
-      'followUpdetails': followUpdetails,
+      'followUpDetls': ConvertFollowUpDetailstoMap(followupList: details),
  
     });
   }
@@ -45,7 +46,7 @@ class CallDetailsDatabaseService {
    String callDate,
    String callResult,
    bool? followUp,
-   String followUpdetails,
+   List<FollowUpDetail> details,
 
     ) async {
     return await userCollection.doc(docid).set({
@@ -57,7 +58,7 @@ class CallDetailsDatabaseService {
       'callDate': callDate,
       'callResult': callResult,
       'followUp': followUp,
-      'followUpdetails': followUpdetails,
+      'followUpDetls': ConvertFollowUpDetailstoMap(followupList: details),
     });
   }
 
@@ -94,14 +95,30 @@ class CallDetailsDatabaseService {
     });
   }
 
+  static List<Map> ConvertFollowUpDetailstoMap({required List<FollowUpDetail> followupList}) {
+    List<Map> steps = [];
+    followupList.forEach((FollowUpDetail followup) {
+      Map step = followup.toMap();
+      steps.add(step);
+    });
+    return steps;
+  }
+
+
   Future<void> deleteFollowUpDetails(
     String uid,
     ) async {
     return await userCollection.doc(docid).collection('followUpDetails').doc(uid).delete();
   }
 
-  List<CallDetailsModel> _userListFromSnapshot(QuerySnapshot snapshot) {
+/*   List<CallDetailsModel> _userListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((DocumentSnapshot doc) {
+      final data = doc.data() as Map<String, dynamic>;
+
+      List<FollowUpDetail> details = (data['followUpDetls'] as List<dynamic>).map<FollowUpDetail>((followUpMap) {
+        return FollowUpDetail.fromMap(followUpMap as Map<String, dynamic>? ?? {});
+      }).toList();
+
       return CallDetailsModel(
         uid: (doc.data() as Map<String, dynamic>)['uid']?.toString() ?? '',
         salesExecutiveId: (doc.data() as Map<String, dynamic>)['salesExecutiveId']?.toString() ?? '',
@@ -111,11 +128,38 @@ class CallDetailsDatabaseService {
         callDate: (doc.data() as Map<String, dynamic>)['callDate']?.toString() ?? '',
         callResult: (doc.data() as Map<String, dynamic>)['callResult']?.toString() ?? '',
         followUp: (doc.data() as Map<String, dynamic>)['followUp'] as bool? ?? false,
-        followUpdetails: (doc.data() as Map<String, dynamic>)['followUpdetails']?.toString() ?? '',
-        
+        //followUpdetails: (doc.data() as Map<String, dynamic>)['followUpdetails']?.toString() ?? '',
+        followUpDetls: details,
+      );
+    }).toList();
+  } */
+
+  List<CallDetailsModel> _userListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((DocumentSnapshot doc) {
+      final data = doc.data() as Map<String, dynamic>;
+
+      List<FollowUpDetail> details = [];
+
+      if (data.containsKey('followUpDetls')) {
+        details = (data['followUpDetls'] as List<dynamic>).map<FollowUpDetail>((followUpMap) {
+          return FollowUpDetail.fromMap(followUpMap as Map<String, dynamic>);
+        }).toList();
+      }
+
+      return CallDetailsModel(
+        uid: data['uid']?.toString() ?? '',
+        salesExecutiveId: data['salesExecutiveId']?.toString() ?? '',
+        customerName: data['customerName']?.toString() ?? '',
+        customerType: data['customerType']?.toString() ?? '',
+        mobileNumber: data['mobileNumber']?.toString() ?? '',
+        callDate: data['callDate']?.toString() ?? '',
+        callResult: data['callResult']?.toString() ?? '',
+        followUp: data['followUp'] as bool? ?? false,
+        followUpDetls: details,
       );
     }).toList();
   }
+
 
   // get user table stream
   Stream<List<CallDetailsModel>> get callDetailsTable {

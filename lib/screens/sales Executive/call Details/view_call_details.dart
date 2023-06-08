@@ -13,6 +13,8 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_app/services/call_details_database.dart';
 import 'package:provider/provider.dart';
 
+import 'followup_container.dart';
+
 class ViewCallDetails extends StatefulWidget {
   ViewCallDetails({super.key});
   static const routeName = '/viewCallDetails';
@@ -313,7 +315,8 @@ class _ViewCallDetailsState extends State<ViewCallDetails> {
                           ),
                         ),
                       ),
-                      Container(
+                      buildFollowUpDetailsContainerView(obj.followUpDetls),
+/*                       Container(
                         width: 440,
                         height: 83,
                         padding: EdgeInsets.only(left: 5, right: 5),
@@ -342,7 +345,7 @@ class _ViewCallDetailsState extends State<ViewCallDetails> {
                           ),
                         ),
                       ),
-                      Container(
+ */                      Container(
                         margin: EdgeInsets.only(left: 120),
                         child: Text(
                           status,
