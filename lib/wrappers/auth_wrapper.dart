@@ -8,6 +8,7 @@ import 'package:flutter_app/screens/common/home.dart';
 import 'package:flutter_app/screens/common/login.dart';
 import 'package:flutter_app/screens/common/register_as.dart';
 import 'package:flutter_app/screens/customer/customer_home.dart';
+import 'package:flutter_app/screens/customer/customer_home_edited.dart';
 import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
 import 'package:flutter_app/screens/sales%20Executive/sales_executive_home.dart';
 import 'package:provider/provider.dart';

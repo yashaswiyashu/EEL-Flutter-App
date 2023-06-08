@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
@@ -108,7 +109,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   String error = '';
   String dateError = '';
   String productError = '';
-  String nameErr = '';
+
 
   String subTotal = '0';
   String cgst = '0.09';
@@ -245,7 +246,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   var salesExecutive;
 
   var isDupName = false;
-
+  var dupOrder = false;
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
@@ -253,11 +254,21 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
     final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
+  String nameErr = '';
     List<CustomerModel> details = [];
     if(args.uid == ''){
       customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
     }else {
       customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
+    }
+
+    if(orderDetails != null) {
+      orderDetails.forEach((element) {
+        if(element.customerName == nameController.text) {
+          dupOrder = true;
+        }
+      });
     }
 
 
@@ -383,7 +394,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
+                args.uid == '' ? Container(
                   padding: EdgeInsets.only(right: 15, top: 10),
                   child:
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -396,7 +407,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                       ),
                     ),
                   ]),
-                ),
+                ) : Container(height: 0, width: 0,),
+                const SizedBox(height: 5.0),
                 Container(
                   margin: const EdgeInsets.only(left: 100),
                   width: 180,
@@ -974,10 +986,11 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                 setState(() {
                                   nameErr = 'Entered customer is not registerd. Please Register and Try again';
                                 });
-                              } else {
+                              }
+                              if(dupOrder) {
                                 setState(() {
-                                  nameErr = '';
-                                });
+                                  nameErr = 'Entered Customer Order Exists Please add details';
+                                });                                
                               }
                                 if (_formkey.currentState!.validate() &&
                                     customerId != '' &&

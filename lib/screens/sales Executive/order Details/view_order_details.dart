@@ -340,7 +340,7 @@ class _ViewOrderState extends State<ViewOrder>{
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
+                salesExecutive != null ? Container(
                   padding: EdgeInsets.only(right: 15, top: 10),
                   child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     Text(
@@ -352,7 +352,7 @@ class _ViewOrderState extends State<ViewOrder>{
                       ),
                     ),
                   ]),
-                ),
+                ) : const SizedBox(height: 0, width: 0,),
                 Container(
                   margin: const EdgeInsets.only(left: 100),
                   width: 180,
