@@ -113,13 +113,12 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
   String error = '';
   String dateError = '';
   String productError = '';
+  String orderedDate = '';
 
   String subTotal = '0';
   String cgst = '0.09';
   String sgst = '0.09';
   String total = '0';
-
-  DateTime orderedDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   List<List<String>> tableData = [
     ['', '', '', '', '', ''],
@@ -463,6 +462,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
           customerName = element.customerName;
           date = element.deliveryDate;
           prevDropDown = element.dropdown;
+          orderedDate = element.orderedDate;
         });
         setCustomerData();
       }
@@ -1120,7 +1120,7 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                                               dropDown == prevDropDown ? prevDropDown : dropDown,
                                               subTotal,
                                               total, 
-                                              '${orderedDate.day}/${orderedDate.month}/${orderedDate.year}',
+                                              orderedDate,
                                               editedProductList)
                                           .then((value) async {
                                             ScaffoldMessenger.of(context)
