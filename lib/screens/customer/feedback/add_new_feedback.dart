@@ -199,7 +199,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     final feedbackDetailsList =
         Provider.of<List<FeedbackDetailsModel>>(context);
-    var InDb = false;
+    var inDb = false;
     var isDupName = false;
     var execId = '';
     var isCust = false;
@@ -235,10 +235,10 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
 
 
     customerList.forEach((element) {
-      if (element.customerName == nameController.text) {
+      if (element.customerName == customerName) {
         setState(() {
           // nameErr = '';
-          InDb = true;
+          inDb = true;
           execId = element.salesExecutiveId!;
         });
       }
@@ -246,7 +246,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
 
 
     feedbackDetailsList.forEach((e) {
-      if (e.customerName == nameController.text) {
+      if (e.customerName == customerName) {
         setState(() {
           // nameErr = '';
           isDupName = true;
@@ -495,11 +495,11 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              if(!isDupName) {
+                              if(!inDb) {
                                 showConfirmation(execId);
                               }
                               if (_formkey.currentState!.validate() &&
-                                  feedbackDate != 'Select Date' ) {
+                                  feedBackDate != 'Select Date' ) {
                                 setState(() {
                                   loading = true;
                                 });

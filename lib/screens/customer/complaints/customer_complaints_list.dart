@@ -283,6 +283,61 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
                         ),
                       ),
                     ),
+                    Container(
+                      // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
+                      margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
+                      child: TextButton(
+                        onPressed: () {
+                          // showSettingsPanel(character);
+                          if (character == '') {
+                            setState(() {
+                              status = 'Please select an option';
+                            });
+                          } else {
+                            setState(() {
+                              status = '';
+                            });
+                            Navigator.pushNamed(
+                                context, EditComplaintDetails.routeName,
+                                arguments: EditParameters(
+                                  character,
+                                  args.uid,
+                                ));
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Container(
+                          width: 95.63,
+                          height: 59,
+                          decoration: BoxDecoration(
+                            color: Color(0xff4d47c3),
+                            borderRadius: BorderRadius.circular(9),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x664d47c3),
+                                offset: Offset(0, 4),
+                                blurRadius: 30.5,
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Edit',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                height: 1.5,
+                                color: Color(0xffffffff),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     TextButton(
                       // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
                       onPressed: () {

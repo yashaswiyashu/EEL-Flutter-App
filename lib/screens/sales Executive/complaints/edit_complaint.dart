@@ -2,6 +2,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -195,7 +196,9 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     final ComplaintDetailsTable =
         Provider.of<List<ComplaintDetailsModel?>?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+        final customerList = Provider.of<List<CustomerModel>>(context);
 
+    var iscust = false;
 
     var obj;
     String salesExecutiveName = '';
@@ -238,6 +241,14 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
       complaintDetls = obj.complaintDetls;
     }
 
+    customerList.forEach((element) {
+      if(element.uid == currentUser?.uid) {
+        setState(() {
+          iscust = true;
+        });
+      }
+    });
+
 
     return Scaffold(
         appBar: AppBar(
@@ -277,7 +288,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
+                  !iscust ? Container(
                     padding: EdgeInsets.only(right: 15, top: 10),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -291,7 +302,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                             ),
                           ),
                         ]),
-                  ),
+                  ) : const SizedBox(height: 0,width: 0,),
                   SizedBox(
                     height: 10,
                   ),

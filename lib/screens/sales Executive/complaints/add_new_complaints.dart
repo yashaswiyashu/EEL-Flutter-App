@@ -210,13 +210,13 @@ void showConfirmation(String uid) {
     //[Viru:27/5/23] Added to support customer name search list
     final customerList = Provider.of<List<CustomerModel>>(context);
     if(args.uid == '') {
-      customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
+      customerList.forEach((e) => e.uid == currentUser?.uid ? details.add(e) : []);
     } else {
       customerList.forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
     }
 
     customerList.forEach((element) {
-      if(element.customerName == nameController.text) {
+      if(element.customerName == customerName) {
         setState(() {
           // nameErr = '';
           InDb = true;
@@ -225,7 +225,7 @@ void showConfirmation(String uid) {
     });
 
     complaintDetailsList.forEach((e) {
-      if(e.customerName == nameController.text && e.complaintResult != 'Closed') {
+      if(e.customerName == customerName && e.complaintResult != 'Closed') {
         setState(() {
           // nameErr = '';
           isDupName = true;
@@ -238,6 +238,13 @@ void showConfirmation(String uid) {
         setState(() {
           isCust = true;
         });
+      }
+    });
+
+    customerList.forEach((element) {
+      if(element.uid == currentUser?.uid) {
+        customerName = element.customerName;
+        customerNumber = element.mobileNumber;
       }
     });
 
@@ -309,7 +316,9 @@ void showConfirmation(String uid) {
               SizedBox(
                 height: 10,
               ),
-    /*            TextFormField(
+             TextFormField(
+              initialValue: customerName,
+              readOnly: true,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Customer Name',
@@ -318,51 +327,51 @@ void showConfirmation(String uid) {
                   customerName = val;
                 },
               ),
- */ 
+ 
               //[Viru:27/5/23] Added to support customer name search list
-                TypeAheadFormField(
+            //     TypeAheadFormField(
                   
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: nameController,
-                    decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Customer Name',
-                      fillColor: const Color(0xfff0efff),
-                    ),
-                    onChanged: (val) {
-                      setState(() {
-                        nameErr = '';
-                      });
-                    }, 
-                  ),
+            //       textFieldConfiguration: TextFieldConfiguration(
+            //         controller: nameController,
+            //         decoration: textInputDecoration.copyWith(
+            //           hintText: 'Enter Customer Name',
+            //           fillColor: const Color(0xfff0efff),
+            //         ),
+            //         onChanged: (val) {
+            //           setState(() {
+            //             nameErr = '';
+            //           });
+            //         }, 
+            //       ),
 
-                  suggestionsCallback: (pattern) async {
-                    // Filter the customer list based on the search pattern
+            //       suggestionsCallback: (pattern) async {
+            //         // Filter the customer list based on the search pattern
         
-                    return details
-                    .where((customer) =>
-                    customer != null &&
-                    customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
-                    .toList();
-                  },
+            //         return details
+            //         .where((customer) =>
+            //         customer != null &&
+            //         customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
+            //         .toList();
+            //       },
 
-                  itemBuilder: (context, CustomerModel? suggestion) {
-                    if (suggestion == null) return const SizedBox.shrink();
-                    return ListTile(
-                      title: Text(suggestion.customerName),
-                    );
-                  },
+            //       itemBuilder: (context, CustomerModel? suggestion) {
+            //         if (suggestion == null) return const SizedBox.shrink();
+            //         return ListTile(
+            //           title: Text(suggestion.customerName),
+            //         );
+            //       },
 
-                  onSuggestionSelected: (CustomerModel? suggestion) {
-                    if (suggestion != null) {
-                      setState(() {
-                        //customerName = suggestion.customerName;
-                        nameController.text = suggestion.customerName;
-                        numberController.text = suggestion.mobileNumber;
-                    });
-                  }
-              },
+            //       onSuggestionSelected: (CustomerModel? suggestion) {
+            //         if (suggestion != null) {
+            //           setState(() {
+            //             //customerName = suggestion.customerName;
+            //             nameController.text = suggestion.customerName;
+            //             numberController.text = suggestion.mobileNumber;
+            //         });
+            //       }
+            //   },
 
-            ),
+            // ),
             const SizedBox(height: 5.0),
               Container(
                 child: Text(
@@ -385,7 +394,8 @@ void showConfirmation(String uid) {
                   )),
               const SizedBox(height: 10.0),
               TextFormField(
-                controller: numberController,
+                initialValue: customerNumber,
+                readOnly: true,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value?.length == 10 ? null : 'Enter valid number',
