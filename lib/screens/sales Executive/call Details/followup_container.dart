@@ -67,11 +67,14 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
         children: [
           Expanded(
             flex: 1,
-            child: TextFormField(
-              initialValue: formattedDate,
-              enabled: false,
-              decoration: InputDecoration(
-                border: InputBorder.none,
+            child: Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: TextFormField(
+                initialValue: formattedDate,
+                enabled: false,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                ),
               ),
             ),
           ),

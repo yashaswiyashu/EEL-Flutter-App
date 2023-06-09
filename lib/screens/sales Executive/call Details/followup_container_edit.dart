@@ -108,17 +108,20 @@ Container buildFollowUpDetailsContainerEdit() {
         children: [
           Expanded(
             flex: 1,
-            child: TextFormField(
-              initialValue: formattedDate,
-              enabled: false,
-              // 
-              style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  height: 1,
-                  color: Color(0xff000000),
-                ),
+            child: Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: TextFormField(
+                initialValue: formattedDate,
+                enabled: false,
+                // 
+                style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    height: 1,
+                    color: Color(0xff000000),
+                  ),
+              ),
             ),
           ),
           Expanded(

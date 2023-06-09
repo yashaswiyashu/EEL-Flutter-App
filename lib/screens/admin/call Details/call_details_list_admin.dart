@@ -103,7 +103,6 @@ String salesExec = 'Select Exec';
                 details.forEach((element) {
                   if(element.uid == character){
                     obj = element;
-                    setExec(element.salesExecutiveId!);
                   }
                 });
               });
@@ -242,6 +241,7 @@ String salesExec = 'Select Exec';
                         setState(() {
                           salesExec = newValue!;
                           execID = '';
+                          setExec(execID);
                         });
                       },
                       items: salesExecList
