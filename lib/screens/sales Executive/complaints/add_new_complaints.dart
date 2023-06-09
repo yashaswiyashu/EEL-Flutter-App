@@ -510,8 +510,6 @@ final AuthService _auth = AuthService();
                               setState(() {
                                 nameErr = '';
                               });
-                              print(isDupName);
-                              print(InDb);
                               if(isDupName) {
                                 setState(() {
                                   nameErr = 'Entered customer complaint already exists. Please edit existing complaint';

@@ -170,7 +170,6 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
   content: Text('Call Details added Successfully!!!'),
   );
 
-    print("Viru: $followUp");
     return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
@@ -496,7 +495,6 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                               child: Row(children: <Widget>[followUp ?
                                   Expanded(child: FollowUpDetailsContainer(
                                       onChanged: (detail) {
-                                        print("Viru: "+ detail.details);
                                         setState(() {
                                           followUpDetls.add(detail);
                                         });
@@ -532,7 +530,6 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                     setState(() {
                                       loading = true;
                                     });
-                                    print("Viru: $followUpDetls");
                                     await CallDetailsDatabaseService(docid: '')
                                       .setUserData(
                                         (args.uid == '' ? currentUser?.uid : args.uid)!,
