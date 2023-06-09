@@ -1,7 +1,13 @@
 //import 'package:provider/provider.dart';
 //import 'package:flutter_app/models/order_details_model.dart';
+import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/models/order_details_model.dart';
+import 'package:flutter_app/models/product_details_model.dart';
+import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/admin/complaints/complaints_list_admin.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -120,4 +126,79 @@ int getTotalOrders(String id, List<OrderDetailsModel> orders) {
     }
   });
   return totalOrder;
+}
+
+int getTotalProductsCount(List<ProductDetailsModel> productsList) {
+  var totalProducts = 0;
+  productsList.forEach((element) {
+    totalProducts++;
+  });
+  return totalProducts;
+}
+
+int getTotalCoOrdinators(List<SalesPersonModel?> salesTable) {
+  var totalCoOrd = 0;
+  salesTable.forEach((element) {
+    if(element?.role == 'Sales Co-Ordinator') {
+      totalCoOrd++;
+    }
+  });
+  return totalCoOrd;
+}
+
+int getTotalExecutives(List<SalesPersonModel?> salesTable) {
+  var totalExecutives = 0;
+  salesTable.forEach((element) {
+    if(element?.role == 'Sales Executive') {
+      totalExecutives++;
+    }
+  });
+  return totalExecutives;
+}
+
+int getcustomerCount(List<CustomerModel> customerList) {
+  var totalCustomer = 0;
+  customerList.forEach((element) {
+    totalCustomer++;
+  });
+  return totalCustomer;
+}
+
+int getTotalComplaints(List<ComplaintDetailsModel> complaintsList ){
+  var totalComplaints = 0;
+  DateTime now = DateTime.now();
+  complaintsList.forEach((element) {
+    DateTime complaintDate = DateFormat('dd/MM/yy').parse(element.complaintDate);
+    if (now.month == complaintDate.month && now.year == complaintDate.year) {
+      totalComplaints++;
+    }
+
+  });
+  return totalComplaints;
+}
+
+int getTotalOrdersAdmin(List<OrderDetailsModel> orders) {
+  var totalOrder = 0;
+  DateTime now = DateTime.now();
+  orders.forEach((element) {
+    DateTime orderDate = DateFormat('dd/MM/yy').parse(element.orderedDate);
+    if (now.month == orderDate.month && now.year == orderDate.year) {
+      if(element.dropdown != 'Cancelled' && element.dropdown != 'Returned') {
+        totalOrder++;
+      }
+    }
+  });
+  return totalOrder;
+}
+
+int getTotalfeedback(List<FeedbackDetailsModel> feedbackList) {
+  var totalFeedback = 0;
+  DateTime now = DateTime.now();
+  feedbackList.forEach((element) {
+    DateTime feedbackDate = DateFormat('dd/MM/yy').parse(element.feedbackDate);
+    if (now.month == feedbackDate.month && now.year == feedbackDate.year) {
+      totalFeedback++;
+    }
+  });
+  return totalFeedback;
 }

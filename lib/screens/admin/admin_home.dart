@@ -5,6 +5,8 @@ import 'package:flutter_app/models/call_details_forward_model.dart';
 
 import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
+import 'package:flutter_app/models/customer_model.dart';
+import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
@@ -38,7 +40,25 @@ class _AdminHomeState extends State<AdminHome> {
   Widget build(BuildContext context) {
     FocusManager.instance.primaryFocus?.unfocus();
     final currentUser = Provider.of<UserModel?>(context);
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    final productDetails = Provider.of<List<ProductDetailsModel>>(context);
+    final customerList = Provider.of<List<CustomerModel>>(context);
+    final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
+    final orderDetails = Provider.of<List<OrderDetailsModel>>(context);
+    final feedbackDetails = Provider.of<List<FeedbackDetailsModel>>(context);
+    final callDetails = Provider.of<List<CallDetailsModel>>(context);
+
+    var totalProducts = getTotalProductsCount(productDetails);
+    var totalcoord = getTotalCoOrdinators(salesTable);
+    var totalExec = getTotalExecutives(salesTable);
+    var totalCust = getcustomerCount(customerList);
+    var totalComplaints = getTotalComplaints(complaintDetailsList);
+    var totalpendingComplaints = getPendingComplaintCount(complaintDetailsList);
+    var totalOrders = getTotalOrdersAdmin(orderDetails);
+    var totalPendingOrder = getPendingOrderCount(orderDetails);
+    var totalCalls = getCallsCountConvertedThisMonth(callDetails);
+    var totalFeedback = getTotalfeedback(feedbackDetails);
+  
 
 
     return WillPopScope(
@@ -157,7 +177,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Products Added: ",
+                                      "Total Products Added: $totalProducts",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -252,7 +272,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Sales Co-Ordinators: \nTotal Sales Executive: \nTotal Customers:",
+                                      "Total Sales Co-Ordinators: $totalcoord\nTotal Sales Executive: $totalExec\nTotal Customers: $totalCust",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -346,7 +366,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Complaints(This Month): \n Total Pending Complaints",
+                                      "Total Complaints(This Month): $totalComplaints\n Total Pending Complaints: $totalpendingComplaints",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -440,7 +460,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Orders(This Month): \nTotal Pending Orders:",
+                                      "Total Orders(This Month): $totalOrders\nTotal Pending Orders: $totalPendingOrder",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -535,7 +555,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Calls(This Month): ",
+                                      "Total Calls Converted(This Month): ${totalCalls.callsConverted}",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -630,7 +650,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Feedbacks: ",
+                                      "Total Feedbacks: $totalFeedback",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,

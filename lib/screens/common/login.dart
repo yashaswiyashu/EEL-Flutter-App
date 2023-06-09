@@ -157,7 +157,8 @@ class _LoginState extends State<Login> {
                                 loading = false;
                               });
                             } else {
-                              Navigator.pushNamed(context, 'authWrapper');
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                          'authWrapper', (Route<dynamic> route) => false);
                             }
                           }
                         }),
