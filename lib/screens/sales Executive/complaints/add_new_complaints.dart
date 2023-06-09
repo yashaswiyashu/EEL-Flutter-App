@@ -179,6 +179,8 @@ void showConfirmation(String uid) {
     });
   }
 
+  String complaintdate = DateFormat('dd/MM/yy').format(DateTime.now());
+
 
   @override
   Widget build(BuildContext context) {
@@ -430,10 +432,10 @@ void showConfirmation(String uid) {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffe3e4e5)),
                     onPressed: () {
-                      _restorableDatePickerRouteFuture.present();
+                      // _restorableDatePickerRouteFuture.present();
                     },
                     child: Text(
-                      complaintDate,
+                      complaintdate,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -564,7 +566,7 @@ void showConfirmation(String uid) {
                                 showConfirmation(salesExecutive.uid);
                               }
                               if (_formkey.currentState!.validate() &&
-                                  complaintDate != 'Select Date' && nameErr == '') {
+                                  complaintdate != 'Select Date' && nameErr == '') {
                                 setState(() {
                                   loading = true;
                                 });
@@ -573,7 +575,7 @@ void showConfirmation(String uid) {
                                   (args.uid == '' ? currentUser?.uid : args.uid)!,
                                   customerName,
                                   customerNumber,
-                                  complaintDate,
+                                  complaintdate,
                                   complaintResult,
                                   complaintDetls,
                                 )
