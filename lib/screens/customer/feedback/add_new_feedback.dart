@@ -200,6 +200,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
     var InDb = false;
     var isDupName = false;
     var execId = '';
+    var isCust = false;
 
 
     if (salesTable != null && args.uid == '') {
@@ -222,6 +223,13 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
 
     customerList.forEach(
         (e) => details.add(e));
+
+    customerList.forEach((element) {
+      if(element.uid == currentUser?.uid) {
+        customerName = element.customerName;
+        customerNumber = element.mobileNumber;
+      }
+    });
 
 
     customerList.forEach((element) {
@@ -299,55 +307,57 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
               SizedBox(
                 height: 10,
               ),
-              /*            TextFormField(
+          TextFormField(
+            initialValue: customerName,
+            readOnly: true,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Customer Name',
                     fillColor: const Color(0xfff0efff)),
-                onChanged: (val) {
-                  customerName = val;
-                },
+                // onChanged: (val) {
+                //   customerName = val;
+                // },
               ),
- */
+ 
               //[Viru:27/5/23] Added to support customer name search list
-              TypeAheadFormField(
-                textFieldConfiguration: TextFieldConfiguration(
-                  controller: nameController,
-                  decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Customer Name',
-                    fillColor: const Color(0xfff0efff),
-                  ),
+              // TypeAheadFormField(
+              //   textFieldConfiguration: TextFieldConfiguration(
+              //     controller: nameController,
+              //     decoration: textInputDecoration.copyWith(
+              //       hintText: 'Enter Customer Name',
+              //       fillColor: const Color(0xfff0efff),
+              //     ),
                  
-                ),
-                suggestionsCallback: (pattern) async {
-                  // Filter the customer list based on the search pattern
+              //   ),
+              //   suggestionsCallback: (pattern) async {
+              //     // Filter the customer list based on the search pattern
 
 
-                  return details
-                      .where((customer) =>
-                          customer != null &&
-                          customer.customerName
-                              .toLowerCase()
-                              .contains(pattern.toLowerCase()))
-                      .toList();
-                },
-                itemBuilder: (context, CustomerModel? suggestion) {
-                  if (suggestion == null) return const SizedBox.shrink();
-                  return ListTile(
-                    title: Text(suggestion.customerName),
-                  );
-                },
-                onSuggestionSelected: (CustomerModel? suggestion) {
-                  if (suggestion != null) {
-                    setState(() {
-                      //customerName = suggestion.customerName;
-                      nameController.text = suggestion.customerName;
-                      numberController.text = suggestion.mobileNumber;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 5.0),
+              //     return details
+              //         .where((customer) =>
+              //             customer != null &&
+              //             customer.customerName
+              //                 .toLowerCase()
+              //                 .contains(pattern.toLowerCase()))
+              //         .toList();
+              //   },
+              //   itemBuilder: (context, CustomerModel? suggestion) {
+              //     if (suggestion == null) return const SizedBox.shrink();
+              //     return ListTile(
+              //       title: Text(suggestion.customerName),
+              //     );
+              //   },
+              //   onSuggestionSelected: (CustomerModel? suggestion) {
+              //     if (suggestion != null) {
+              //       setState(() {
+              //         //customerName = suggestion.customerName;
+              //         nameController.text = suggestion.customerName;
+              //         numberController.text = suggestion.mobileNumber;
+              //       });
+              //     }
+              //   },
+              // ),
+              // const SizedBox(height: 5.0),
              
 
 
@@ -365,7 +375,8 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                   )),
               const SizedBox(height: 10.0),
               TextFormField(
-                controller: numberController,
+                initialValue: customerNumber,
+                readOnly: true,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
                     value?.length == 10 ? null : 'Enter valid number',
