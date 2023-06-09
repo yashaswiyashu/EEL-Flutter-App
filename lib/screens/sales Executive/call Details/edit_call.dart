@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/call_details_model.dart';
+import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -68,6 +70,42 @@ class _EditCallDetailsState extends State<EditCallDetails>
   void _saveFollowUpDetails() {
     followUpDetails = controllerFolowUpDetails.text;
   } */
+
+void confirmation(String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Entered customer is not registerd. Please Register here'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Register'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        Navigator.pushNamed(
+          context, 
+          AddNewCustomer.routeName,
+          arguments: Parameter(
+            uid,
+          )
+        );
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
 
   void showConfirmation(String uid) {
     showDialog(
@@ -163,9 +201,12 @@ class _EditCallDetailsState extends State<EditCallDetails>
     final currentUser = Provider.of<UserModel?>(context);
     final callDetails = Provider.of<List<CallDetailsModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
+    final customerList = Provider.of<List<CustomerModel>>(context);
+
     var obj;
     String salesExecutiveName = '';
     var salesExecutive;
+    var inDb = false;
     final AuthService _auth = AuthService();
     if (callDetails != null) {
       callDetails.forEach((element) {
@@ -204,6 +245,14 @@ class _EditCallDetailsState extends State<EditCallDetails>
       followUp = obj?.followUp;
       date = obj?.callDate;
     }
+
+    customerList.forEach((element) {
+      if(element.customerName == customerName) {
+        setState(() {
+          inDb = true;
+        });
+      }
+    });
 
     return Scaffold(
             appBar: AppBar(
@@ -582,6 +631,9 @@ class _EditCallDetailsState extends State<EditCallDetails>
                               margin: EdgeInsets.fromLTRB(0, 0, 7.38, 0),
                               child: TextButton(
                                 onPressed: () async {
+                                  if(!inDb && callResult == 'Converted') {
+                                    confirmation(salesExecutive.uid);
+                                  }
                                   if (_formkey.currentState!.validate()) {
                                     setState(() {
                                       loading = true;

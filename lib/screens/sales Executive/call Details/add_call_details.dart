@@ -4,6 +4,7 @@ import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -131,6 +132,42 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
     //print('Viru:: ${numberController.text}');
   }
 
+  void showConfirmation(String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Entered customer is not registerd. Please Register here'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Register'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        Navigator.pushNamed(
+          context, 
+          AddNewCustomer.routeName,
+          arguments: Parameter(
+            uid,
+          )
+        );
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
@@ -139,6 +176,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
     final AuthService _auth = AuthService();
     final customerList = Provider.of<List<CustomerModel>>(context);
     List<CustomerModel> details = [];
+    var inDb = false;
 
     if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
@@ -162,6 +200,9 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
 
     details.forEach((element) {
       if(element.customerName == customerName) {
+        setState(() {
+          inDb = true;
+        });
         numberController.text = element.mobileNumber;
       }
     });
@@ -526,6 +567,9 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
+                              if(!inDb && callResult == 'Converted') {
+                                showConfirmation(salesExecutive.uid);
+                              }
                               if (_formkey.currentState!.validate() && callDate != 'Select Date') {
                                     setState(() {
                                       loading = true;
