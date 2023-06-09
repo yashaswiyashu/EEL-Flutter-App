@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'complaint_container_edit.dart';
 
 class EditComplaintDetails extends StatefulWidget {
   const EditComplaintDetails({super.key, this.restorationId});
@@ -44,8 +45,9 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
   String complaintDate = '';
   String complaintResult = 'Open';
   String res = '';
-  String complaintDetails = '';
+  //String complaintDetails = '';
   String error = '';
+  List<ComplaintDetail> complaintDetls = [];
 
 
   @override
@@ -56,7 +58,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     // Start listening to changes.
     controllerResult.addListener(_saveResult);
 
-    controllerComplaintDetails.addListener(_controllerComplaintDetails);
+    //controllerComplaintDetails.addListener(_controllerComplaintDetails);
   }
 
 
@@ -66,7 +68,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
     // This also removes the _printLatestValue listener.
     controllerResult.dispose();
 
-    controllerComplaintDetails.dispose();
+    //controllerComplaintDetails.dispose();
     super.dispose();
   }
 
@@ -76,10 +78,10 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
   }
 
 
-  void _controllerComplaintDetails() {
+  /* void _controllerComplaintDetails() {
     complaintDetails = controllerComplaintDetails.text;
   }
-
+ */
 
   void showConfirmation(String uid) {
     showDialog(
@@ -232,7 +234,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
       controllerResult.text = obj?.complaintResult;
       res = obj?.complaintResult;
       date = obj?.complaintDate;
-      controllerComplaintDetails.text = obj?.complaintDetails;
+      //controllerComplaintDetails.text = obj?.complaintDetails;
+      complaintDetls = obj.complaintDetls;
     }
 
 
@@ -397,7 +400,6 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
 
 
                   const SizedBox(height: 20.0),
-                  const SizedBox(height: 20.0),
                   const SizedBox(
                       height: 20.0,
                       child: Text(
@@ -444,9 +446,9 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: 30.0),
+                  const SizedBox(height: 10.0),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
                     // complaintDetailsjeX (32:1762)
@@ -462,7 +464,16 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                       ),
                     ),
                   ),
-                  Container(
+                      ComplaintDetailsContainerEdit(
+                        onChanged: (complaintDetail) {
+                          // Handle the edited follow-up detail here
+                          // This callback will be triggered when an existing follow-up detail is edited
+                        },
+                        complaintDetails : complaintDetls,
+
+                      ),
+
+/*                       Container(
                     width: 440,
                     height: 83,
                     padding: EdgeInsets.only(left: 5, right: 5),
@@ -487,7 +498,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                         disabledBorder: InputBorder.none,
                       ),
                     ),
-                  ),
+                  ),*/
                   const SizedBox(height: 5.0),
                   Container(
                     margin: const EdgeInsets.only(left: 110),
@@ -527,7 +538,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                             customerNumber,
                                             complaintDate == '' ? date : complaintDate,
                                             complaintResult == 'Open' ? res : complaintResult,
-                                            complaintDetails,
+                                            complaintDetls,
                                           )
                                           .then((value) => setState(() {
                                                 loading = false;

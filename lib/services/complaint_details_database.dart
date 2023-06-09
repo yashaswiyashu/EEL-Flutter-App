@@ -20,7 +20,8 @@ class ComplaintDetailsDatabaseService {
     String mobileNumber,
     String complaintDate,
     String complaintResult,
-    String complaintDetails,
+    //String complaintDetails,
+    List<ComplaintDetail> details,
   ) async {
     var uniqid = userCollection.doc().id;
     return await userCollection.doc(uniqid).set({
@@ -30,7 +31,7 @@ class ComplaintDetailsDatabaseService {
       'mobileNumber': mobileNumber,
       'complaintDate': complaintDate,
       'complaintResult': complaintResult,
-      'complaintDetails': complaintDetails,
+      'complaintDetls': ConvertComplaintDetailstoMap(complaintList: details),
     });
   }
 
@@ -41,7 +42,7 @@ class ComplaintDetailsDatabaseService {
     String mobileNumber,
     String complaintDate,
     String complaintResult,
-    String complaintDetails,
+    List<ComplaintDetail> details,
   ) async {
     return await userCollection.doc(docid).set({
       'uid': docid,
@@ -50,18 +51,32 @@ class ComplaintDetailsDatabaseService {
       'mobileNumber': mobileNumber,
       'complaintDate': complaintDate,
       'complaintResult': complaintResult,
-      'complaintDetails': complaintDetails,
+      'complaintDetls': ConvertComplaintDetailstoMap(complaintList: details),
     });
   }
 
+  static List<Map> ConvertComplaintDetailstoMap({required List<ComplaintDetail> complaintList}) {
+    List<Map> steps = [];
+    complaintList.forEach((ComplaintDetail complaint) {
+      Map step = complaint.toMap();
+      steps.add(step);
+    });
+    return steps;
+  }
 
   Future<void> deleteUserData() async {
     return await userCollection.doc(docid).delete();
   }
 
 
-  List<ComplaintDetailsModel> _userListFromSnapshot(QuerySnapshot snapshot) {
+/*   List<ComplaintDetailsModel> _userListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((DocumentSnapshot doc) {
+      final data = doc.data() as Map<String, dynamic>;
+
+      List<ComplaintDetail> details = (data['complaintDetls'] as List<dynamic>).map<ComplaintDetail>((complaintMap) {
+        return ComplaintDetail.fromMap(complaintMap as Map<String, dynamic>? ?? {});
+      }).toList();
+      
       return ComplaintDetailsModel(
         uid: (doc.data() as Map<String, dynamic>)['uid']?.toString() ?? '',
         salesExecutiveId:
@@ -79,10 +94,30 @@ class ComplaintDetailsDatabaseService {
                 '',
         complaintResult:
             (doc.data() as Map<String, dynamic>)['complaintResult']?.toString() ?? '',
-        complaintDetails:
-            (doc.data() as Map<String, dynamic>)['complaintDetails']
-                    ?.toString() ??
-                '',
+        complaintDetls: details,
+      );
+    }).toList();
+  }
+ */
+
+  List<ComplaintDetailsModel> _userListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((DocumentSnapshot doc) {
+      final data = doc.data() as Map<String, dynamic>;
+
+      List<ComplaintDetail> details = (data['complaintDetls'] as List<dynamic>? ?? [])
+          .map<ComplaintDetail>((complaintMap) {
+            return ComplaintDetail.fromMap(complaintMap as Map<String, dynamic>? ?? {});
+          })
+          .toList();
+        
+      return ComplaintDetailsModel(
+        uid: data['uid']?.toString() ?? '',
+        salesExecutiveId: data['salesExecutiveId']?.toString() ?? '',
+        customerName: data['customerName']?.toString() ?? '',
+        mobileNumber: data['mobileNumber']?.toString() ?? '',
+        complaintDate: data['complaintDate']?.toString() ?? '',
+        complaintResult: data['complaintResult']?.toString() ?? '',
+        complaintDetls: details,
       );
     }).toList();
   }
