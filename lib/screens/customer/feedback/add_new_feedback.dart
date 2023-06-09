@@ -199,6 +199,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
         Provider.of<List<FeedbackDetailsModel>>(context);
     var InDb = false;
     var isDupName = false;
+    var execId = '';
 
 
     if (salesTable != null && args.uid == '') {
@@ -218,13 +219,9 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
 
     //[Viru:27/5/23] Added to support customer name search list
     final customerList = Provider.of<List<CustomerModel>>(context);
-    if (args.uid == '') {
-      customerList.forEach(
-          (e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
-    } else {
-      customerList
-          .forEach((e) => e.salesExecutiveId == args.uid ? details.add(e) : []);
-    }
+
+    customerList.forEach(
+        (e) => details.add(e));
 
 
     customerList.forEach((element) {
@@ -232,6 +229,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
         setState(() {
           // nameErr = '';
           InDb = true;
+          execId = element.salesExecutiveId!;
         });
       }
     });
@@ -484,8 +482,8 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              if(isDupName) {
-                                showConfirmation(salesExecutive.uid);
+                              if(!isDupName) {
+                                showConfirmation(execId);
                               }
                               if (_formkey.currentState!.validate() &&
                                   feedbackDate != 'Select Date' ) {

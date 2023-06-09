@@ -139,6 +139,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
 
     //[Viru:2/6/23] Added to support customer mob search list
     List<CustomerModel> details = [];
+    var iscust = false;
     final customerList = Provider.of<List<CustomerModel>>(context);
       customerList.forEach(
           (e) => details.add(e));
@@ -163,6 +164,15 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
         isDupNum = true;
       }
     });
+
+    customerList.forEach((element) {
+      if(element.uid == currentUser?.uid) {
+        setState(() {
+          iscust = true;
+        });
+      }
+    });
+
 
     return Scaffold(
       appBar: AppBar(
@@ -196,7 +206,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
+              !iscust ? Container(
                 padding: EdgeInsets.only(right: 15, top: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Text(
@@ -208,7 +218,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                     ),
                   ),
                 ]),
-              ),
+              ) : const SizedBox(height: 0,width: 0,),
               Container(
                 margin: const EdgeInsets.only(left: 100),
                 width: 180,
