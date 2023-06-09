@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/models/call_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
@@ -16,6 +17,8 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
+import 'followup_container.dart';
 
 class AddCallDetails extends StatefulWidget {
   const AddCallDetails({super.key, this.restorationId});
@@ -34,12 +37,16 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
   String customerNumber = '';
   String callDate = 'Select Date';
   String callResult = 'Interested';
-  String followUpDetails = '';
+  //String followUpDetails = '';
   String error = '';
   String status = '';
     final nameController = TextEditingController();
     final numberController = TextEditingController();
-    
+    List<List<String>> tableData = [
+                        ['', ''],
+                       ];
+    List<FollowUpDetail> followUpDetls = [];
+
 
   @override
   String? get restorationId => widget.restorationId;
@@ -163,7 +170,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
   content: Text('Call Details added Successfully!!!'),
   );
 
-
+    print("Viru: $followUp");
     return Scaffold(
             appBar: AppBar(
               title: const Text('Energy Efficient Lights'),
@@ -448,17 +455,17 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 255, 254, 254),
                           ),
-                          child: StatefulBuilder(builder:
+                          child: /* StatefulBuilder(builder:
                               (BuildContext context, StateSetter setState) {
-                            return Switch(
+                            return */ Switch(
                               value: followUp,
                               onChanged: (bool value) {
                                 setState(() {
                                   followUp = value;
                                 });
                               },
-                            );
-                          }),
+                            ),
+                          //}),
                         ),
                       ]),
                     ),
@@ -486,23 +493,18 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                 border: Border.all(color: Color(0xffe3e4e5)),
                                 color: Color(0xfff0efff),
                               ),
-                              child: TextFormField(
-                                validator: (value) => (followUp && value!.isEmpty) ? 'Missing Field' : null,
-                                onChanged: (val) {
-                                  setState(() {
-                                    followUpDetails = val;
-                                  });
-                                },
-                                maxLines: null,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                ),
-                              ),
-                            ),
+                              child: Row(children: <Widget>[followUp ?
+                                  Expanded(child: FollowUpDetailsContainer(
+                                      onChanged: (detail) {
+                                        print("Viru: "+ detail.details);
+                                        setState(() {
+                                          followUpDetls.add(detail);
+                                        });
+                                      },
+                                    ))
+                                  : const SizedBox(height: 0.0),
+                  ])),
+                            
                       const SizedBox(height: 5.0),
                       Container(
                         margin: const EdgeInsets.only(left: 110),
@@ -530,6 +532,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                     setState(() {
                                       loading = true;
                                     });
+                                    print("Viru: $followUpDetls");
                                     await CallDetailsDatabaseService(docid: '')
                                       .setUserData(
                                         (args.uid == '' ? currentUser?.uid : args.uid)!,
@@ -539,7 +542,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                         callDate,
                                         callResult,
                                         followUp,
-                                        followUpDetails,
+                                        followUpDetls,
                                       )
                                       .then((value) => setState(() {
                                         loading = false;

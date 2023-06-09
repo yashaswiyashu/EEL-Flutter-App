@@ -16,6 +16,9 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'followup_container.dart';
+import 'followup_container_edit.dart';
+
 class EditCallDetails extends StatefulWidget {
   const EditCallDetails({super.key, this.restorationId});
   final String? restorationId;
@@ -41,18 +44,19 @@ class _EditCallDetailsState extends State<EditCallDetails>
   String date = '';
   String result = '';
   String callResult = 'Interested';
-  String followUpDetails = '';
+  //String followUpDetails = '';
   String type = '';
   bool followUp = false;
+  List<FollowUpDetail> followUpDetls = [];
 
-  @override
+/*   @override
   initState() {
     super.initState();
 
     // Start listening to changes.
     controllerFolowUpDetails.addListener(_saveFollowUpDetails);
   }
-
+ 
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
@@ -63,7 +67,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
 
   void _saveFollowUpDetails() {
     followUpDetails = controllerFolowUpDetails.text;
-  }
+  } */
 
   void showConfirmation(String uid) {
     showDialog(
@@ -194,7 +198,8 @@ class _EditCallDetailsState extends State<EditCallDetails>
       customerName = obj?.customerName;
       type = obj?.customerType;
       customerNumber = obj?.mobileNumber;
-      controllerFolowUpDetails.text = obj?.followUpdetails;
+      //controllerFolowUpDetails.text = obj?.followUpdetails;
+      followUpDetls = obj.followUpDetls;
       result = obj?.callResult;
       followUp = obj?.followUp;
       date = obj?.callDate;
@@ -523,7 +528,16 @@ class _EditCallDetailsState extends State<EditCallDetails>
                           ),
                         ),
                       ),
-                      Container(
+                      FollowUpDetailsContainerEdit(
+                        onChanged: (followUpDetail) {
+                          // Handle the edited follow-up detail here
+                          // This callback will be triggered when an existing follow-up detail is edited
+                        },
+                        followUpDetails : followUpDetls,
+
+                      ),
+
+/*                       Container(
                         width: 440,
                         height: 83,
                         padding: EdgeInsets.only(left: 5, right: 5),
@@ -551,7 +565,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 40.0),
+ */                      const SizedBox(height: 40.0),
                       Container(
                         margin: EdgeInsets.fromLTRB(20, 0, 6, 0),
                         width: 440,
@@ -584,7 +598,7 @@ class _EditCallDetailsState extends State<EditCallDetails>
                                               ? result
                                               : callResult,
                                           followUp,
-                                          followUpDetails,
+                                          followUpDetls,
                                         )
                                         .then((value) => setState(() {
                                               loading = false;
