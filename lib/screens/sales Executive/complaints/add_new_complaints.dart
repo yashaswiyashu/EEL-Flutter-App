@@ -18,6 +18,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 
+import 'complaint_container.dart';
 
 import 'package:flutter_app/services/complaint_details_database.dart';
 
@@ -45,12 +46,13 @@ final AuthService _auth = AuthService();
   String customerNumber = '';
   String complaintDate = 'Select Date';
   String complaintResult = 'Open';
-  String complaintDetails = '';
+  //String complaintDetails = '';
   String error = '';
   String status = '';
   String nameErr = '';
   final numberController = TextEditingController();
   final nameController = TextEditingController();
+  List<ComplaintDetail> complaintDetls = [];
 
   @override
   String? get restorationId => widget.restorationId;
@@ -331,7 +333,7 @@ final AuthService _auth = AuthService();
                 ),
               ),
 
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 10.0),
               const SizedBox(
                   height: 20.0,
                   child: Text(
@@ -439,9 +441,9 @@ final AuthService _auth = AuthService();
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 30.0),
+              const SizedBox(height: 10.0),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Container(
                 // complaintDetailsjeX (32:1762)
@@ -458,31 +460,25 @@ final AuthService _auth = AuthService();
                 ),
               ),
               Container(
-                width: 440,
-                height: 83,
-                padding: EdgeInsets.only(left: 5, right: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Color(0xffe3e4e5)),
-                  color: Color(0xfff0efff),
-                ),
-                child: TextFormField(
-                  validator: (value) => value!.isEmpty ? 'Missing Field' : null,
-                  onChanged: (val) {
-                    setState(() {
-                      complaintDetails = val;
-                    });
-                  },
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                  ),
-                ),
-              ),
+                              width: 440,
+                              height: 83,
+                              padding: EdgeInsets.only(left: 5, right: 5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Color(0xffe3e4e5)),
+                                color: Color(0xfff0efff),
+                              ),
+                              child: Row(children: <Widget>[
+                                  Expanded(child: ComplaintDetailsContainer(
+                                      onChanged: (detail) {
+                                        print("Viru: "+ detail.details);
+                                        setState(() {
+                                          complaintDetls.add(detail);
+                                        });
+                                      },
+                                    ))
+                                  ,
+                  ])),
               const SizedBox(height: 5.0),
               Container(
                 margin: const EdgeInsets.only(left: 110),
@@ -532,7 +528,7 @@ final AuthService _auth = AuthService();
                                   customerNumber,
                                   complaintDate,
                                   complaintResult,
-                                  complaintDetails,
+                                  complaintDetls,
                                 )
                                     .then((value) => setState(() {
                                     loading = false;

@@ -14,6 +14,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:provider/provider.dart';
 
+import 'complaint_container.dart';
 
 class ViewComplaintDetails extends StatefulWidget {
   ViewComplaintDetails({super.key});
@@ -241,9 +242,9 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                         validator: (value) =>
                               value!.isEmpty ? 'Missing Field' : null,
                       ),
-                      const SizedBox(height: 30.0),
+                      const SizedBox(height: 10.0),
                       SizedBox(
-                        height: 40,
+                        height: 10.0,
                       ),
                       Container(
                         // followupdetailsjeX (32:1762)
@@ -259,7 +260,8 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                           ),
                         ),
                       ),
-                      Container(
+                      buildComplaintDetailsContainerView(obj.complaintDetls),
+/*                       Container(
                         width: 440,
                         height: 83,
                         padding: EdgeInsets.only(left: 5, right: 5),
@@ -282,7 +284,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                             disabledBorder: InputBorder.none,
                           ),
                         ),
-                      ),
+                      ),*/
                       Container(
                         margin: EdgeInsets.only(left: 120),
                         child: Text(
