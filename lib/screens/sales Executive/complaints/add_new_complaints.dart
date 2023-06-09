@@ -510,10 +510,11 @@ void showConfirmation(String uid) {
                                   Expanded(child: ComplaintDetailsContainer(
                                       onChanged: (detail) {
                                         print("Viru: "+ detail.details);
-                                        setState(() {
+                                        /* setState(() {
                                           complaintDetls.add(detail);
-                                        });
+                                        }); */
                                       },
+                                      complaintDetails : complaintDetls,
                                     ))
                                   ,
                   ])),

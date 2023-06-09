@@ -18,6 +18,37 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainerEdit>
   TextEditingController detailsController = TextEditingController();
   String fDetail = '';
   //List<FollowUpDetail> followUpDetails = [];
+  int pressCount = 0;
+  
+
+  void _handleButtonPress() {
+    String trimmedDetails = fDetail.trim();
+    if (trimmedDetails.isNotEmpty) {
+      setState(() {
+        if (pressCount == 0) {
+          // Add new detail if the button was not pressed before
+          widget.followUpDetails.add(
+            FollowUpDetail(
+              followUpDate: formattedDate,
+              details: trimmedDetails,
+            ),
+          );
+        } else {
+          // Replace old detail with new detail if the button was pressed before
+          widget.followUpDetails[widget.followUpDetails.length - 1] = FollowUpDetail(
+            followUpDate: formattedDate,
+            details: trimmedDetails,
+          );
+        }
+
+        pressCount = 1; // Reset the press count to 1
+      });
+
+      widget.onChanged(widget.followUpDetails[widget.followUpDetails.length - 1]);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +144,11 @@ Container buildFollowUpDetailsContainerEdit() {
               },
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () {
+          //IconButton(
+            //TextButton(
+            ElevatedButton(  
+            //icon: Icon(Icons.check),
+            onPressed: _handleButtonPress,/* () {
               String trimmedDetails = fDetail.trim();
               if (trimmedDetails.isNotEmpty) {
                 FollowUpDetail followUpDetail = FollowUpDetail(
@@ -131,7 +164,12 @@ Container buildFollowUpDetailsContainerEdit() {
                 //detailsController.clear();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
-            },
+            }, */
+            style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xff4d47c3)),
+                  ),
+            child: const Text('Add',
+                              style: TextStyle(fontSize: 18,)),
           ),
         ],
       ),

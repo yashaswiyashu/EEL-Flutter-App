@@ -536,10 +536,11 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                               child: Row(children: <Widget>[followUp ?
                                   Expanded(child: FollowUpDetailsContainer(
                                       onChanged: (detail) {
-                                        setState(() {
+                                        /* setState(() {
                                           followUpDetls.add(detail);
-                                        });
+                                        }); */
                                       },
+                                      followUpDetails : followUpDetls,
                                     ))
                                   : const SizedBox(height: 0.0),
                   ])),
