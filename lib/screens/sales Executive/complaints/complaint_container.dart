@@ -6,8 +6,9 @@ import '../../../models/complaint_details_model.dart';
 
 class ComplaintDetailsContainer extends StatefulWidget {
   final Function(ComplaintDetail) onChanged;
+  final List<ComplaintDetail> complaintDetails;
 
-  const ComplaintDetailsContainer({Key? key, required this.onChanged}) : super(key: key);
+  const ComplaintDetailsContainer({Key? key, required this.onChanged, required this.complaintDetails}) : super(key: key);
 
   @override
   _ComplaintDetailsContainerState createState() => _ComplaintDetailsContainerState();
@@ -17,7 +18,40 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
   String formattedDate = DateFormat('dd/MM/yy').format(DateTime.now());
   TextEditingController detailsController = TextEditingController();
   String fDetail = '';
-  List<ComplaintDetail> complaintDetails = [];
+  //List<ComplaintDetail> complaintDetails = [];
+  int pressCount = 0;
+
+  void _handleButtonPress() {
+    String trimmedDetails = fDetail.trim();
+    if (trimmedDetails.isNotEmpty) {
+      setState(() {
+        if (pressCount == 0) {
+          // Add new detail if the button was not pressed before
+          widget.complaintDetails.add(
+            ComplaintDetail(
+              updateDate: formattedDate,
+              details: trimmedDetails,
+            ),
+          );
+        } else {
+          // Replace old detail with new detail if the button was pressed before
+          widget.complaintDetails[0] = ComplaintDetail(
+            updateDate: formattedDate,
+            details: trimmedDetails,
+          );
+        }
+
+        pressCount = 1; // Reset the press count to 1
+      });
+
+      widget.onChanged(widget.complaintDetails[0]);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  var snackBar = SnackBar(
+    content: Text('Complaint Details Added!!!'),
+    );
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +92,7 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
               },
             ),
           ),
-          IconButton(
+          /* IconButton(
             icon: Icon(Icons.check),
             onPressed: () {
               String trimmedDetails = fDetail.trim();
@@ -71,6 +105,14 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
                 //detailsController.clear();
               }
             },
+          ), */
+          ElevatedButton(  
+            onPressed: _handleButtonPress,
+            style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xff4d47c3)),
+                  ),
+            child: const Text('Add',
+                              style: TextStyle(fontSize: 18,)),
           ),
         ],
       ),

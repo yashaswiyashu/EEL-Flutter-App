@@ -6,8 +6,9 @@ import '../../../models/call_details_model.dart';
 
 class FollowUpDetailsContainer extends StatefulWidget {
   final Function(FollowUpDetail) onChanged;
+  final List<FollowUpDetail> followUpDetails;
 
-  const FollowUpDetailsContainer({Key? key, required this.onChanged}) : super(key: key);
+  const FollowUpDetailsContainer({Key? key, required this.onChanged, required this.followUpDetails}) : super(key: key);
 
   @override
   _FollowUpDetailsContainerState createState() => _FollowUpDetailsContainerState();
@@ -17,7 +18,39 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
   String formattedDate = DateFormat('dd/MM/yy').format(DateTime.now());
   TextEditingController detailsController = TextEditingController();
   String fDetail = '';
-  List<FollowUpDetail> followUpDetails = [];
+  int pressCount = 0;
+
+  void _handleButtonPress() {
+    String trimmedDetails = fDetail.trim();
+    if (trimmedDetails.isNotEmpty) {
+      setState(() {
+        if (pressCount == 0) {
+          // Add new detail if the button was not pressed before
+          widget.followUpDetails.add(
+            FollowUpDetail(
+              followUpDate: formattedDate,
+              details: trimmedDetails,
+            ),
+          );
+        } else {
+          // Replace old detail with new detail if the button was pressed before
+          widget.followUpDetails[0] = FollowUpDetail(
+            followUpDate: formattedDate,
+            details: trimmedDetails,
+          );
+        }
+
+        pressCount = 1; // Reset the press count to 1
+      });
+
+      widget.onChanged(widget.followUpDetails[0]);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  var snackBar = SnackBar(
+    content: Text('FollowUp Details Added!!!'),
+    );
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +91,7 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
               },
             ),
           ),
-          IconButton(
+          /* IconButton(
             icon: Icon(Icons.check),
             onPressed: () {
               String trimmedDetails = fDetail.trim();
@@ -71,6 +104,14 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
                 //detailsController.clear();
               }
             },
+          ), */
+          ElevatedButton(  
+            onPressed: _handleButtonPress,
+            style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xff4d47c3)),
+                  ),
+            child: const Text('Add',
+                              style: TextStyle(fontSize: 18,)),
           ),
         ],
       ),
