@@ -150,6 +150,8 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
   var salesExecutive;
   var status = '';
 
+  String feedBackDate = DateFormat('dd/MM/yy').format(DateTime.now());
+
   void showConfirmation(String uid) {
     showDialog(
         context: context,
@@ -411,10 +413,10 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffe3e4e5)),
                     onPressed: () {
-                      _restorableDatePickerRouteFuture.present();
+                      // _restorableDatePickerRouteFuture.present();
                     },
                     child: Text(
-                      feedbackDate,
+                      feedBackDate,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -508,7 +510,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                                             : args.uid)!,
                                         customerName,
                                         customerNumber,
-                                        feedbackDate,
+                                        feedBackDate,
                                         feedbackDetails)
                                     .then((value) => setState(() {
                                           loading = false;
