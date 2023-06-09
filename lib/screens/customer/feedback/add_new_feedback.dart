@@ -3,6 +3,7 @@ import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/feedback_details_mode.dart';
+import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/customer_list_view.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/customer_database.dart';
@@ -148,6 +149,43 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
 
   var salesExecutive;
   var status = '';
+
+  void showConfirmation(String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Entered customer is not registerd. Please Register here'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Register'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        Navigator.pushNamed(
+          context, 
+          AddNewCustomer.routeName,
+          arguments: Parameter(
+            uid,
+          )
+        );
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -446,6 +484,9 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                         children: [
                           ElevatedButton(
                             onPressed: () async {
+                              if(isDupName) {
+                                showConfirmation(salesExecutive.uid);
+                              }
                               if (_formkey.currentState!.validate() &&
                                   feedbackDate != 'Select Date' ) {
                                 setState(() {
