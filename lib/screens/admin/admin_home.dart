@@ -555,7 +555,7 @@ class _AdminHomeState extends State<AdminHome> {
                                     ),
                                     SizedBox(height: 10,),
                                     Text(
-                                      "Total Calls Converted(This Month): ${totalCalls.callsConverted}",
+                                      "Total Calls Converted(This Month): ${totalCalls.callsConverted} \n Total Calls: ${totalCalls.callsCount}",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
