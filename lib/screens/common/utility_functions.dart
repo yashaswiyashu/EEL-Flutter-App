@@ -52,7 +52,7 @@ SaleOrderDashBoard getSalesOrderCountAmtThisMonth(List orderDetailsList) {
 int getPendingOrderCount(List orderDetailsList) {
   _pendingOrderCount = 0;
   orderDetailsList.forEach((element) {
-        if (element.dropdown != 'Delivered') { //&& (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
+        if (element.dropdown != 'Delivered' && element.dropdown != 'Cancelled') { //&& (DateTime.now().month == DateFormat('MM').parse(element.deliveryDate).month)) {
           _pendingOrderCount++;
           
         }

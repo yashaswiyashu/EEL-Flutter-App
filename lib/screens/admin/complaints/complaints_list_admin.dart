@@ -114,7 +114,6 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                         details.forEach((element) {
                           if (element.uid == character) {
                             obj = element;
-                            setExec(element.salesExecutiveId!);
                           }
                         });
                       });

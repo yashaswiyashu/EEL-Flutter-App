@@ -110,7 +110,6 @@ class _OrderDetailsAdminState extends State<OrderDetailsAdmin> {
                 details.forEach((element) {
                   if(element.uid == character){
                     obj = element;
-                    setExec(element.salesExecutiveId!);
                   }
                 });
               });

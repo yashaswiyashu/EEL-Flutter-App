@@ -150,7 +150,6 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                         custList.forEach((element) {
                           if (element.uid == select) {
                             obj = element;
-                            setExec(element.salesExecutiveId!);
                           }
                         });
                       });
