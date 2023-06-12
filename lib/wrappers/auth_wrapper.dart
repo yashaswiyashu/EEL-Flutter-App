@@ -27,7 +27,7 @@ class AuthWrapper extends StatelessWidget {
 
     if (salesTable.isNotEmpty) {
       salesTable.forEach((e) {
-        if (e?.uid == currentUser?.uid) {
+        if (e!.uid == currentUser?.uid && e.approved ) {
           obj = e;
         }
       });
