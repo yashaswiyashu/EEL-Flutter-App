@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
+import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -40,6 +41,7 @@ class _LoginState extends State<Login> {
 
     final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
     final customerTable = Provider.of<List<CustomerModel?>?>(context);
+    final currentUser = Provider.of<UserModel?>(context);
 
     return loading ? SizedBox(height: 600,width: 440,child: const Loading()) :Form(
                 key: _formkey,
@@ -157,8 +159,26 @@ class _LoginState extends State<Login> {
                                 loading = false;
                               });
                             } else {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                          'authWrapper', (Route<dynamic> route) => false);
+                              var approved = false;
+                              salesTable?.forEach((element) {
+                                if(element!.uid == currentUser?.uid && !element.approved){ 
+                                  if(element.approved) {
+                                    setState(() {
+                                      approved = true; 
+                                      loading = false;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      approved = false;
+                                      error = 'Your account has been registered. Please wait for approval';
+                                      loading = false;
+                                    });
+                                  }
+                                }
+                              });
+                              if(approved) {
+                                Navigator.of(context).pushNamedAndRemoveUntil('authWrapper', (Route<dynamic> route) => false);
+                              }
                             }
                           }
                         }),
