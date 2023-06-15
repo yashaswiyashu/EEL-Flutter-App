@@ -8,6 +8,7 @@ import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/feedback_details_mode.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
 import 'package:flutter_app/screens/customer/feedback/view_feedback_details.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
@@ -96,13 +97,13 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('FeedBack Date')),
+        DataColumn(label: Text('FeedBack Date', style: TextStyle(fontSize: screenHeight / 50))),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: Text('Cust. Name', style: TextStyle(fontSize: screenHeight / 50))),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust. Mob')),
+        DataColumn(label: Text('Cust. Mob', style: TextStyle(fontSize: screenHeight / 50))),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Select')),
+        DataColumn(label: Text('Select', style: TextStyle(fontSize: screenHeight / 50))),
       ];
     }
 
@@ -110,11 +111,11 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
     List<DataRow> _createRows() {
       return details
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.feedbackDate)),
+                DataCell(Text(element.feedbackDate, style: TextStyle(fontSize: screenHeight / 50))),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.customerName)),
+                DataCell(Text(element.customerName, style: TextStyle(fontSize: screenHeight / 50))),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.mobileNumber)),
+                DataCell(Text(element.mobileNumber, style: TextStyle(fontSize: screenHeight / 50))),
                 DataCell(_verticalDivider),
                 DataCell(
                   RadioListTile(
@@ -143,7 +144,7 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
     DataTable _createDataTable() {
       return DataTable(
           columnSpacing: 0.0,
-          dataRowHeight: 40.0,
+          dataRowHeight: screenHeight / 16,
           columns: _createColumns(),
           rows: feedbackDetails.isNotEmpty ? _createRows() : []);
     }
@@ -162,7 +163,7 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
     // }
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Energy Efficient Lights'),
+          title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
           backgroundColor: const Color(0xff4d47c3),
           actions: [
             TextButton.icon(
@@ -171,19 +172,20 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                         'authWrapper', (Route<dynamic> route) => false);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.person,
                   color: Colors.white,
+                  size: screenHeight / 50,
                 ),
-                label: const Text(
+                label: Text(
                   'logout',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white,  fontSize: screenHeight / 50),
                 )),
           ],
         ),
         body: SingleChildScrollView(
             child: Container(
-          width: 440,
+          width: screenWidth,
           padding: const EdgeInsets.only(
             top: 10,
             bottom: 0.4,
@@ -194,29 +196,35 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 270,
-                  height: 60,
+                  width: screenWidth / 3,
+                  height: screenHeight / 10,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Image.asset('assets/logotm.jpg'),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 250),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff4d47c3)),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                                  context, 
-                                  CustomerFeedback.routeName,
-                                  arguments: Parameter(
-                                    execId,
-                                  )
-                                );
-                    },
-                    child: Text('Add New +'),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: screenHeight / 20,
+                      margin: EdgeInsets.only(right: screenWidth / 10),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff4d47c3)),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                                      context, 
+                                      CustomerFeedback.routeName,
+                                      arguments: Parameter(
+                                        execId,
+                                      )
+                                    );
+                        },
+                        child: Text('Add New +', style: TextStyle(fontSize: screenHeight / 50),),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10),
                 _createDataTable(),
@@ -225,7 +233,7 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
                 ),
                 Text(
                   status,
-                  style: const TextStyle(color: Colors.pink, fontSize: 14.0),
+                  style: TextStyle(color: Colors.pink, fontSize: screenHeight / 60),
                 ),
                 SizedBox(
                   height: 20,
@@ -259,8 +267,8 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
                           padding: EdgeInsets.zero,
                         ),
                         child: Container(
-                          width: 95.63,
-                          height: 59,
+                          width: screenWidth / 5,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             color: Color(0xff4d47c3),
                             borderRadius: BorderRadius.circular(9),
@@ -278,7 +286,7 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: "Poppins",
-                                fontSize: 16,
+                                fontSize: screenHeight / 50,
                                 fontWeight: FontWeight.w500,
                                 height: 1.5,
                                 color: Color(0xffffffff),
@@ -297,8 +305,8 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
                         padding: EdgeInsets.zero,
                       ),
                       child: Container(
-                        width: 95.63,
-                        height: 59,
+                        width: screenWidth / 5,
+                        height: screenHeight / 15,
                         decoration: BoxDecoration(
                           color: Color(0xff4d47c3),
                           borderRadius: BorderRadius.circular(9),
@@ -316,7 +324,7 @@ class _CustomerFeedbackListState extends State<CustomerFeedbackList> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: "Poppins",
-                              fontSize: 16,
+                              fontSize: screenHeight / 50,
                               fontWeight: FontWeight.w500,
                               height: 1.5,
                               color: Color(0xffffffff),

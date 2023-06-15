@@ -99,7 +99,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Energy Efficient Lights'),
+          title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
           backgroundColor: const Color(0xff4d47c3),
           actions: [
             TextButton.icon(
@@ -108,13 +108,14 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       'authWrapper', (Route<dynamic> route) => false);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.person,
                   color: Colors.white,
+                  size: screenHeight / 50,
                 ),
-                label: const Text(
+                label: Text(
                   'logout',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
                 )),
           ],
         ),
@@ -169,7 +170,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                           value: value,
                           child: Text(
                             value,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: screenHeight / 50),
                           ),
                         );
                       }).toList(),
@@ -178,10 +179,9 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                 ]),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Container(
-                    margin: const EdgeInsets.only(left: 110),
                     child: Text(
                       error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                      style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                     ),
                   ),
                 ]),
@@ -201,7 +201,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                           ));
                     } else {
                       setState(() {
-                        error = 'Please select a executive';
+                        error = 'Please select an executive';
                       });
                     }
                   },
@@ -314,7 +314,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                           ));
                     } else {
                       setState(() {
-                        error = 'Please select a executive';
+                        error = 'Please select an executive';
                       });
                     }
                   },
@@ -427,7 +427,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                           ));
                     } else {
                       setState(() {
-                        error = 'Please select a executive';
+                        error = 'Please select an executive';
                       });
                     }
                   },
@@ -540,7 +540,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                           ));
                     } else {
                       setState(() {
-                        error = 'Please select a executive';
+                        error = 'Please select an executive';
                       });
                     }
                   },
@@ -641,8 +641,8 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                 ),
                 SizedBox(height: 30.80),
                 SizedBox(
-                  height: screenHeight / 15,
-                  width: screenWidth - 100,
+                  height: screenHeight / 10,
+                  width: screenWidth,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -661,7 +661,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                                 ));
                           } else {
                             setState(() {
-                              error = 'Please select a executive';
+                              error = 'Please select an executive';
                             });
                           }
                         },
@@ -669,8 +669,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                           backgroundColor: Color(0xff4d47c3),
                         ),
                         child: Container(
-                          width: 100,
-                          height: 59,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: const [
@@ -690,15 +689,15 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               SizedBox(
-                                width: 80,
+                                width: screenWidth / 5,
                                 child: Text(
                                   "Customer",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: screenHeight / 50,
                                     fontFamily: "Poppins",
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -707,9 +706,6 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 55,
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -724,7 +720,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                                 ));
                           } else {
                             setState(() {
-                              error = 'Please select a executive';
+                              error = 'Please select an executive';
                             });
                           }
                         },
@@ -732,8 +728,7 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                           backgroundColor: Color(0xff4d47c3),
                         ),
                         child: Container(
-                          width: 100,
-                          height: 59,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: const [
@@ -753,15 +748,15 @@ class _SalesCoOrdinatorHomeState extends State<SalesCoOrdinatorHome> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               SizedBox(
-                                width: 70,
+                                width: screenWidth / 5,
                                 child: Text(
                                   "Order",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: screenHeight / 50,
                                     fontFamily: "Poppins",
                                     fontWeight: FontWeight.w500,
                                   ),

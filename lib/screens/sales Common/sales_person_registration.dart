@@ -764,8 +764,8 @@ Future<bool> updateAddressFields() async {
                                       backgroundColor: Color(0xff4d47c3),
                                     ),
                                     child: Container(
-                                      width: 100,
-                                      height: 59,
+                                      width: screenWidth / 6,
+                                      height: screenHeight / 15,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(9),
                                         boxShadow: const [
@@ -787,15 +787,15 @@ Future<bool> updateAddressFields() async {
                                             MainAxisAlignment.center,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
-                                        children: const [
+                                        children: [
                                           SizedBox(
-                                            width: 90,
+                                            width: screenWidth / 6,
                                             child: Text(
                                               "Register",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 16,
+                                                fontSize: screenHeight / 50,
                                                 fontFamily: "Poppins",
                                                 fontWeight: FontWeight.w500,
                                               ),
@@ -805,9 +805,6 @@ Future<bool> updateAddressFields() async {
                                       ),
                                     ),
                                   ),
-                            const SizedBox(
-                              width: 65,
-                            ),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);
@@ -816,8 +813,8 @@ Future<bool> updateAddressFields() async {
                                 backgroundColor: Color(0xff4d47c3),
                               ),
                               child: Container(
-                                width: 100,
-                                height: 59,
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(9),
                                   boxShadow: const [
@@ -837,15 +834,15 @@ Future<bool> updateAddressFields() async {
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     SizedBox(
-                                      width: 70,
+                                      width: screenWidth / 6,
                                       child: Text(
                                         "Cancel",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 16,
+                                          fontSize: screenHeight / 50,
                                           fontFamily: "Poppins",
                                           fontWeight: FontWeight.w500,
                                         ),

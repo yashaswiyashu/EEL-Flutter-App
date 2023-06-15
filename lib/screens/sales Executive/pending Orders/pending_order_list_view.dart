@@ -217,7 +217,7 @@ class _PendingOrdersListState extends State<PendingOrdersList> {
                     SizedBox(height: 20,),
                     Text(
                       status,
-                      style: const TextStyle(color: Colors.pink, fontSize: 14.0),
+                      style: TextStyle(color: Colors.red, fontSize: screenHeight / 50),
                     ),
                     SizedBox(height: 20,),
                     Row(

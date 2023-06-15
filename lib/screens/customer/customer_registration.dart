@@ -1259,8 +1259,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                 backgroundColor: Color(0xff4d47c3),
                               ),
                               child: Container(
-                                width: 100,
-                                height: 59,
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(9),
                                   boxShadow: const [
@@ -1280,15 +1280,15 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     SizedBox(
-                                      width: 90,
+                                      width: screenWidth / 6,
                                       child: Text(
                                         "Register",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 16,
+                                          fontSize: screenHeight / 50,
                                           fontFamily: "Poppins",
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -1298,9 +1298,6 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              width: 55,
-                            ),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);
@@ -1309,8 +1306,8 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                 backgroundColor: Color(0xff4d47c3),
                               ),
                               child: Container(
-                                width: 100,
-                                height: 59,
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(9),
                                   boxShadow: const [
@@ -1330,15 +1327,15 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     SizedBox(
-                                      width: 70,
+                                      width: screenWidth / 6,
                                       child: Text(
                                         "Cancel",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 16,
+                                          fontSize: screenHeight / 50,
                                           fontFamily: "Poppins",
                                           fontWeight: FontWeight.w500,
                                         ),

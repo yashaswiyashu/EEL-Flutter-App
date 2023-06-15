@@ -313,32 +313,38 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                         'Name: ${salesExecutive.name}',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15,
+                          fontSize: screenHeight / 55,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ]),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 100),
-                    width: 180,
-                    height: 60,
-                    child: Image.asset('assets/logotm.jpg'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(right: screenWidth / 10),
+                        width: screenWidth / 3,
+                        height: screenHeight / 10,
+                        child: Image.asset('assets/logotm.jpg'),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                    height: 20.0,
+                  SizedBox(
+                    height: screenHeight / 40,
                     child: Text(
                       "Customer Name:",
                       style: TextStyle(
                         color: Color(0xff090a0a),
-                        fontSize: 16,
+                        fontSize: screenHeight / 50,
                         fontFamily: "Inter",
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: customerName,
                     readOnly: true,
                     keyboardType: TextInputType.phone,
@@ -352,18 +358,19 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                     // },
                   ),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                      height: 20.0,
+                  SizedBox(
+                      height: screenHeight / 40,
                       child: Text(
                         'Shippment ID:',
                         style: TextStyle(
                           color: Color(0xff090a0a),
-                          fontSize: 16,
+                          fontSize: screenHeight / 50,
                           fontFamily: "Inter",
                           fontWeight: FontWeight.w500,
                         ),
                       )),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: shipmentID,
                     readOnly: true,
                     keyboardType: TextInputType.phone,
@@ -377,18 +384,19 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                     // },
                   ),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                      height: 20.0,
+                  SizedBox(
+                      height: screenHeight / 40,
                       child: Text(
                         'customer mobile num:',
                         style: TextStyle(
                           color: Color(0xff090a0a),
-                          fontSize: 16,
+                          fontSize: screenHeight / 50,
                           fontFamily: "Inter",
                           fontWeight: FontWeight.w500,
                         ),
                       )),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     keyboardType: TextInputType.phone,
                     initialValue: mobileNumber,
                     readOnly: true,
@@ -402,19 +410,20 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                     // },
                   ),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                      height: 20.0,
+                   SizedBox(
+                      height: screenHeight / 40,
                       child: Text(
                         'Customer Full Address:',
                         style: TextStyle(
                           color: Color(0xff090a0a),
-                          fontSize: 16,
+                          fontSize: screenHeight / 50,
                           fontFamily: "Inter",
                           fontWeight: FontWeight.w500,
                         ),
                       )),
                   const SizedBox(height: 10.0),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: address1,
                     readOnly: true,
                     decoration:
@@ -429,6 +438,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                   ),
                   const SizedBox(height: 10.0),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: address2,
                     readOnly: true,
                     decoration:
@@ -443,6 +453,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                   ),
                   const SizedBox(height: 10.0),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: city,
                     readOnly: true,
                     decoration: textInputDecoration.copyWith(hintText: 'city'),
@@ -456,6 +467,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                   ),
                   const SizedBox(height: 10.0),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: state,
                     readOnly: true,
                     decoration: textInputDecoration.copyWith(hintText: 'state'),
@@ -469,6 +481,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                   ),
                   const SizedBox(height: 10.0),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: pincode,
                     readOnly: true,
                     decoration: textInputDecoration.copyWith(hintText: 'pincode'),
@@ -481,42 +494,44 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                     },
                   ),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                    height: 20.0,
+                 SizedBox(
+                    height: screenHeight / 40,
                     child: Text(
                       "Delivery Date:",
                       style: TextStyle(
                         color: Color(0xff090a0a),
-                        fontSize: 16,
+                        fontSize: screenHeight / 40,
                         fontFamily: "Inter",
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: callDate,
                     readOnly: true,
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                     Text(
                       dateError,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                      style: TextStyle(color: Colors.red, fontSize: screenHeight / 55),
                     ),
                   ]),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                    height: 20.0,
+                  SizedBox(
+                    height: screenHeight / 40,
                     child: Text(
                       "Order status",
                       style: TextStyle(
                         color: Color(0xff090a0a),
-                        fontSize: 16,
+                        fontSize: screenHeight / 50,
                         fontFamily: "Inter",
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: dropDown,
                     readOnly: true,
                   ),
@@ -528,7 +543,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
-                          dataRowHeight: 60,
+                          dataRowHeight: screenHeight / 15,
                           columns: createColumns(),
                           rows: List.generate(
                             tableData.length,
@@ -543,7 +558,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                                         Container(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 16),
-                                          child: Text(selectedOptions[rowIndex])
+                                          child: Text(selectedOptions[rowIndex], style: TextStyle(fontSize: screenHeight / 55),)
                                         ),
                                       );
                                     } else if (cellIndex == 1) {
@@ -551,8 +566,8 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                                         Row(
                                           children: [
                                             SizedBox(
-                                              width: 40,
-                                              height: 40,
+                                              width: screenWidth / 15,
+                                              height: screenHeight / 10,
                                               child: TextButton(
                                                 onPressed: () {
                                                   // if (quantity[rowIndex] > 1) {
@@ -563,18 +578,18 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                                                   //   });
                                                   // }
                                                 },
-                                                child: const Text('-',
+                                                child: Text('-',
                                                     style:
-                                                        TextStyle(fontSize: 20)),
+                                                        TextStyle(fontSize: screenHeight / 55)),
                                               ),
                                             ),
                                             Text(
                                               quantity[rowIndex].toString(),
-                                              style: TextStyle(fontSize: 20),
+                                              style: TextStyle(fontSize: screenHeight / 50),
                                             ),
                                             SizedBox(
-                                              width: 40,
-                                              height: 40,
+                                              width: screenWidth / 15,
+                                              height: screenHeight / 10,
                                               child: TextButton(
                                                 onPressed: () {
                                                   // if (quantity[rowIndex] > 0) {
@@ -585,9 +600,9 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                                                   //   });
                                                   // }
                                                 },
-                                                child: const Text('+',
+                                                child: Text('+',
                                                     style:
-                                                        TextStyle(fontSize: 20)),
+                                                        TextStyle(fontSize: screenHeight / 55)),
                                               ),
                                             ),
                                           ],
@@ -605,18 +620,19 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                                             icon: Icon(
                                               Icons.remove_circle_outline,
                                               color: Colors.black,
+                                              size: screenHeight / 50,
                                             ),
                                             label: Text(
                                               'Remove',
                                               style:
-                                                  TextStyle(color: Colors.black),
+                                                  TextStyle(color: Colors.black, fontSize: screenHeight / 55),
                                             ),
                                           ),
                                         ),
                                       );
                                     }
                                     return DataCell(
-                                      Text(tableData[rowIndex][cellIndex]),
+                                      Text(tableData[rowIndex][cellIndex], style: TextStyle(fontSize: screenHeight / 50),),
                                     );
                                   },
                                 ),
@@ -629,7 +645,7 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                         Text(
                           productError,
                           style:
-                              const TextStyle(color: Colors.red, fontSize: 14.0),
+                             TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                         ),
                       ]),
                       // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -656,36 +672,36 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                             cells: [
                               DataCell(Text(
                                 'Sub Total:',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
                               )),
-                              DataCell(Text(subTotal)),
+                              DataCell(Text(subTotal, style: TextStyle(fontSize: screenHeight / 50),)),
                             ],
                           ),
                           DataRow(
                             cells: [
                               DataCell(Text(
                                 'CGST:',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
                               )),
-                              DataCell(Text('9%')),
+                              DataCell(Text('9%', style: TextStyle(fontSize: screenHeight / 50),)),
                             ],
                           ),
                           DataRow(
                             cells: [
                               DataCell(Text(
                                 'SGST:',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
                               )),
-                              DataCell(Text('9%')),
+                              DataCell(Text('9%', style: TextStyle(fontSize: screenHeight / 50),)),
                             ],
                           ),
                           DataRow(
                             cells: [
                               DataCell(Text(
                                 'Total:',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
                               )),
-                              DataCell(Text((total))),
+                              DataCell(Text(total, style: TextStyle(fontSize: screenHeight / 50),)),
                             ],
                           ),
                         ],
@@ -704,8 +720,8 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                   loading
                       ? const CircularProgressIndicator()
                       : SizedBox(
-                          height: 59,
-                          width: 420,
+                          height: screenHeight / 6,
+                          width: screenWidth,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -719,8 +735,8 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                                   backgroundColor: Color(0xff4d47c3),
                                 ),
                                 child: Container(
-                                  width: 100,
-                                  height: 59,
+                                  width: screenWidth / 6,
+                                  height: screenHeight / 15,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(9),
                                     boxShadow: const [
@@ -740,15 +756,15 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: const [
+                                    children: [
                                       SizedBox(
-                                        width: 70,
+                                        width: screenWidth / 6,
                                         child: Text(
-                                          "Cancel",
+                                          "Back",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: screenHeight / 50,
                                             fontFamily: "Poppins",
                                             fontWeight: FontWeight.w500,
                                           ),
