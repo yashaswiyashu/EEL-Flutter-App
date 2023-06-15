@@ -9,6 +9,7 @@ import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -263,18 +264,18 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
 
     List<DataColumn> createColumns() {
       return [
-        DataColumn(label: Text('Product')),
-        DataColumn(label: Text('Quantity')),
-        DataColumn(label: Text('unit price(In Rs.)')),
-        DataColumn(label: Text('Offer(In %)')),
-        DataColumn(label: Text('Amount')),
-        DataColumn(label: Text('Remove Row')),
+        DataColumn(label: Text('Product', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Quantity', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('unit price(In Rs.)', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Offer(In %)', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Amount', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Remove Row', style: TextStyle(fontSize: screenHeight / 50))),
       ];
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Energy Efficient Lights'),
+        title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
         backgroundColor: const Color(0xff4d47c3),
         actions: [
           TextButton.icon(
@@ -283,482 +284,486 @@ class _ViewPendingOrderState extends State<ViewPendingOrder>{
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     'authWrapper', (Route<dynamic> route) => false);
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.person,
                 color: Colors.white,
+                size: screenHeight / 50,
               ),
-              label: const Text(
+              label: Text(
                 'logout',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
               )),
         ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
-        child: Form(
-          key: _formkey,
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(right: 15, top: 10),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      'Name: ${salesExecutive.name}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ]),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 100),
-                  width: 180,
-                  height: 60,
-                  child: Image.asset('assets/logotm.jpg'),
-                ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    "Customer Name:",
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  initialValue: customerName,
-                  readOnly: true,
-                  keyboardType: TextInputType.phone,
-                  decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Shipment ID',
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter Shipment Id' : null,
-                  // onChanged: (val) {
-                  //   shipmentID = val;
-                  // },
-                ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                    height: 20.0,
-                    child: Text(
-                      'Shippment ID:',
-                      style: TextStyle(
-                        color: Color(0xff090a0a),
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )),
-                TextFormField(
-                  initialValue: shipmentID,
-                  readOnly: true,
-                  keyboardType: TextInputType.phone,
-                  decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Shipment ID',
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter Shipment Id' : null,
-                  // onChanged: (val) {
-                  //   shipmentID = val;
-                  // },
-                ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                    height: 20.0,
-                    child: Text(
-                      'customer mobile num:',
-                      style: TextStyle(
-                        color: Color(0xff090a0a),
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )),
-                TextFormField(
-                  keyboardType: TextInputType.phone,
-                  initialValue: mobileNumber,
-                  readOnly: true,
-                  decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter customer mob.num',
-                  ),
-                  validator: (value) =>
-                      value!.length < 10 ? 'Enter valid mobile number' : null,
-                  // onChanged: (val) {
-                  //   mobileNumber = val;
-                  // },
-                ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                    height: 20.0,
-                    child: Text(
-                      'Customer Full Address:',
-                      style: TextStyle(
-                        color: Color(0xff090a0a),
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  initialValue: address1,
-                  readOnly: true,
-                  decoration:
-                      textInputDecoration.copyWith(hintText: 'house#, area'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     address1 = val;
-                  //   });
-                  // },
-                ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  initialValue: address2,
-                  readOnly: true,
-                  decoration:
-                      textInputDecoration.copyWith(hintText: 'town, taluk'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     address2 = val;
-                  //   });
-                  // },
-                ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  initialValue: city,
-                  readOnly: true,
-                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter City name' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     city = val;
-                  //   });
-                  // },
-                ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  initialValue: state,
-                  readOnly: true,
-                  decoration: textInputDecoration.copyWith(hintText: 'state'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter City name' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     city = val;
-                  //   });
-                  // },
-                ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  initialValue: pincode,
-                  readOnly: true,
-                  decoration: textInputDecoration.copyWith(hintText: 'pincode'),
-                  validator: (value) =>
-                      value!.length != 6 ? 'Enter valid Pincode' : null,
-                  onChanged: (val) {
-                    setState(() {
-                      pincode = val;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    "Delivery Date:",
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  initialValue: callDate,
-                  readOnly: true,
-                ),
-                Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text(
-                    dateError,
-                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                  ),
-                ]),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    "Order status",
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  initialValue: dropDown,
-                  readOnly: true,
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Column(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        dataRowHeight: 60,
-                        columns: createColumns(),
-                        rows: List.generate(
-                          tableData.length,
-                          (int rowIndex) {
-                            // print(tableData.length);
-                            return DataRow(
-                              cells: List.generate(
-                                6,
-                                (int cellIndex) {
-                                  if (cellIndex == 0) {
-                                    return DataCell(
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 16),
-                                        child: Text(selectedOptions[rowIndex])
-                                      ),
-                                    );
-                                  } else if (cellIndex == 1) {
-                                    return DataCell(
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: TextButton(
-                                              onPressed: () {
-                                                // if (quantity[rowIndex] > 1) {
-                                                //   setState(() {
-                                                //     quantity[rowIndex]--;
-                                                //     populateTable(
-                                                //         productDetails);
-                                                //   });
-                                                // }
-                                              },
-                                              child: const Text('-',
-                                                  style:
-                                                      TextStyle(fontSize: 20)),
-                                            ),
-                                          ),
-                                          Text(
-                                            quantity[rowIndex].toString(),
-                                            style: TextStyle(fontSize: 20),
-                                          ),
-                                          SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: TextButton(
-                                              onPressed: () {
-                                                // if (quantity[rowIndex] > 0) {
-                                                //   setState(() {
-                                                //     quantity[rowIndex]++;
-                                                //     populateTable(
-                                                //         productDetails);
-                                                //   });
-                                                // }
-                                              },
-                                              child: const Text('+',
-                                                  style:
-                                                      TextStyle(fontSize: 20)),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  } else if (cellIndex == 5) {
-                                    return DataCell(
-                                      SizedBox(
-                                        child: TextButton.icon(
-                                          onPressed: () {
-                                            // if (rowIndex != 0) {
-                                            //   removeRow(rowIndex);
-                                            // }
-                                          },
-                                          icon: Icon(
-                                            Icons.remove_circle_outline,
-                                            color: Colors.black,
-                                          ),
-                                          label: Text(
-                                            'Remove',
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  return DataCell(
-                                    Text(tableData[rowIndex][cellIndex]),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        child: Container(
+          width: screenWidth,
+          child: Form(
+            key: _formkey,
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(right: 15, top: 10),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                       Text(
-                        productError,
-                        style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
+                        'Name: ${salesExecutive.name}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ]),
-                    // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    //   ElevatedButton(
-                    //     style: ElevatedButton.styleFrom(
-                    //       backgroundColor: Color(0xff4d47c3),
-                    //     ),
-                    //     onPressed: addRow,
-                    //     child: const Text('Add +'),
-                    //   ),
-                    // ]),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    DataTable(
-                      columns: const [
-                        DataColumn(label: Text('')),
-                        DataColumn(label: Text('')),
-                      ],
-                      rows: [
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'Sub Total:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text(subTotal)),
-                          ],
-                        ),
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'CGST:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text('9%')),
-                          ],
-                        ),
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'SGST:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text('9%')),
-                          ],
-                        ),
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'Total:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text((total))),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    error,
-                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
                   ),
-                ]),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                loading
-                    ? const CircularProgressIndicator()
-                    : SizedBox(
-                        height: 59,
-                        width: 420,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xff4d47c3),
-                              ),
-                              child: Container(
-                                width: 100,
-                                height: 59,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x664d47c3),
-                                      blurRadius: 61,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                  color: const Color(0xff4d47c3),
-                                ),
-                                padding: const EdgeInsets.only(
-                                  top: 18,
-                                  bottom: 17,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    SizedBox(
-                                      width: 70,
-                                      child: Text(
-                                        "Cancel",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontFamily: "Poppins",
-                                          fontWeight: FontWeight.w500,
+                  Container(
+                    margin: const EdgeInsets.only(left: 100),
+                    width: 180,
+                    height: 60,
+                    child: Image.asset('assets/logotm.jpg'),
+                  ),
+                  const SizedBox(height: 20.0),
+                  const SizedBox(
+                    height: 20.0,
+                    child: Text(
+                      "Customer Name:",
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: 16,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  TextFormField(
+                    initialValue: customerName,
+                    readOnly: true,
+                    keyboardType: TextInputType.phone,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Shipment ID',
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter Shipment Id' : null,
+                    // onChanged: (val) {
+                    //   shipmentID = val;
+                    // },
+                  ),
+                  const SizedBox(height: 20.0),
+                  const SizedBox(
+                      height: 20.0,
+                      child: Text(
+                        'Shippment ID:',
+                        style: TextStyle(
+                          color: Color(0xff090a0a),
+                          fontSize: 16,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  TextFormField(
+                    initialValue: shipmentID,
+                    readOnly: true,
+                    keyboardType: TextInputType.phone,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Shipment ID',
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter Shipment Id' : null,
+                    // onChanged: (val) {
+                    //   shipmentID = val;
+                    // },
+                  ),
+                  const SizedBox(height: 20.0),
+                  const SizedBox(
+                      height: 20.0,
+                      child: Text(
+                        'customer mobile num:',
+                        style: TextStyle(
+                          color: Color(0xff090a0a),
+                          fontSize: 16,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  TextFormField(
+                    keyboardType: TextInputType.phone,
+                    initialValue: mobileNumber,
+                    readOnly: true,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter customer mob.num',
+                    ),
+                    validator: (value) =>
+                        value!.length < 10 ? 'Enter valid mobile number' : null,
+                    // onChanged: (val) {
+                    //   mobileNumber = val;
+                    // },
+                  ),
+                  const SizedBox(height: 20.0),
+                  const SizedBox(
+                      height: 20.0,
+                      child: Text(
+                        'Customer Full Address:',
+                        style: TextStyle(
+                          color: Color(0xff090a0a),
+                          fontSize: 16,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    initialValue: address1,
+                    readOnly: true,
+                    decoration:
+                        textInputDecoration.copyWith(hintText: 'house#, area'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     address1 = val;
+                    //   });
+                    // },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    initialValue: address2,
+                    readOnly: true,
+                    decoration:
+                        textInputDecoration.copyWith(hintText: 'town, taluk'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     address2 = val;
+                    //   });
+                    // },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    initialValue: city,
+                    readOnly: true,
+                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter City name' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     city = val;
+                    //   });
+                    // },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    initialValue: state,
+                    readOnly: true,
+                    decoration: textInputDecoration.copyWith(hintText: 'state'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter City name' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     city = val;
+                    //   });
+                    // },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    initialValue: pincode,
+                    readOnly: true,
+                    decoration: textInputDecoration.copyWith(hintText: 'pincode'),
+                    validator: (value) =>
+                        value!.length != 6 ? 'Enter valid Pincode' : null,
+                    onChanged: (val) {
+                      setState(() {
+                        pincode = val;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20.0),
+                  const SizedBox(
+                    height: 20.0,
+                    child: Text(
+                      "Delivery Date:",
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: 16,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  TextFormField(
+                    initialValue: callDate,
+                    readOnly: true,
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    Text(
+                      dateError,
+                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                  ]),
+                  const SizedBox(height: 20.0),
+                  const SizedBox(
+                    height: 20.0,
+                    child: Text(
+                      "Order status",
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: 16,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  TextFormField(
+                    initialValue: dropDown,
+                    readOnly: true,
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Column(
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          dataRowHeight: 60,
+                          columns: createColumns(),
+                          rows: List.generate(
+                            tableData.length,
+                            (int rowIndex) {
+                              // print(tableData.length);
+                              return DataRow(
+                                cells: List.generate(
+                                  6,
+                                  (int cellIndex) {
+                                    if (cellIndex == 0) {
+                                      return DataCell(
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: Text(selectedOptions[rowIndex])
                                         ),
-                                      ),
-                                    ),
-                                  ],
+                                      );
+                                    } else if (cellIndex == 1) {
+                                      return DataCell(
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 40,
+                                              height: 40,
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  // if (quantity[rowIndex] > 1) {
+                                                  //   setState(() {
+                                                  //     quantity[rowIndex]--;
+                                                  //     populateTable(
+                                                  //         productDetails);
+                                                  //   });
+                                                  // }
+                                                },
+                                                child: const Text('-',
+                                                    style:
+                                                        TextStyle(fontSize: 20)),
+                                              ),
+                                            ),
+                                            Text(
+                                              quantity[rowIndex].toString(),
+                                              style: TextStyle(fontSize: 20),
+                                            ),
+                                            SizedBox(
+                                              width: 40,
+                                              height: 40,
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  // if (quantity[rowIndex] > 0) {
+                                                  //   setState(() {
+                                                  //     quantity[rowIndex]++;
+                                                  //     populateTable(
+                                                  //         productDetails);
+                                                  //   });
+                                                  // }
+                                                },
+                                                child: const Text('+',
+                                                    style:
+                                                        TextStyle(fontSize: 20)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    } else if (cellIndex == 5) {
+                                      return DataCell(
+                                        SizedBox(
+                                          child: TextButton.icon(
+                                            onPressed: () {
+                                              // if (rowIndex != 0) {
+                                              //   removeRow(rowIndex);
+                                              // }
+                                            },
+                                            icon: Icon(
+                                              Icons.remove_circle_outline,
+                                              color: Colors.black,
+                                            ),
+                                            label: Text(
+                                              'Remove',
+                                              style:
+                                                  TextStyle(color: Colors.black),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return DataCell(
+                                      Text(tableData[rowIndex][cellIndex]),
+                                    );
+                                  },
                                 ),
-                              ),
-                            ),
-                          ],
+                              );
+                            },
+                          ),
                         ),
                       ),
-                const SizedBox(height: 20.0),
-              ]),
+                      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                        Text(
+                          productError,
+                          style:
+                              const TextStyle(color: Colors.red, fontSize: 14.0),
+                        ),
+                      ]),
+                      // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      //   ElevatedButton(
+                      //     style: ElevatedButton.styleFrom(
+                      //       backgroundColor: Color(0xff4d47c3),
+                      //     ),
+                      //     onPressed: addRow,
+                      //     child: const Text('Add +'),
+                      //   ),
+                      // ]),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      DataTable(
+                        columns: const [
+                          DataColumn(label: Text('')),
+                          DataColumn(label: Text('')),
+                        ],
+                        rows: [
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'Sub Total:',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                              DataCell(Text(subTotal)),
+                            ],
+                          ),
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'CGST:',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                              DataCell(Text('9%')),
+                            ],
+                          ),
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'SGST:',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                              DataCell(Text('9%')),
+                            ],
+                          ),
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'Total:',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                              DataCell(Text((total))),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Text(
+                      error,
+                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  loading
+                      ? const CircularProgressIndicator()
+                      : SizedBox(
+                          height: 59,
+                          width: 420,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xff4d47c3),
+                                ),
+                                child: Container(
+                                  width: 100,
+                                  height: 59,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x664d47c3),
+                                        blurRadius: 61,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                    color: const Color(0xff4d47c3),
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                    top: 18,
+                                    bottom: 17,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: const [
+                                      SizedBox(
+                                        width: 70,
+                                        child: Text(
+                                          "Cancel",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                  const SizedBox(height: 20.0),
+                ]),
+          ),
         ),
       ),
     );

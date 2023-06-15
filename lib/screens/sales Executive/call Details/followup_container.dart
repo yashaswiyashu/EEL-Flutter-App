@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/call_details_model.dart';
@@ -55,8 +56,7 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 440,
-      height: 83,
+      width: screenWidth,
       padding: EdgeInsets.only(left: 5, right: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -141,7 +141,7 @@ Container buildFollowUpDetailsContainerView(List<FollowUpDetail> followUpDetails
             detail.followUpDate,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 16,
+              fontSize: screenHeight / 50,
               fontWeight: FontWeight.w500,
               height: 1,
               color: Color(0xff000000),
@@ -152,7 +152,7 @@ Container buildFollowUpDetailsContainerView(List<FollowUpDetail> followUpDetails
             detail.details,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 14,
+              fontSize: screenHeight / 55,
               fontWeight: FontWeight.w400,
               height: 1.5,
               color: Color(0xff000000),
@@ -165,7 +165,7 @@ Container buildFollowUpDetailsContainerView(List<FollowUpDetail> followUpDetails
   }
 
   return Container(
-    width: 440,
+    width: screenWidth,
     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/call_details_model.dart';
@@ -65,7 +66,7 @@ Container buildFollowUpDetailsContainerEdit() {
   TextEditingController detailsController = TextEditingController();
 
   return Container(
-    width: 440,
+    width: screenWidth,
     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),
@@ -83,7 +84,7 @@ Container buildFollowUpDetailsContainerEdit() {
                 detail.followUpDate,
                 style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 16,
+                  fontSize: screenHeight / 50,
                   fontWeight: FontWeight.w500,
                   height: 1,
                   color: Color(0xff000000),
@@ -94,7 +95,7 @@ Container buildFollowUpDetailsContainerEdit() {
                 detail.details,
                 style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 14,
+                  fontSize: screenHeight / 55,
                   fontWeight: FontWeight.w400,
                   height: 1.5,
                   color: Color(0xff000000),
@@ -116,7 +117,7 @@ Container buildFollowUpDetailsContainerEdit() {
                 // 
                 style: TextStyle(
                     fontFamily: 'Inter',
-                    fontSize: 16,
+                    fontSize: screenHeight / 50,
                     fontWeight: FontWeight.w500,
                     height: 1,
                     color: Color(0xff000000),
@@ -135,7 +136,7 @@ Container buildFollowUpDetailsContainerEdit() {
               ),
               style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 14,
+                  fontSize: screenHeight / 55,
                   fontWeight: FontWeight.w400,
                   height: 1.5,
                   color: Color(0xff000000),
@@ -171,8 +172,8 @@ Container buildFollowUpDetailsContainerEdit() {
             style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Color(0xff4d47c3)),
                   ),
-            child: const Text('Add',
-                              style: TextStyle(fontSize: 18,)),
+            child: Text('Add',
+                              style: TextStyle(fontSize: screenHeight / 50,)),
           ),
         ],
       ),

@@ -9,6 +9,7 @@ import 'package:flutter_app/models/order_details_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/common/utility_functions.dart';
 import 'package:flutter_app/screens/sales%20Executive/call%20Details/call_details_list_view.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/complaint_details_list_view.dart';
@@ -70,7 +71,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Energy Efficient Lights'),
+          title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
           backgroundColor: const Color(0xff4d47c3),
           actions: [
             TextButton.icon(
@@ -79,20 +80,20 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       'authWrapper', (Route<dynamic> route) => false);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.person,
                   color: Colors.white,
+                  size: screenHeight / 50,
                 ),
-                label: const Text(
+                label: Text(
                   'logout',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
                 )),
           ],
         ),
         body: SingleChildScrollView(
           child: Container(
-            width: 440,
-            height: 800,
+            width: screenWidth,
             color: Colors.white,
             padding: const EdgeInsets.only(
               top: 10,
@@ -111,15 +112,15 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                       'Name: ${salesExecutive.name}',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 15,
+                        fontSize: screenHeight / 55,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ]),
                 ),
                 Container(
-                  width: 180,
-                  height: 60,
+                  width: screenWidth / 3,
+                  height: screenHeight / 10,
                   child: Image.asset('assets/logotm.jpg'),
                 ),
                 SizedBox(height: 20.80),
@@ -132,16 +133,16 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                         ));
                   },
                   child: Container(
-                    width: 297,
-                    height: 115,
+                    width: screenWidth / 1.5,
+                    height: screenHeight / 9,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 297,
-                          height: 115,
+                          width: screenWidth / 1.5,
+                          height: screenHeight / 9,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: [
@@ -182,7 +183,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                         text: TextSpan(
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: screenHeight / 50,
                                             fontFamily: "Poppins",
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -205,7 +206,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: screenHeight / 60,
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -233,16 +234,16 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                         ));
                   },
                   child: Container(
-                    width: 323,
-                    height: 115,
+                    width: screenWidth / 1.5,
+                    height: screenHeight / 8,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 297,
-                          height: 115,
+                          width: screenWidth / 1.5,
+                          height: screenHeight / 8,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: [
@@ -283,7 +284,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                         text: TextSpan(
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: screenHeight / 50,
                                             fontFamily: "Poppins",
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -306,7 +307,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: screenHeight / 60,
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -332,16 +333,16 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                         ));
                   },
                   child: Container(
-                    width: 323,
-                    height: 115,
+                    width: screenWidth / 1.5,
+                    height: screenHeight / 9,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 297,
-                          height: 115,
+                          width: screenWidth / 1.5,
+                          height: screenHeight / 9,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: [
@@ -382,7 +383,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                         text: TextSpan(
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: screenHeight / 50,
                                             fontFamily: "Poppins",
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -404,7 +405,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: screenHeight / 60,
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -430,16 +431,16 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                         ));
                   },
                   child: Container(
-                    width: 323,
-                    height: 105,
+                    width: screenWidth / 1.5,
+                    height: screenHeight / 8,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 297,
-                          height: 115,
+                          width: screenWidth / 1.5,
+                          height: screenHeight / 8,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: [
@@ -480,7 +481,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                         text: TextSpan(
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: screenHeight / 50,
                                             fontFamily: "Poppins",
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -502,7 +503,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: screenHeight / 60,
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -521,11 +522,11 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                 ),
                 SizedBox(height: 20.80),
                 SizedBox(
-                  height: 59,
-                  width: 350,
+                  height: screenHeight / 10,
+                  width: screenWidth,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ElevatedButton(
@@ -540,8 +541,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           backgroundColor: Color(0xff4d47c3),
                         ),
                         child: Container(
-                          width: 100,
-                          height: 59,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: const [
@@ -561,15 +561,15 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               SizedBox(
-                                width: 80,
+                                width: screenWidth / 5,
                                 child: Text(
                                   "Customer",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: screenHeight / 50,
                                     fontFamily: "Poppins",
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -578,9 +578,6 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 55,
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -594,8 +591,7 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                           backgroundColor: Color(0xff4d47c3),
                         ),
                         child: Container(
-                          width: 100,
-                          height: 59,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: const [
@@ -615,15 +611,15 @@ class _SalesExecutiveHomeState extends State<SalesExecutiveHome> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               SizedBox(
-                                width: 70,
+                                width: screenWidth / 5,
                                 child: Text(
                                   "Order",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: screenHeight / 50,
                                     fontFamily: "Poppins",
                                     fontWeight: FontWeight.w500,
                                   ),

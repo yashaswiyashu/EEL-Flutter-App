@@ -31,7 +31,8 @@ class _LoginState extends State<Login> {
   String password = "";
   String error = '';
   bool _passwordVisible = false;
-
+  var approved = false;
+  var isCust = false;
   void initState() {
     _passwordVisible = false;
   }
@@ -39,23 +40,24 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
 
-    final salesTable = Provider.of<List<SalesPersonModel?>?>(context);
-    final customerTable = Provider.of<List<CustomerModel?>?>(context);
+    final salesTable = Provider.of<List<SalesPersonModel?>>(context);
+    final customerTable = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
 
-    return loading ? SizedBox(height: 600,width: 440,child: const Loading()) :Form(
+    return loading ? SizedBox(height: screenHeight - 335,width: screenWidth,child: const Loading()) :Form(
                 key: _formkey,
                 child: Column(
                   children: <Widget>[
                     const SizedBox(height: 40.80),
                     Container(
-                      width: 322,
-                      height: 62,
+                      width: screenWidth - 100,
+                      height: screenHeight / 15,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: const Color(0xffefefff),
                       ),
                       child: TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         autofocus: true,
                         validator: (value) => RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!) ? null : 'Enter valid email',
                         decoration:
@@ -69,13 +71,14 @@ class _LoginState extends State<Login> {
                     ),
                     const SizedBox(height: 40.80),
                     Container(
-                      width: 322,
-                      height: 62,
+                      width: screenWidth - 100,
+                      height: screenHeight / 15,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: const Color(0xffefefff),
                       ),
                       child: TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         validator: (value) => value!.length < 6 ? 'Enter a password of more than 6 characters' : null,
                         keyboardType: TextInputType.text,
                         obscureText: !_passwordVisible,
@@ -89,6 +92,7 @@ class _LoginState extends State<Login> {
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                                 color: Theme.of(context).primaryColorDark,
+                                size: screenHeight / 40,
                                 ),
                               onPressed: () {
                                 // Update the state i.e. toogle the state of passwordVisible variable
@@ -105,12 +109,12 @@ class _LoginState extends State<Login> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 40.0),
+                    SizedBox(height: screenHeight / 20),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Color(0xff4d47c3)),
                         child: Container(
-                          width: 320,
-                          height: 59,
+                          width: screenWidth - 100,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: const [
@@ -132,13 +136,13 @@ class _LoginState extends State<Login> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               Text(
                                 "Login",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -159,24 +163,32 @@ class _LoginState extends State<Login> {
                                 loading = false;
                               });
                             } else {
-                              var approved = false;
-                              salesTable?.forEach((element) {
-                                if(element!.uid == currentUser?.uid && !element.approved){ 
-                                  if(element.approved) {
-                                    setState(() {
-                                      approved = true; 
-                                      loading = false;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      approved = false;
-                                      error = 'Your account has been registered. Please wait for approval';
-                                      loading = false;
-                                    });
-                                  }
+                              customerTable.forEach((element) {
+                                if(element.uid == result.uid) {
+                                  setState(() {
+                                    isCust = true;
+                                    loading = false;
+                                  });
                                 }
-                              });
-                              if(approved) {
+                              }); 
+                              if(!isCust) {
+                                salesTable.forEach((element) {
+                                  if(element!.uid == result.uid){ 
+                                    if(element.approved) {
+                                      setState(() {
+                                        approved = true; 
+                                        loading = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        error = 'Your account has been registered. Please wait for approval';
+                                        loading = false;
+                                      });
+                                    }
+                                  }
+                                });
+                              }
+                              if(approved || isCust) {
                                 Navigator.of(context).pushNamedAndRemoveUntil('authWrapper', (Route<dynamic> route) => false);
                               }
                             }

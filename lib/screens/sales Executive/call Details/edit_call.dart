@@ -5,6 +5,7 @@ import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
@@ -256,7 +257,7 @@ void confirmation(String uid) {
 
     return Scaffold(
             appBar: AppBar(
-              title: const Text('Energy Efficient Lights'),
+              title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
@@ -266,13 +267,14 @@ void confirmation(String uid) {
                       'authWrapper',
                       (Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label: Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
                     )),
               ],
             ),
@@ -284,7 +286,7 @@ void confirmation(String uid) {
                   top: 10,
                   bottom: 0.4,
                 ),
-                width: 440,
+                width: screenWidth,
                 decoration: BoxDecoration(
                   color: Color(0xffffffff),
                 ),
@@ -302,23 +304,22 @@ void confirmation(String uid) {
                                 'Name: ${salesExecutive.name}',
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 15,
+                                  fontSize: screenHeight / 55,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ]),
                       ),
-                      SizedBox(
-                        height: 10,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: screenWidth / 3,
+                            height: screenHeight / 10,
+                            child: Image.asset('assets/logotm.jpg'),
+                          ),
+                        ],
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 110),
-                        width: 180,
-                        height: 60,
-                        child: Image.asset('assets/logotm.jpg'),
-                      ),
-                      const SizedBox(height: 20.0),
-                      const SizedBox(height: 5.0),
                       Container(
                         margin: const EdgeInsets.only(left: 110),
                         child: Text(
@@ -328,13 +329,13 @@ void confirmation(String uid) {
                         ),
                       ),
                       const SizedBox(height: 5.0),
-                      const SizedBox(
-                        height: 20.0,
+                      SizedBox(
+                        height: screenHeight / 40,
                         child: Text(
                           "Customer Name:",
                           style: TextStyle(
                             color: Color(0xff090a0a),
-                            fontSize: 16,
+                            fontSize: screenHeight / 50,
                             fontFamily: "Inter",
                             fontWeight: FontWeight.w500,
                           ),
@@ -344,6 +345,7 @@ void confirmation(String uid) {
                         height: 10,
                       ),
                       TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         initialValue:  customerName,
                         readOnly: true,
                         validator: (value) =>
@@ -356,13 +358,13 @@ void confirmation(String uid) {
                         // },
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                          height: 20.0,
+                      SizedBox(
+                          height: screenHeight / 40,
                           child: Text(
                             'Customer Type:',
                             style: TextStyle(
                               color: Color(0xff090a0a),
-                              fontSize: 16,
+                              fontSize: screenHeight / 50,
                               fontFamily: "Inter",
                               fontWeight: FontWeight.w500,
                             ),
@@ -406,6 +408,7 @@ void confirmation(String uid) {
                       //   }).toList(),
                       // ),
                       TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         initialValue:  type,
                         readOnly: true,
                         validator: (value) =>
@@ -418,19 +421,20 @@ void confirmation(String uid) {
                         // },
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                          height: 20.0,
+                      SizedBox(
+                          height: screenHeight / 40,
                           child: Text(
                             'Customer Mobile Number:',
                             style: TextStyle(
                               color: Color(0xff090a0a),
-                              fontSize: 16,
+                              fontSize: screenHeight / 50,
                               fontFamily: "Inter",
                               fontWeight: FontWeight.w500,
                             ),
                           )),
                       const SizedBox(height: 10.0),
                       TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         keyboardType: TextInputType.phone,
                         initialValue: customerNumber,
                         readOnly: true,
@@ -444,13 +448,13 @@ void confirmation(String uid) {
                         // },
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                        height: 20.0,
+                      SizedBox(
+                        height: screenHeight / 40,
                         child: Text(
                           "Call Date:",
                           style: TextStyle(
                             color: Color(0xff090a0a),
-                            fontSize: 16,
+                            fontSize: screenHeight / 50,
                             fontFamily: "Inter",
                             fontWeight: FontWeight.w500,
                           ),
@@ -460,8 +464,8 @@ void confirmation(String uid) {
                         height: 10,
                       ),
                       Container(
-                        width: 440,
-                        height: 50,
+                        width: screenWidth,
+                        height: screenHeight / 15,
                         child: Row(
                           children: [ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -471,19 +475,19 @@ void confirmation(String uid) {
                             },
                             child: Text(
                               date,
-                              style: TextStyle(color: Colors.black, fontSize: 16),
+                              style: TextStyle(color: Colors.black, fontSize: screenHeight / 50),
                             ),
                           ),]
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                          height: 20.0,
+                      SizedBox(
+                          height: screenHeight / 40,
                           child: Text(
                             'Call Result:',
                             style: TextStyle(
                               color: Color(0xff090a0a),
-                              fontSize: 16,
+                              fontSize: screenHeight / 50,
                               fontFamily: "Inter",
                               fontWeight: FontWeight.w500,
                             ),
@@ -520,7 +524,7 @@ void confirmation(String uid) {
                             value: value,
                             child: Text(
                               value,
-                              style: const TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: screenHeight / 45),
                             ),
                           );
                         }).toList(),
@@ -528,21 +532,20 @@ void confirmation(String uid) {
                       const SizedBox(height: 30.0),
                       Container(
                         child: Row(children: <Widget>[
-                          const SizedBox(
-                              height: 20.0,
+                          SizedBox(
+                              height: screenHeight / 40,
                               child: Text(
                                 'Follow Up Required:',
                                 style: TextStyle(
                                   color: Color(0xff090a0a),
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontFamily: "Inter",
                                   fontWeight: FontWeight.w500,
                                 ),
                               )),
                           Container(
                             margin: EdgeInsets.only(left: 20),
-                            width: 27.46,
-                            height: 24,
+                            width: screenWidth / 20,
                             decoration: BoxDecoration(
                               color: Color.fromARGB(255, 255, 254, 254),
                             ),
@@ -570,7 +573,7 @@ void confirmation(String uid) {
                           'Follow Up Details:',
                           style: TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 16,
+                            fontSize: screenHeight / 50,
                             fontWeight: FontWeight.w500,
                             height: 1,
                             color: Color(0xff000000),
@@ -617,14 +620,14 @@ void confirmation(String uid) {
  */                      const SizedBox(height: 40.0),
                       Container(
                         margin: EdgeInsets.fromLTRB(20, 0, 6, 0),
-                        width: 440,
-                        height: 59,
+                        width: screenWidth,
+                        height: screenHeight / 10,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             loading ? CircularProgressIndicator() : Container(
                               // autogroupmj6kJr3 (UPthN48je9w6Wp7ratMJ6K)
@@ -663,8 +666,8 @@ void confirmation(String uid) {
                                   padding: EdgeInsets.zero,
                                 ),
                                 child: Container(
-                                  width: 95.63,
-                                  height: 59,
+                                  width: screenWidth / 5,
+                                  height: screenHeight / 15,
                                   decoration: BoxDecoration(
                                     color: Color(0xff4d47c3),
                                     borderRadius: BorderRadius.circular(9),
@@ -682,7 +685,7 @@ void confirmation(String uid) {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: "Poppins",
-                                        fontSize: 16,
+                                        fontSize: screenHeight / 50,
                                         fontWeight: FontWeight.w500,
                                         height: 1.5,
                                         color: Color(0xffffffff),
@@ -701,8 +704,8 @@ void confirmation(String uid) {
                                 padding: EdgeInsets.zero,
                               ),
                               child: Container(
-                                width: 95.63,
-                                height: 59,
+                                width: screenWidth / 5,
+                                height: screenHeight / 15,
                                 decoration: BoxDecoration(
                                   color: Color(0xff4d47c3),
                                   borderRadius: BorderRadius.circular(9),
@@ -720,7 +723,7 @@ void confirmation(String uid) {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: "Poppins",
-                                      fontSize: 16,
+                                      fontSize: screenHeight / 50,
                                       fontWeight: FontWeight.w500,
                                       height: 1.5,
                                       color: Color(0xffffffff),
@@ -738,8 +741,8 @@ void confirmation(String uid) {
                                 padding: EdgeInsets.zero,
                               ),
                               child: Container(
-                                width: 95.63,
-                                height: 59,
+                                width: screenWidth / 5,
+                                height: screenHeight / 15,
                                 decoration: BoxDecoration(
                                   color: Color(0xff4d47c3),
                                   borderRadius: BorderRadius.circular(9),
@@ -757,7 +760,7 @@ void confirmation(String uid) {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: "Poppins",
-                                      fontSize: 16,
+                                      fontSize: screenHeight / 50,
                                       fontWeight: FontWeight.w500,
                                       height: 1.5,
                                       color: Color(0xffffffff),

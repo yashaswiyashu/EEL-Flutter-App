@@ -6,6 +6,7 @@ import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/complaint_details_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -252,7 +253,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Energy Efficient Lights'),
+          title:  Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
           backgroundColor: const Color(0xff4d47c3),
           actions: [
             TextButton.icon(
@@ -261,13 +262,14 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                   Navigator.of(context).pushNamedAndRemoveUntil(
                           'authWrapper', (Route<dynamic> route) => false);
                 },
-                icon: const Icon(
+                icon:  Icon(
                   Icons.person,
                   color: Colors.white,
+                  size: screenHeight / 50,
                 ),
-                label: const Text(
+                label:  Text(
                   'logout',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
                 )),
           ],
         ),
@@ -279,7 +281,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
               top: 10,
               bottom: 0.4,
             ),
-            width: 440,
+            width: screenWidth,
             decoration: BoxDecoration(
               color: Color(0xffffffff),
             ),
@@ -297,38 +299,42 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                             'Name: ${salesExecutive.name}',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 15,
+                              fontSize: screenHeight / 55,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ]),
                   ) : const SizedBox(height: 0,width: 0,),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 110),
-                    width: 180,
-                    height: 60,
-                    child: Image.asset('assets/logotm.jpg'),
-                  ),
-                  const SizedBox(height: 20.0),
-                  const SizedBox(height: 5.0),
-                  Container(
-                    margin: const EdgeInsets.only(left: 110),
-                    child: Text(
-                      status,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                    ),
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: screenWidth / 3,
+                        height: screenHeight / 10,
+                        child: Image.asset('assets/logotm.jpg'),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 5.0),
-                  const SizedBox(
-                    height: 20.0,
+                  status != '' ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Text(
+                          status,
+                          style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                        ),
+                      ),
+                    ],
+                  ) : const SizedBox(height: 0,width: 0,),
+                  const SizedBox(height: 5.0),
+                   SizedBox(
+                    height: screenHeight / 40,
                     child: Text(
                       "Customer Name:",
                       style: TextStyle(
                         color: Color(0xff090a0a),
-                        fontSize: 16,
+                        fontSize: screenHeight / 50,
                         fontFamily: "Inter",
                         fontWeight: FontWeight.w500,
                       ),
@@ -338,6 +344,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                     height: 10,
                   ),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     initialValue: customerName,
                     readOnly: true,
                     validator: (value) =>
@@ -350,19 +357,20 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                     // },
                   ),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                      height: 20.0,
+                   SizedBox(
+                      height: screenHeight / 40,
                       child: Text(
                         'Customer Mobile Number:',
                         style: TextStyle(
                           color: Color(0xff090a0a),
-                          fontSize: 16,
+                          fontSize:  screenHeight / 50,
                           fontFamily: "Inter",
                           fontWeight: FontWeight.w500,
                         ),
                       )),
                   const SizedBox(height: 10.0),
                   TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     keyboardType: TextInputType.phone,
                     initialValue: customerNumber,
                     readOnly: true,
@@ -376,13 +384,13 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                     // },
                   ),
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                    height: 20.0,
+                   SizedBox(
+                    height: screenHeight / 40,
                     child: Text(
                       "Complaint Date:",
                       style: TextStyle(
                         color: Color(0xff090a0a),
-                        fontSize: 16,
+                        fontSize: screenHeight / 50,
                         fontFamily: "Inter",
                         fontWeight: FontWeight.w500,
                       ),
@@ -392,8 +400,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                     height: 10,
                   ),
                   Container(
-                    width: 440,
-                    height: 50,
+                    width: screenWidth,
+                    height: screenHeight / 15,
                     child: Row(children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -403,7 +411,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                         },
                         child: Text(
                           complaintDate == '' ? date : complaintDate,
-                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          style: TextStyle(color: Colors.black, fontSize: screenHeight / 50),
                         ),
                       ),
                     ]),
@@ -411,13 +419,13 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
 
 
                   const SizedBox(height: 20.0),
-                  const SizedBox(
-                      height: 20.0,
+                   SizedBox(
+                      height: screenHeight / 40,
                       child: Text(
                         'Complaint Status:',
                         style: TextStyle(
                           color: Color(0xff090a0a),
-                          fontSize: 16,
+                          fontSize: screenHeight / 50,
                           fontFamily: "Inter",
                           fontWeight: FontWeight.w500,
                         ),
@@ -452,7 +460,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                         value: value,
                         child: Text(
                           value,
-                          style: const TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: screenHeight / 57),
                         ),
                       );
                     }).toList(),
@@ -468,7 +476,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                       'Complaint Details:',
                       style: TextStyle(
                         fontFamily: 'Inter',
-                        fontSize: 16,
+                        fontSize: screenHeight / 50,
                         fontWeight: FontWeight.w500,
                         height: 1,
                         color: Color(0xff000000),
@@ -511,18 +519,22 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                     ),
                   ),*/
                   const SizedBox(height: 5.0),
-                  Container(
-                    margin: const EdgeInsets.only(left: 110),
-                    child: Text(
-                      status,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Text(
+                          status,
+                          style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 40.0),
                   Container(
                     margin: EdgeInsets.fromLTRB(20, 0, 6, 0),
-                    width: 440,
-                    height: 59,
+                    width: screenWidth,
+                    height: screenHeight / 15,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
                     ),
@@ -563,8 +575,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                     padding: EdgeInsets.zero,
                                   ),
                                   child: Container(
-                                    width: 95.63,
-                                    height: 59,
+                                    width: screenWidth / 6,
+                                    height: screenHeight / 15,
                                     decoration: BoxDecoration(
                                       color: Color(0xff4d47c3),
                                       borderRadius: BorderRadius.circular(9),
@@ -582,7 +594,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: "Poppins",
-                                          fontSize: 16,
+                                          fontSize: screenHeight / 50,
                                           fontWeight: FontWeight.w500,
                                           height: 1.5,
                                           color: Color(0xffffffff),
@@ -601,8 +613,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                             padding: EdgeInsets.zero,
                           ),
                           child: Container(
-                            width: 95.63,
-                            height: 59,
+                            width: screenWidth / 6,
+                            height: screenHeight / 15,
                             decoration: BoxDecoration(
                               color: Color(0xff4d47c3),
                               borderRadius: BorderRadius.circular(9),
@@ -620,7 +632,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontWeight: FontWeight.w500,
                                   height: 1.5,
                                   color: Color(0xffffffff),
@@ -638,8 +650,8 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                             padding: EdgeInsets.zero,
                           ),
                           child: Container(
-                            width: 95.63,
-                            height: 59,
+                            width: screenWidth / 6,
+                            height: screenHeight / 15,
                             decoration: BoxDecoration(
                               color: Color(0xff4d47c3),
                               borderRadius: BorderRadius.circular(9),
@@ -657,7 +669,7 @@ class _EditComplaintDetailsState extends State<EditComplaintDetails>
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontWeight: FontWeight.w500,
                                   height: 1.5,
                                   color: Color(0xffffffff),

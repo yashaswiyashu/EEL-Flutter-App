@@ -3,6 +3,7 @@ import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/complaint_details_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -76,7 +77,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
         ? const Loading()
         : Scaffold(
             appBar: AppBar(
-              title: const Text('Energy Efficient Lights'),
+              title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
@@ -85,13 +86,14 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           'authWrapper', (Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon:  Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label:  Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
                     )),
               ],
             ),
@@ -103,7 +105,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                   top: 10,
                   bottom: 0.4,
                 ),
-                width: 440,
+                width: screenWidth,
                 decoration: BoxDecoration(
                   color: Color(0xffffffff),
                 ),
@@ -121,7 +123,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                                 'Name: ${salesExecutive.name}',
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 15,
+                                  fontSize: screenHeight / 55,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -130,20 +132,24 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                       SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 110),
-                        width: 180,
-                        height: 60,
-                        child: Image.asset('assets/logotm.jpg'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: screenWidth / 3,
+                            height: screenHeight / 10,
+                            child: Image.asset('assets/logotm.jpg'),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                        height: 20.0,
+                       SizedBox(
+                        height: screenHeight / 40,
                         child: Text(
                           "Customer Name:",
                           style: TextStyle(
                             color: Color(0xff090a0a),
-                            fontSize: 16,
+                            fontSize: screenHeight / 50,
                             fontFamily: "Inter",
                             fontWeight: FontWeight.w500,
                           ),
@@ -153,6 +159,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                         height: 10,
                       ),
                       TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         readOnly: true,
                         initialValue: obj.customerName,
                         keyboardType: TextInputType.phone,
@@ -164,19 +171,20 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                          height: 20.0,
+                       SizedBox(
+                          height: screenHeight / 40,
                           child: Text(
                             'Customer Mobile Number:',
                             style: TextStyle(
                               color: Color(0xff090a0a),
-                              fontSize: 16,
+                              fontSize: screenHeight / 50,
                               fontFamily: "Inter",
                               fontWeight: FontWeight.w500,
                             ),
                           )),
                       const SizedBox(height: 10.0),
                       TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         readOnly: true,
                         initialValue: obj.mobileNumber,
                         keyboardType: TextInputType.phone,
@@ -188,13 +196,13 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                        height: 20.0,
+                       SizedBox(
+                        height: screenHeight / 40,
                         child: Text(
                           "Complaint Date:",
                           style: TextStyle(
                             color: Color(0xff090a0a),
-                            fontSize: 16,
+                            fontSize: screenHeight / 50,
                             fontFamily: "Inter",
                             fontWeight: FontWeight.w500,
                           ),
@@ -204,29 +212,28 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                         height: 10,
                       ),
                       TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         readOnly: true,
                         initialValue: obj.complaintDate,
                         keyboardType: TextInputType.phone,
-                        validator: (value) => value?.length == 12
-                            ? null
-                            : 'Enter valid Aadhar number',
                         decoration: textInputDecoration.copyWith(
-                          hintText: 'Enter Your Adhaar Number',
+                          hintText: 'Enter Complaint Date',
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      const SizedBox(
-                          height: 20.0,
+                       SizedBox(
+                          height: screenHeight / 40,
                           child: Text(
                             'Complaint Status:',
                             style: TextStyle(
                               color: Color(0xff090a0a),
-                              fontSize: 16,
+                              fontSize: screenHeight / 50,
                               fontFamily: "Inter",
                               fontWeight: FontWeight.w500,
                             ),
                           )),
                       TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
                         readOnly: true,
                         initialValue: obj.complaintResult,
                         //[Viru:26/5/23] since it is view screen, no need of below code
@@ -253,7 +260,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                           'Complaint Details:',
                           style: TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 16,
+                            fontSize: screenHeight / 50,
                             fontWeight: FontWeight.w500,
                             height: 1,
                             color: Color(0xff000000),
@@ -285,15 +292,19 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                           ),
                         ),
                       ),*/
-                      Container(
-                        margin: EdgeInsets.only(left: 120),
-                        child: Text(
-                          status,
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 14.0,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            child: Text(
+                              status,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 14.0,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                       const SizedBox(
                         height: 20.0,
@@ -303,7 +314,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                         children: [
                           Container(
                             // margin: EdgeInsets.fromLTRB(260, 60, 6, 0),
-                            height: 59,
+                            height: screenHeight / 15,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(9),
                             ),
@@ -319,8 +330,8 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                                     padding: EdgeInsets.zero,
                                   ),
                                   child: Container(
-                                    width: 95.63,
-                                    height: 59,
+                                    width: screenWidth / 6,
+                                    height: screenHeight / 15,
                                     decoration: BoxDecoration(
                                       color: Color(0xff4d47c3),
                                       borderRadius: BorderRadius.circular(9),
@@ -338,7 +349,7 @@ class _ViewComplaintDetailsState extends State<ViewComplaintDetails> {
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: "Poppins",
-                                          fontSize: 16,
+                                          fontSize: screenHeight / 50,
                                           fontWeight: FontWeight.w500,
                                           height: 1.5,
                                           color: Color(0xffffffff),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/customer/customer_registration.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 
@@ -15,7 +16,7 @@ class _RegisterAsState extends State<RegisterAs> {
   @override
   Widget build(BuildContext context) {
     return Container(
-    width: 440,
+    width: screenWidth,
     color: Colors.white,
     padding: const EdgeInsets.only(top: 14,),
     child: Column(
@@ -23,20 +24,21 @@ class _RegisterAsState extends State<RegisterAs> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children:[
-            const SizedBox(
-                width: 324,
-                height: 35,
+            SizedBox(height: screenHeight / 200,),
+            SizedBox(
+                width: screenWidth - 100,
+                height: screenHeight / 15,
                 child: Text(
                     "Register as",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.black,
-                        fontSize: 30,
+                        fontSize: screenHeight / 30,
                     ),
                 ),
             ),
-            const SizedBox(height: 5,),
-            SizedBox(height: 3, width: 250, child: Container(color: Colors.black,),),
+            SizedBox(height: screenHeight / 200,),
+            SizedBox(height: 3, width: screenWidth / 2, child: Container(color: Colors.black,),),
             const SizedBox(height: 20.20),
             TextButton(
               onPressed: () {
@@ -45,8 +47,8 @@ class _RegisterAsState extends State<RegisterAs> {
                         arguments: 'Sales Executive');
               },
               child: Container(
-                  width: 322,
-                  height: 59,
+                  width: screenWidth - 100,
+                  height: screenHeight / 15,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
                       boxShadow: const [
@@ -63,13 +65,13 @@ class _RegisterAsState extends State<RegisterAs> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children:const [
+                      children:[
                           Text(
                               "Sales Executive",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w500,
                               ),
@@ -86,8 +88,8 @@ class _RegisterAsState extends State<RegisterAs> {
                         arguments: 'Sales Co-Ordinator');
               },
               child: Container(
-                  width: 322,
-                  height: 59,
+                  width: screenWidth - 100,
+                  height: screenHeight / 15,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
                       boxShadow: const [
@@ -104,12 +106,12 @@ class _RegisterAsState extends State<RegisterAs> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children:const [
+                      children:[
                           Text(
                               "Sales Co-Ordinator",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w500,
                               ),
@@ -128,8 +130,8 @@ class _RegisterAsState extends State<RegisterAs> {
                         ));
               },
               child: Container(
-                  width: 322,
-                  height: 59,
+                  width: screenWidth - 100,
+                  height: screenHeight / 15,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
                       boxShadow: const [
@@ -146,12 +148,12 @@ class _RegisterAsState extends State<RegisterAs> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children:const [
+                      children: [
                           Text(
                               "Customer",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.w500,
                               ),

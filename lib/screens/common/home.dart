@@ -20,14 +20,17 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
+    globalcontext = context;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Energy Efficient Lights'),
+        title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
         backgroundColor:const Color(0xff4d47c3),
       ),
       body: SingleChildScrollView(
         child: Container(
-          width: 440,
+          width: screenWidth,
+          height: screenHeight - 100,
           color: Colors.white,
           padding: const EdgeInsets.only(
             top: 10,
@@ -39,24 +42,24 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 180,
-                  height: 60,
+                  width: screenWidth / 3,
+                  height: screenHeight / 10,
                   child: Image.asset('assets/logotm.jpg'),
                 ),
-                const SizedBox(
-                  height: 20.80,
+                SizedBox(
+                  height: screenHeight / 80,
                 ),
                 SizedBox(
-                    width: 344,
-                    height: 59,
+                    width: screenWidth - 100,
+                    height: screenHeight / 15,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 344,
-                          height: 59,
+                          width: screenWidth - 100,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(33),
                             color: const Color(0xffa7a2ff),
@@ -65,57 +68,63 @@ class _HomeState extends State<Home> {
                             children: [
                               Positioned(
                                 left: left,
-                                top: 9,
+                                top: 7,
                                 child: Container(
-                                  width: 143.78,
-                                  height: 40,
+                                  width: (screenWidth - 100) / 2,
+                                  height: screenHeight / 20,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(33),
                                     color: const Color(0xff4d47c3),
                                   ),
                                 ),
                               ),
-                              Positioned(
-                                left: 195,
-                                top: 5,
-                                child: SizedBox(
-                                    width: 104.45,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          left = 170.0;
-                                          login = false;
-                                        });
-                                      },
-                                      child: const Text(
-                                        'New user',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    )),
-                              ),
-                              Positioned(
-                                left: 50,
-                                top: 5,
-                                child: SizedBox(
-                                    width: 76.29,
-                                    child: TextButton(
-                                      onPressed: () {
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                TextButton(
+                                  onPressed: () {
                                         setState(() {
                                           left = 18.0;
                                           login = true;
                                         });
                                       },
-                                      child: const Text(
-                                        'Login',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    )),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [SizedBox(
+                                        width: screenWidth / 7,
+                                        child: Text(
+                                          'Login',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: screenHeight / 50,
+                                          ),
+                                        )),]
+                                  ),
+                                ),
+                                  TextButton(
+                                    onPressed: () {
+                                        setState(() {
+                                          left = (screenWidth - 130) / 2;
+                                          login = false;
+                                        });
+                                      },
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [SizedBox(
+                                        width: screenWidth / 6,
+                                        child: Text(
+                                          'New user',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: screenHeight / 50,
+                                          ),
+                                        )),]
+                                    ),
+                                  ),
+                                ]
                               ),
                             ],
                           ),

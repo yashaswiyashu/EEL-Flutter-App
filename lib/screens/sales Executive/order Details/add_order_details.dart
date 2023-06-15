@@ -9,6 +9,7 @@ import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -343,12 +344,12 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
 
     List<DataColumn> createColumns() {
       return [
-        DataColumn(label: Text('Product')),
-        DataColumn(label: Text('Quantity')),
-        DataColumn(label: Text('unit price(In Rs.)')),
-        DataColumn(label: Text('Offer(In %)')),
-        DataColumn(label: Text('Amount')),
-        DataColumn(label: Text('Remove Row')),
+        DataColumn(label: Text('Product', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Quantity', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('unit price(In Rs.)', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Offer(In %)', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Amount', style: TextStyle(fontSize: screenHeight / 50))),
+        DataColumn(label: Text('Remove Row', style: TextStyle(fontSize: screenHeight / 50))),
       ];
     }
 
@@ -376,7 +377,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Energy Efficient Lights'),
+        title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
         backgroundColor: const Color(0xff4d47c3),
         actions: [
           TextButton.icon(
@@ -385,820 +386,834 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     'authWrapper', (Route<dynamic> route) => false);
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.person,
                 color: Colors.white,
+                size: screenHeight / 50,
               ),
-              label: const Text(
+              label: Text(
                 'logout',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
               )),
         ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
-        child: Form(
-          key: _formkey,
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                !isCust ? Container(
-                  padding: EdgeInsets.only(right: 15, top: 10),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      'Name: ${salesExecutive.name}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+        child: Container(
+          width: screenWidth,
+          child: Form(
+            key: _formkey,
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  !isCust ? Container(
+                    padding: EdgeInsets.only(right: 15, top: 10),
+                    child:
+                        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Text(
+                        'Name: ${salesExecutive.name}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: screenHeight / 55,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                    ]),
+                  ) : Container(height: 0, width: 0,),
+                  const SizedBox(height: 5.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: screenWidth / 3,
+                        height: screenHeight / 10,
+                        child: Image.asset('assets/logotm.jpg'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10.0),
+                  SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      "Customer Name:",
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  // DropdownButtonFormField(
+                  //   decoration: const InputDecoration(
+                  //     enabledBorder: OutlineInputBorder(
+                  //       //<-- SEE HERE
+                  //       borderSide: BorderSide(color: Colors.black, width: 0),
+                  //     ),
+                  //     focusedBorder: OutlineInputBorder(
+                  //       //<-- SEE HERE
+                  //       borderSide: BorderSide(color: Colors.black, width: 2),
+                  //     ),
+                  //     filled: true,
+                  //     fillColor: Color(0xffefefff),
+                  //   ),
+                  //   dropdownColor: const Color(0xffefefff),
+                  //   value: customerName,
+                  //   onChanged: (String? newValue) {
+                  //     setState(() {
+                  //       customerName = newValue!;
+                  //     });
+                  //     setCustomerData();
+                  //   },
+                  //   items: customerNamesList
+                  //       .map<DropdownMenuItem<String>>((String value) {
+                  //     return DropdownMenuItem<String>(
+                  //       value: value,
+                  //       child: Text(
+                  //         value,
+                  //         style: const TextStyle(fontSize: 18),
+                  //       ),
+                  //     );
+                  //   }).toList(),
+                  // ),
+                  TypeAheadFormField(
+                    
+                    textFieldConfiguration: TextFieldConfiguration(
+                      style: TextStyle(fontSize: screenHeight / 50),
+                      controller: nameController,
+                      decoration: textInputDecoration.copyWith(
+                        hintText: 'Enter Customer Name',
+                        fillColor: const Color(0xfff0efff),
+                      ),
+                      /* onChanged: (val) {
+                        customerName = val;
+                      }, */
+                    ),
+        
+                    suggestionsCallback: (pattern) async {
+                      // Filter the customer list based on the search pattern
+                      return details
+                      .where((customer) =>
+                      customer != null &&
+                      customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
+                      .toList();
+                    },
+        
+                    itemBuilder: (context, CustomerModel? suggestion) {
+                      if (suggestion == null) return const SizedBox.shrink();
+                      return ListTile(
+                        title: Text(suggestion.customerName),
+                      );
+                    },
+        
+                    onSuggestionSelected: (CustomerModel? suggestion) {
+                      if (suggestion != null) {
+                        setState(() {
+                          //customerName = suggestion.customerName;
+                          nameController.text = suggestion.customerName;
+                          setCustomerData();
+                      });
+                    }
+                },
+        
+              ),
+                Container(
+                  margin: const EdgeInsets.only(left: 110),
+                  child: Text(
+                    nameErr,
+                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                  ),
+                ),
+                  !isCust ? SizedBox(
+                      height: screenHeight / 40,
+                      child: Text(
+                        'Shippment ID:',
+                        style: TextStyle(
+                          color: Color(0xff090a0a),
+                          fontSize: screenHeight / 50,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )) : const SizedBox(height: 0,),
+                  !isCust ? TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
+                    keyboardType: TextInputType.phone,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Shipment ID',
+                    ),
+                    onChanged: (val) {
+                      shipmentID = val;
+                    },
+                  ) : const SizedBox(height: 0,),
+                  !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0,),
+                  SizedBox(
+                      height: screenHeight / 40,
+                      child: Text(
+                        'customer mobile num:',
+                        style: TextStyle(
+                          color: Color(0xff090a0a),
+                          fontSize: screenHeight / 50,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
+                    keyboardType: TextInputType.phone,
+                    controller: controllerNumber,
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter customer mob.num',
+                    ),
+                    validator: (value) =>
+                        value!.length < 10 ? 'Enter valid mobile number' : null,
+                    // onChanged: (val) {
+                    //   mobileNumber = val;
+                    // },
+                  ),
+                  const SizedBox(height: 20.0),
+                  SizedBox(
+                      height: screenHeight / 40,
+                      child: Text(
+                        'Customer Full Address:',
+                        style: TextStyle(
+                          color: Color(0xff090a0a),
+                          fontSize: screenHeight / 50,
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
+                    controller: controllerAddress1,
+                    decoration:
+                        textInputDecoration.copyWith(hintText: 'house#, area'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     address1 = val;
+                    //   });
+                    // },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
+                    controller: controllerAddress2,
+                    decoration:
+                        textInputDecoration.copyWith(hintText: 'town, taluk'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     address2 = val;
+                    //   });
+                    // },
+                  ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
+                    controller: controllerCity,
+                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter City name' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     city = val;
+                    //   });
+                    // },
+                  ),
+                  const SizedBox(height: 10.0),
+                  // DropdownButtonFormField(
+                  //   decoration: const InputDecoration(
+                  //     enabledBorder: OutlineInputBorder(
+                  //       //<-- SEE HERE
+                  //       borderSide: BorderSide(color: Colors.black, width: 0),
+                  //     ),
+                  //     focusedBorder: OutlineInputBorder(
+                  //       //<-- SEE HERE
+                  //       borderSide: BorderSide(color: Colors.black, width: 0),
+                  //     ),
+                  //     filled: true,
+                  //     fillColor: Color(0xffefefff),
+                  //   ),
+                  //   dropdownColor: const Color(0xffefefff),
+                  //   value: state,
+                  //   onChanged: (String? newValue) {
+                  //     setState(() {
+                  //       state = newValue!;
+                  //     });
+                  //   },
+                  //   items: <String>[
+                  //     'Select State',
+                  //     'Karnataka',
+                  //     'Kerala',
+                  //     'Tamil Nadu',
+                  //     'Andra Pradesh'
+                  //   ].map<DropdownMenuItem<String>>((String value) {
+                  //     return DropdownMenuItem<String>(
+                  //       value: value,
+                  //       child: Text(
+                  //         value,
+                  //         style: const TextStyle(fontSize: 18),
+                  //       ),
+                  //     );
+                  //   }).toList(),
+                  // ),
+                                      TextFormField(
+                                        style: TextStyle(fontSize: screenHeight / 50),
+                        controller: controllerState,
+                        decoration:
+                            textInputDecoration.copyWith(hintText: 'state'),
+                        validator: (value) =>
+                            value!.isEmpty ? 'Enter Customer Full Address' : null,
+                        // onChanged: (val) {
+                        //   setState(() {
+                        //     city = val;
+                        //   });
+                        // },
+                      ),
+                  const SizedBox(height: 10.0),
+                  TextFormField(
+                    style: TextStyle(fontSize: screenHeight / 50),
+                    controller: controllerPincode,
+                    decoration: textInputDecoration.copyWith(hintText: 'pincode'),
+                    validator: (value) =>
+                        value!.length != 6 ? 'Enter valid Pincode' : null,
+                    // onChanged: (val) {
+                    //   setState(() {
+                    //     pincode = val;
+                    //   });
+                    // },
+                  ),
+                  !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0.0),
+                  !isCust ? SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      "Delivery Date:",
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ) : const SizedBox(height: 0.0),
+                  !isCust ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffe3e4e5)),
+                    onPressed: () {
+                      _restorableDatePickerRouteFuture.present();
+                    },
+                    child: Text(
+                      callDate,
+                      style: TextStyle(color: Colors.black, fontSize: screenHeight / 50),
+                    ),
+                  ) : const SizedBox(height: 0.0),
+                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    Text(
+                      dateError,
+                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
                     ),
                   ]),
-                ) : Container(height: 0, width: 0,),
-                const SizedBox(height: 5.0),
-                Container(
-                  margin: const EdgeInsets.only(left: 100),
-                  width: 180,
-                  height: 60,
-                  child: Image.asset('assets/logotm.jpg'),
-                ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    "Customer Name:",
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
+                  !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0.0),
+                  !isCust ? SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      "Order status",
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ),
-                // DropdownButtonFormField(
-                //   decoration: const InputDecoration(
-                //     enabledBorder: OutlineInputBorder(
-                //       //<-- SEE HERE
-                //       borderSide: BorderSide(color: Colors.black, width: 0),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       //<-- SEE HERE
-                //       borderSide: BorderSide(color: Colors.black, width: 2),
-                //     ),
-                //     filled: true,
-                //     fillColor: Color(0xffefefff),
-                //   ),
-                //   dropdownColor: const Color(0xffefefff),
-                //   value: customerName,
-                //   onChanged: (String? newValue) {
-                //     setState(() {
-                //       customerName = newValue!;
-                //     });
-                //     setCustomerData();
-                //   },
-                //   items: customerNamesList
-                //       .map<DropdownMenuItem<String>>((String value) {
-                //     return DropdownMenuItem<String>(
-                //       value: value,
-                //       child: Text(
-                //         value,
-                //         style: const TextStyle(fontSize: 18),
-                //       ),
-                //     );
-                //   }).toList(),
-                // ),
-                TypeAheadFormField(
-                  
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: nameController,
-                    decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Customer Name',
-                      fillColor: const Color(0xfff0efff),
+                  ) : const SizedBox(height: 0.0),
+                  !isCust ? DropdownButtonFormField(
+                    decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        //<-- SEE HERE
+                        borderSide: BorderSide(color: Colors.black, width: 0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        //<-- SEE HERE
+                        borderSide: BorderSide(color: Colors.black, width: 1),
+                      ),
+                      filled: true,
+                      fillColor: Color(0xffefefff),
                     ),
-                    /* onChanged: (val) {
-                      customerName = val;
-                    }, */
-                  ),
-
-                  suggestionsCallback: (pattern) async {
-                    // Filter the customer list based on the search pattern
-                    return details
-                    .where((customer) =>
-                    customer != null &&
-                    customer.customerName.toLowerCase().contains(pattern.toLowerCase()))
-                    .toList();
-                  },
-
-                  itemBuilder: (context, CustomerModel? suggestion) {
-                    if (suggestion == null) return const SizedBox.shrink();
-                    return ListTile(
-                      title: Text(suggestion.customerName),
-                    );
-                  },
-
-                  onSuggestionSelected: (CustomerModel? suggestion) {
-                    if (suggestion != null) {
+                    dropdownColor: const Color(0xffefefff),
+                    value: dropDown,
+                    onChanged: (String? newValue) {
                       setState(() {
-                        //customerName = suggestion.customerName;
-                        nameController.text = suggestion.customerName;
-                        setCustomerData();
-                    });
-                  }
-              },
-
-            ),
-              Container(
-                margin: const EdgeInsets.only(left: 110),
-                child: Text(
-                  nameErr,
-                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                ),
-              ),
-                !isCust ? const SizedBox(
-                    height: 20.0,
-                    child: Text(
-                      'Shippment ID:',
-                      style: TextStyle(
-                        color: Color(0xff090a0a),
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )) : const SizedBox(height: 0,),
-                !isCust ? TextFormField(
-                  keyboardType: TextInputType.phone,
-                  decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Shipment ID',
+                        dropDown = newValue!;
+                      });
+                    },
+                    items: <String>[
+                      'Order Placed',
+                      'Payment Pending',
+                      'Shipped',
+                      'Out for Delivery',
+                      'Delivered',
+                      'Cancelled',
+                      'Returned'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(fontSize: screenHeight / 50),
+                        ),
+                      );
+                    }).toList(),
+                  ) : const SizedBox(height: 0.0),
+                  const SizedBox(
+                    height: 10.0,
                   ),
-                  onChanged: (val) {
-                    shipmentID = val;
-                  },
-                ) : const SizedBox(height: 0,),
-                !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0,),
-                const SizedBox(
-                    height: 20.0,
-                    child: Text(
-                      'customer mobile num:',
-                      style: TextStyle(
-                        color: Color(0xff090a0a),
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )),
-                TextFormField(
-                  keyboardType: TextInputType.phone,
-                  controller: controllerNumber,
-                  decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter customer mob.num',
-                  ),
-                  validator: (value) =>
-                      value!.length < 10 ? 'Enter valid mobile number' : null,
-                  // onChanged: (val) {
-                  //   mobileNumber = val;
-                  // },
-                ),
-                const SizedBox(height: 20.0),
-                const SizedBox(
-                    height: 20.0,
-                    child: Text(
-                      'Customer Full Address:',
-                      style: TextStyle(
-                        color: Color(0xff090a0a),
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  controller: controllerAddress1,
-                  decoration:
-                      textInputDecoration.copyWith(hintText: 'house#, area'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     address1 = val;
-                  //   });
-                  // },
-                ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  controller: controllerAddress2,
-                  decoration:
-                      textInputDecoration.copyWith(hintText: 'town, taluk'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     address2 = val;
-                  //   });
-                  // },
-                ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  controller: controllerCity,
-                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Enter City name' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     city = val;
-                  //   });
-                  // },
-                ),
-                const SizedBox(height: 10.0),
-                // DropdownButtonFormField(
-                //   decoration: const InputDecoration(
-                //     enabledBorder: OutlineInputBorder(
-                //       //<-- SEE HERE
-                //       borderSide: BorderSide(color: Colors.black, width: 0),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       //<-- SEE HERE
-                //       borderSide: BorderSide(color: Colors.black, width: 0),
-                //     ),
-                //     filled: true,
-                //     fillColor: Color(0xffefefff),
-                //   ),
-                //   dropdownColor: const Color(0xffefefff),
-                //   value: state,
-                //   onChanged: (String? newValue) {
-                //     setState(() {
-                //       state = newValue!;
-                //     });
-                //   },
-                //   items: <String>[
-                //     'Select State',
-                //     'Karnataka',
-                //     'Kerala',
-                //     'Tamil Nadu',
-                //     'Andra Pradesh'
-                //   ].map<DropdownMenuItem<String>>((String value) {
-                //     return DropdownMenuItem<String>(
-                //       value: value,
-                //       child: Text(
-                //         value,
-                //         style: const TextStyle(fontSize: 18),
-                //       ),
-                //     );
-                //   }).toList(),
-                // ),
-                                    TextFormField(
-                      controller: controllerState,
-                      decoration:
-                          textInputDecoration.copyWith(hintText: 'state'),
-                      validator: (value) =>
-                          value!.isEmpty ? 'Enter Customer Full Address' : null,
-                      // onChanged: (val) {
-                      //   setState(() {
-                      //     city = val;
-                      //   });
-                      // },
-                    ),
-                const SizedBox(height: 10.0),
-                TextFormField(
-                  controller: controllerPincode,
-                  decoration: textInputDecoration.copyWith(hintText: 'pincode'),
-                  validator: (value) =>
-                      value!.length != 6 ? 'Enter valid Pincode' : null,
-                  // onChanged: (val) {
-                  //   setState(() {
-                  //     pincode = val;
-                  //   });
-                  // },
-                ),
-                !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0.0),
-                !isCust ? const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    "Delivery Date:",
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ) : const SizedBox(height: 0.0),
-                !isCust ? ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffe3e4e5)),
-                  onPressed: () {
-                    _restorableDatePickerRouteFuture.present();
-                  },
-                  child: Text(
-                    callDate,
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ) : const SizedBox(height: 0.0),
-                Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text(
-                    dateError,
-                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                  ),
-                ]),
-                !isCust ? const SizedBox(height: 20.0) : const SizedBox(height: 0.0),
-                !isCust ? const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    "Order status",
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ) : const SizedBox(height: 0.0),
-                !isCust ? DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      //<-- SEE HERE
-                      borderSide: BorderSide(color: Colors.black, width: 1),
-                    ),
-                    filled: true,
-                    fillColor: Color(0xffefefff),
-                  ),
-                  dropdownColor: const Color(0xffefefff),
-                  value: dropDown,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropDown = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    'Order Placed',
-                    'Payment Pending',
-                    'Shipped',
-                    'Out for Delivery',
-                    'Delivered',
-                    'Cancelled',
-                    'Returned'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    );
-                  }).toList(),
-                ) : const SizedBox(height: 0.0),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Column(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        dataRowHeight: 60,
-                        columns: createColumns(),
-                        rows: List.generate(
-                          tableData.length,
-                          (int rowIndex) {
-                            return DataRow(
-                              cells: List.generate(
-                                6,
-                                (int cellIndex) {
-                                  if (cellIndex == 0) {
-                                    return DataCell(
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 16),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            value: select[rowIndex] == ''
-                                                ? selectedOptions[rowIndex]
-                                                : select[rowIndex],
-                                            items: products
-                                                .map<DropdownMenuItem<String>>(
-                                                  (String value) =>
-                                                      DropdownMenuItem<String>(
-                                                    value: value,
-                                                    child: Text(value),
-                                                  ),
-                                                )
-                                                .toList(),
-                                            onChanged: (String? value) {
-                                              select[rowIndex] = value!;
-                                              var count = 0;
-                                              for (var k = 0;
-                                                  k < rowIndex;
-                                                  k++) {
-                                                if (select[rowIndex] ==
-                                                    select[k]) {
-                                                  count++;
+                  Column(
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          dataRowHeight: screenHeight / 15,
+                          columns: createColumns(),
+                          rows: List.generate(
+                            tableData.length,
+                            (int rowIndex) {
+                              return DataRow(
+                                cells: List.generate(
+                                  6,
+                                  (int cellIndex) {
+                                    if (cellIndex == 0) {
+                                      return DataCell(
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              value: select[rowIndex] == ''
+                                                  ? selectedOptions[rowIndex]
+                                                  : select[rowIndex],
+                                              items: products
+                                                  .map<DropdownMenuItem<String>>(
+                                                    (String value) =>
+                                                        DropdownMenuItem<String>(
+                                                      value: value,
+                                                      child: Text(value, style: TextStyle(fontSize: screenHeight / 55),),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                              onChanged: (String? value) {
+                                                select[rowIndex] = value!;
+                                                var count = 0;
+                                                for (var k = 0;
+                                                    k < rowIndex;
+                                                    k++) {
+                                                  if (select[rowIndex] ==
+                                                      select[k]) {
+                                                    count++;
+                                                  }
                                                 }
-                                              }
-
-                                              if (count != 0) {
-                                                setState(() {
-                                                  productError =
-                                                      'Please select unique product';
-                                                });
-                                              } else {
-                                                setState(() {
-                                                  productError = '';
-                                                });
-                                                selectedOptions[rowIndex] =
-                                                    value;
-                                                onDropdownChanged(value,
-                                                    rowIndex, productDetails);
-                                              }
+        
+                                                if (count != 0) {
+                                                  setState(() {
+                                                    productError =
+                                                        'Please select unique product';
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    productError = '';
+                                                  });
+                                                  selectedOptions[rowIndex] =
+                                                      value;
+                                                  onDropdownChanged(value,
+                                                      rowIndex, productDetails);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    } else if (cellIndex == 1) {
+                                      return DataCell(
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: screenWidth / 15,
+                                              height: screenHeight / 10,
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  if (quantity[rowIndex] > 1) {
+                                                    setState(() {
+                                                      quantity[rowIndex]--;
+                                                      populateTable(
+                                                          productDetails);
+                                                    });
+                                                  }
+                                                },
+                                                child: Text('-',
+                                                    style:
+                                                        TextStyle(fontSize: screenHeight / 55)),
+                                              ),
+                                            ),
+                                            Text(
+                                              quantity[rowIndex].toString(),
+                                              style: TextStyle(fontSize: screenHeight / 50),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth / 15,
+                                              height: screenHeight / 10,
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  if (quantity[rowIndex] > 0) {
+                                                    setState(() {
+                                                      quantity[rowIndex]++;
+                                                      populateTable(
+                                                          productDetails);
+                                                    });
+                                                  }
+                                                },
+                                                child: Text('+',
+                                                    style:
+                                                        TextStyle(fontSize: screenHeight / 55)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    } else if (cellIndex == 5) {
+                                      return DataCell(
+                                        SizedBox(
+                                          child: TextButton.icon(
+                                            onPressed: () {
+                                              // if (rowIndex != 0) {
+                                              removeRow(rowIndex);
+                                              // }
                                             },
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  } else if (cellIndex == 1) {
-                                    return DataCell(
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: TextButton(
-                                              onPressed: () {
-                                                if (quantity[rowIndex] > 1) {
-                                                  setState(() {
-                                                    quantity[rowIndex]--;
-                                                    populateTable(
-                                                        productDetails);
-                                                  });
-                                                }
-                                              },
-                                              child: const Text('-',
-                                                  style:
-                                                      TextStyle(fontSize: 20)),
+                                            icon: Icon(
+                                              Icons.remove_circle_outline,
+                                              color: Colors.black,
+                                              size: screenHeight / 50,
+                                            ),
+                                            label: Text(
+                                              'Remove',
+                                              style:
+                                                  TextStyle(color: Colors.black, fontSize: screenHeight / 55),
                                             ),
                                           ),
-                                          Text(
-                                            quantity[rowIndex].toString(),
-                                            style: TextStyle(fontSize: 20),
-                                          ),
-                                          SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: TextButton(
-                                              onPressed: () {
-                                                if (quantity[rowIndex] > 0) {
-                                                  setState(() {
-                                                    quantity[rowIndex]++;
-                                                    populateTable(
-                                                        productDetails);
-                                                  });
-                                                }
-                                              },
-                                              child: const Text('+',
-                                                  style:
-                                                      TextStyle(fontSize: 20)),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  } else if (cellIndex == 5) {
-                                    return DataCell(
-                                      SizedBox(
-                                        child: TextButton.icon(
-                                          onPressed: () {
-                                            // if (rowIndex != 0) {
-                                            removeRow(rowIndex);
-                                            // }
-                                          },
-                                          icon: Icon(
-                                            Icons.remove_circle_outline,
-                                            color: Colors.black,
-                                          ),
-                                          label: Text(
-                                            'Remove',
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }
-                                  return DataCell(
-                                    Text(tableData[rowIndex][cellIndex]),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      Text(
-                        productError,
-                        style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),
-                    ]),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xff4d47c3),
-                        ),
-                        onPressed: addRow,
-                        child: const Text('Add +'),
-                      ),
-                    ]),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    DataTable(
-                      columns: const [
-                        DataColumn(label: Text('')),
-                        DataColumn(label: Text('')),
-                      ],
-                      rows: [
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'Sub Total:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text(subTotal)),
-                          ],
-                        ),
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'CGST:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text('9%')),
-                          ],
-                        ),
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'SGST:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text('9%')),
-                          ],
-                        ),
-                        DataRow(
-                          cells: [
-                            DataCell(Text(
-                              'Total:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            DataCell(Text((total))),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    error,
-                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                  ),
-                ]),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                loading
-                    ? const CircularProgressIndicator()
-                    : SizedBox(
-                        height: 59,
-                        width: 420,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                              if(!isDupName) {
-                                setState(() {
-                                  nameErr = 'Entered customer is not registerd. Please Register and Try again';
-                                });
-                              }
-                                if (_formkey.currentState!.validate() &&
-                                    customerId != '' &&
-                                    (callDate != 'Select Date' || isCust) &&
-                                    selectedOptions[
-                                            selectedOptions.length - 1] !=
-                                        'Select Product' &&
-                                    productError == '' && nameErr == '') {
-                                  setState(() {
-                                    loading = true;
-                                    dateError = '';
-                                    productError = '';
-                                    error = '';
-                                  });
-
-                                    for(var i =0; i < selectedOptions.length; i++) {
-                                      productsList.add(OrdersProductModel(
-                                        uid: FirebaseFirestore.instance.collection('OrderDetailsTable').doc().collection('ProductDetailsTable').doc().id, 
-                                        productName: selectedOptions[i], 
-                                        quantity: quantity[i].toString(), 
-                                        amount: amountList[i].toString(),
-                                      ));
+                                      );
                                     }
-
-
-                                  
-                                  dynamic result =
-                                      await OrderDetailsDatabaseService(
-                                              docid: '')
-                                          .setOrderData(
-                                              args.uid == '' ? currentUser!.uid : args.uid,
-                                              customerId,
-                                              customerName,
-                                              shipmentID,
-                                              mobileNumber,
-                                              address1,
-                                              address2,
-                                              city,
-                                              state,
-                                              pincode,
-                                              callDate,
-                                              dropDown,
-                                              subTotal,
-                                              total,
-                                              '${orderedDate.day}/${orderedDate.month}/${orderedDate.year}',
-                                              productsList,
-                                              )
-                                          .then((value) async {
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                    // for (var j = 0;
-                                    //     j < selectedOptions.length;
-                                    //     j++) {
-                                    //   if (selectedOptions[j] !=
-                                    //       'Select Product') {
-                                    //     await OrderDetailsDatabaseService(
-                                    //             docid: value)
-                                    //         .setOrderedProductDetails(
-                                    //       value,
-                                    //       selectedOptions[j],
-                                    //       quantity[j].toString(),
-                                    //       amountList[j].toString(),
-                                    //     )
-                                    //         .then((value) {
-                                    //       
-                                    //     });
-                                    //   }
-                                    // }
-                                    ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text(
-                                                'Order details added Successfully!!!'),
-                                          ));
-                                          Navigator.pop(context);
-                                  });
-                                } else {
-                                  if (customerId == '') {
-                                    setState(() {
-                                      error =
-                                          'The entered customer does not exist please register';
-                                      loading = false;
-                                    });
-                                  }
-
-                                  if (callDate == 'Select Date' && !isCust) {
-                                    setState(() {
-                                      dateError = 'Please enter delivery date';
-                                      loading = false;
-                                    });
-                                  }
-
-                                  if (selectedOptions[
-                                          selectedOptions.length - 1] ==
-                                      'Select Product') {
-                                    setState(() {
-                                      productError =
-                                          'Please select a product to place order';
-                                      loading = false;
-                                    });
-                                  }
-
-                                  if (productError != '') {
-                                    setState(() {
-                                      loading = false;
-                                      error = 'Enter valid product details';
-                                    });
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xff4d47c3),
-                              ),
-                              child: Container(
-                                width: 100,
-                                height: 59,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x664d47c3),
-                                      blurRadius: 61,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                  color: const Color(0xff4d47c3),
+                                    return DataCell(
+                                      Text(tableData[rowIndex][cellIndex], style: TextStyle(fontSize: screenHeight / 50),),
+                                    );
+                                  },
                                 ),
-                                padding: const EdgeInsets.only(
-                                  top: 18,
-                                  bottom: 17,
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    SizedBox(
-                                      width: 90,
-                                      child: Text(
-                                        "submit",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontFamily: "Poppins",
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 55,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xff4d47c3),
-                              ),
-                              child: Container(
-                                width: 100,
-                                height: 59,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x664d47c3),
-                                      blurRadius: 61,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                  color: const Color(0xff4d47c3),
-                                ),
-                                padding: const EdgeInsets.only(
-                                  top: 18,
-                                  bottom: 17,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: const [
-                                    SizedBox(
-                                      width: 70,
-                                      child: Text(
-                                        "Cancel",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontFamily: "Poppins",
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                              );
+                            },
+                          ),
                         ),
                       ),
-                const SizedBox(height: 20.0),
-              ]),
+                      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                        Text(
+                          productError,
+                          style:
+                             TextStyle(color: Colors.red, fontSize: screenHeight / 60),
+                        ),
+                      ]),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff4d47c3),
+                          ),
+                          onPressed: addRow,
+                          child: Text('Add +', style: TextStyle(fontSize: screenHeight / 50),),
+                        ),
+                      ]),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      DataTable(
+                        columns: const [
+                          DataColumn(label: Text('')),
+                          DataColumn(label: Text('')),
+                        ],
+                        rows: [
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'Sub Total:',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
+                              )),
+                              DataCell(Text(subTotal, style: TextStyle(fontSize: screenHeight / 50),)),
+                            ],
+                          ),
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'CGST:',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
+                              )),
+                              DataCell(Text('9%', style: TextStyle(fontSize: screenHeight / 50),)),
+                            ],
+                          ),
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'SGST:',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
+                              )),
+                              DataCell(Text('9%', style: TextStyle(fontSize: screenHeight / 50),)),
+                            ],
+                          ),
+                          DataRow(
+                            cells: [
+                              DataCell(Text(
+                                'Total:',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenHeight / 50),
+                              )),
+                              DataCell(Text(total, style: TextStyle(fontSize: screenHeight / 50),)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Text(
+                      error,
+                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                  ]),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  loading
+                      ? const CircularProgressIndicator()
+                      : SizedBox(
+                          height: screenHeight / 6,
+                          width: screenWidth,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                if(!isDupName) {
+                                  setState(() {
+                                    nameErr = 'Entered customer is not registerd. Please Register and Try again';
+                                  });
+                                }
+                                  if (_formkey.currentState!.validate() &&
+                                      customerId != '' &&
+                                      (callDate != 'Select Date' || isCust) &&
+                                      selectedOptions[
+                                              selectedOptions.length - 1] !=
+                                          'Select Product' &&
+                                      productError == '' && nameErr == '') {
+                                    setState(() {
+                                      loading = true;
+                                      dateError = '';
+                                      productError = '';
+                                      error = '';
+                                    });
+        
+                                      for(var i =0; i < selectedOptions.length; i++) {
+                                        productsList.add(OrdersProductModel(
+                                          uid: FirebaseFirestore.instance.collection('OrderDetailsTable').doc().collection('ProductDetailsTable').doc().id, 
+                                          productName: selectedOptions[i], 
+                                          quantity: quantity[i].toString(), 
+                                          amount: amountList[i].toString(),
+                                        ));
+                                      }
+        
+        
+                                    
+                                    dynamic result =
+                                        await OrderDetailsDatabaseService(
+                                                docid: '')
+                                            .setOrderData(
+                                                args.uid == '' ? currentUser!.uid : args.uid,
+                                                customerId,
+                                                customerName,
+                                                shipmentID,
+                                                mobileNumber,
+                                                address1,
+                                                address2,
+                                                city,
+                                                state,
+                                                pincode,
+                                                callDate,
+                                                dropDown,
+                                                subTotal,
+                                                total,
+                                                '${orderedDate.day}/${orderedDate.month}/${orderedDate.year}',
+                                                productsList,
+                                                )
+                                            .then((value) async {
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                      // for (var j = 0;
+                                      //     j < selectedOptions.length;
+                                      //     j++) {
+                                      //   if (selectedOptions[j] !=
+                                      //       'Select Product') {
+                                      //     await OrderDetailsDatabaseService(
+                                      //             docid: value)
+                                      //         .setOrderedProductDetails(
+                                      //       value,
+                                      //       selectedOptions[j],
+                                      //       quantity[j].toString(),
+                                      //       amountList[j].toString(),
+                                      //     )
+                                      //         .then((value) {
+                                      //       
+                                      //     });
+                                      //   }
+                                      // }
+                                      ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  'Order details added Successfully!!!'),
+                                            ));
+                                            Navigator.pop(context);
+                                    });
+                                  } else {
+                                    if (customerId == '') {
+                                      setState(() {
+                                        error =
+                                            'The entered customer does not exist please register';
+                                        loading = false;
+                                      });
+                                    }
+        
+                                    if (callDate == 'Select Date' && !isCust) {
+                                      setState(() {
+                                        dateError = 'Please enter delivery date';
+                                        loading = false;
+                                      });
+                                    }
+        
+                                    if (selectedOptions[
+                                            selectedOptions.length - 1] ==
+                                        'Select Product') {
+                                      setState(() {
+                                        productError =
+                                            'Please select a product to place order';
+                                        loading = false;
+                                      });
+                                    }
+        
+                                    if (productError != '') {
+                                      setState(() {
+                                        loading = false;
+                                        error = 'Enter valid product details';
+                                      });
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xff4d47c3),
+                                ),
+                                child: Container(
+                                  width: screenWidth / 6,
+                                  height: screenHeight / 15,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x664d47c3),
+                                        blurRadius: 61,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                    color: const Color(0xff4d47c3),
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                    top: 18,
+                                    bottom: 17,
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: screenWidth / 6,
+                                        child: Text(
+                                          "submit",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: screenHeight / 50,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xff4d47c3),
+                                ),
+                                child: Container(
+                                  width: screenWidth / 6,
+                                  height: screenHeight / 15,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x664d47c3),
+                                        blurRadius: 61,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                    color: const Color(0xff4d47c3),
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                    top: 18,
+                                    bottom: 17,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: screenWidth / 6,
+                                        child: Text(
+                                          "Cancel",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: screenHeight / 50,
+                                            fontFamily: "Poppins",
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                  const SizedBox(height: 20.0),
+                ]),
+          ),
         ),
       ),
     );

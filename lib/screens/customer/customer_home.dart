@@ -7,6 +7,7 @@ import 'package:flutter_app/models/orders_product_model.dart';
 import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/common/utility_functions.dart';
 import 'package:flutter_app/screens/customer/complaints/customer_complaints_list.dart';
 import 'package:flutter_app/screens/customer/feedback/add_new_feedback.dart';
@@ -139,7 +140,7 @@ class _CustomerHomeState extends State<CustomerHome> {
       onWillPop: () async => false,
       child: Scaffold(
           appBar: AppBar(
-            title: const Text('Energy Efficient Lights'),
+            title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
             backgroundColor: const Color(0xff4d47c3),
             actions: [
               TextButton.icon(
@@ -148,19 +149,21 @@ class _CustomerHomeState extends State<CustomerHome> {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         'authWrapper', (Route<dynamic> route) => false);
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.person,
                     color: Colors.white,
+                    size: screenHeight / 50,
                   ),
-                  label: const Text(
+                  label: Text(
                     'logout',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white, fontSize: screenWidth / 40),
                   )),
             ],
           ),
           body: SingleChildScrollView(
             child: Container(
-              width: 440,
+              width: screenWidth,
+              height: screenHeight,
               color: Colors.white,
               padding: const EdgeInsets.only(
                 top: 21,
@@ -171,8 +174,8 @@ class _CustomerHomeState extends State<CustomerHome> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 180,
-                    height: 60,
+                    width: screenWidth / 3,
+                    height: screenHeight / 10,
                     child: Image.asset('assets/logotm.jpg'),
                   ),
                   SizedBox(height: 20),
@@ -181,16 +184,14 @@ class _CustomerHomeState extends State<CustomerHome> {
                     Navigator.pushNamed(context, 'presentCustomerOrdersList');
                   },
                   child: Container(
-                    width: 297,
-                    height: 115,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 297,
-                          height: 85,
+                          width: screenWidth / 1.5,
+                          height: screenHeight / 10,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: [
@@ -218,8 +219,8 @@ class _CustomerHomeState extends State<CustomerHome> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.only(bottom: 4), // Add padding below the underline
-                                      decoration: BoxDecoration(
+                                      padding: const EdgeInsets.only(bottom: 4), // Add padding below the underline
+                                      decoration: const BoxDecoration(
                                         border: Border(
                                           bottom: BorderSide(
                                             color: Colors.white, // Set the underline color
@@ -231,7 +232,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                                         text: TextSpan(
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: screenHeight / 50,
                                             fontFamily: "Poppins",
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -254,7 +255,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: screenHeight / 60,
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -274,15 +275,15 @@ class _CustomerHomeState extends State<CustomerHome> {
                 ),
                   SizedBox(height: 20),
                   Container(
-                    width: 282,
-                    height: 200,
+                    width: screenWidth / 1.5,
+                    height: screenHeight / 4,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 282,
+                          width: screenWidth / 1.5,
                           height: double.parse(tileHeight.toString()),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
@@ -329,8 +330,8 @@ class _CustomerHomeState extends State<CustomerHome> {
                                             },
                                 ),
                               ),
-                              title: Text('Price(in Rs.): \n ${productDetails[index].price}'),
-                              subtitle: Text('Offer : ${productDetails[index].offers}%'),
+                              title: Text('Price(in Rs.): \n ${productDetails[index].price}', style: TextStyle(fontSize: screenHeight / 50),),
+                              subtitle: Text('Offer : ${productDetails[index].offers}%', style: TextStyle(fontSize: screenHeight / 50),),
                             ),
                           ),
                                               ),
@@ -347,16 +348,16 @@ class _CustomerHomeState extends State<CustomerHome> {
                     Navigator.pushNamed(context, 'pastCustomerOrdersList');
                   },
                   child: Container(
-                    width: 297,
-                    height: 85,
+                    width: screenWidth / 1.5,
+                    height: screenHeight / 10,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 297,
-                          height: 115,
+                          width: screenWidth / 1.5,
+                          height: screenHeight / 10,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: [
@@ -397,7 +398,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                                         text: TextSpan(
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: screenHeight / 50,
                                             fontFamily: "Poppins",
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -420,7 +421,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: screenHeight / 60,
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -439,171 +440,173 @@ class _CustomerHomeState extends State<CustomerHome> {
                   ),
                 ),
                   SizedBox(height: 20.0),
-                  Container(
-                    width: 420,
-                    height: 60,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 120,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x664d47c3),
-                                blurRadius: 61,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                            color: Color(0xff4d47c3),
-                          ),
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            bottom: 17,
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, 
-                                  CustomerComplaintDetailsList.routeName,
-                                  arguments: Parameter(
-                                    execId,
-                                  )
-                                );
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 91,
-                                  height: 25,
-                                  child: Text(
-                                    "Complaint",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        width: screenWidth,
+                        height: screenHeight / 10,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              // width: screenWidth / 4,
+                              // height: screenHeight / 15,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x664d47c3),
+                                    blurRadius: 61,
+                                    offset: Offset(0, 4),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 7),
-                        Container(
-                          width: 106,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x664d47c3),
-                                blurRadius: 61,
-                                offset: Offset(0, 4),
+                                ],
+                                color: Color(0xff4d47c3),
                               ),
-                            ],
-                            color: Color(0xff4d47c3),
-                          ),
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            bottom: 17,
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, 
-                                  CustomerFeedbackList.routeName,
-                                  arguments: Parameter(
-                                    execId,
-                                  )
-                                );
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 81,
-                                  height: 25,
-                                  child: Text(
-                                    "Feedback",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 7),
-                        Container(
-                          width: 120,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(9),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x664d47c3),
-                                blurRadius: 61,
-                                offset: Offset(0, 4),
+                              padding: const EdgeInsets.only(
+                                top: 10,
+                                bottom: 17,
                               ),
-                            ],
-                            color: Color(0xff4d47c3),
-                          ),
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            bottom: 17,
-                          ),
-                          child: TextButton(
-                            onPressed: (){
-                              Navigator.pushNamed(
-                                  context, 
-                                  AddNewOrder.routeName,
-                                  arguments: Parameter(
-                                    execId,
-                                  )
-                                );
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 80,
-                                  height: 24.41,
-                                  child: Text(
-                                    "New Order",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.w500,
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, 
+                                      CustomerComplaintDetailsList.routeName,
+                                      arguments: Parameter(
+                                        execId,
+                                      )
+                                    );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: screenWidth / 5,
+                                      child: Text(
+                                        "Complaint",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenHeight / 55,
+                                          fontFamily: "Poppins",
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                            SizedBox(width: 7),
+                            Container(
+                              // width: 106,
+                              // height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x664d47c3),
+                                    blurRadius: 61,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                                color: Color(0xff4d47c3),
+                              ),
+                              padding: const EdgeInsets.only(
+                                top: 10,
+                                bottom: 17,
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, 
+                                      CustomerFeedbackList.routeName,
+                                      arguments: Parameter(
+                                        execId,
+                                      )
+                                    );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: screenWidth / 5,
+                                      // height: 25,
+                                      child: Text(
+                                        "Feedback",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenHeight / 55,
+                                          fontFamily: "Poppins",
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 7),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x664d47c3),
+                                    blurRadius: 61,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                                color: Color(0xff4d47c3),
+                              ),
+                              padding: const EdgeInsets.only(
+                                top: 10,
+                                bottom: 17,
+                              ),
+                              child: TextButton(
+                                onPressed: (){
+                                  Navigator.pushNamed(
+                                      context, 
+                                      AddNewOrder.routeName,
+                                      arguments: Parameter(
+                                        execId,
+                                      )
+                                    );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: screenWidth / 5,
+                                      child: Text(
+                                        "New Order",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenHeight / 55,
+                                          fontFamily: "Poppins",
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 20.0),
                 ],

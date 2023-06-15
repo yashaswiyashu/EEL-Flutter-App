@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/complaint_details_model.dart';
@@ -56,8 +57,8 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 440,
-      height: 83,
+      width: screenWidth,
+      height: screenHeight / 10,
       padding: EdgeInsets.only(left: 5, right: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -71,6 +72,7 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
             child: Padding(
               padding: EdgeInsets.only(right: 8),
               child: TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 initialValue: formattedDate,
                 enabled: false,
                 decoration: InputDecoration(
@@ -82,6 +84,7 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
           Expanded(
             flex: 3,
             child: TextFormField(
+              style: TextStyle(fontSize: screenHeight / 50),
               controller: detailsController,
               maxLines: null,
               decoration: InputDecoration(
@@ -114,8 +117,8 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
             style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Color(0xff4d47c3)),
                   ),
-            child: const Text('Add',
-                              style: TextStyle(fontSize: 18,)),
+            child: Text('Add',
+                              style: TextStyle(fontSize: screenHeight / 45,)),
           ),
         ],
       ),
@@ -142,7 +145,7 @@ Container buildComplaintDetailsContainerView(List<ComplaintDetail> complaintDeta
             detail.updateDate,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 16,
+              fontSize: screenHeight / 40,
               fontWeight: FontWeight.w500,
               height: 1,
               color: Color(0xff000000),
@@ -153,7 +156,7 @@ Container buildComplaintDetailsContainerView(List<ComplaintDetail> complaintDeta
             detail.details,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 14,
+              fontSize: screenHeight / 50,
               fontWeight: FontWeight.w400,
               height: 1.5,
               color: Color(0xff000000),
@@ -166,7 +169,8 @@ Container buildComplaintDetailsContainerView(List<ComplaintDetail> complaintDeta
   }
 
   return Container(
-    width: 440,
+    width: screenWidth,
+    height: screenHeight / 10,
     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),

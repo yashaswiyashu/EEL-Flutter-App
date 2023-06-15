@@ -42,18 +42,20 @@ class AuthWrapper extends StatelessWidget {
     } 
     
     if(currentUser != null){
-      if (obj?.role == 'Sales Executive') {
-        return SalesExecutiveHome();
-      } else if (obj?.role == 'Sales Co-Ordinator') {
-        return SalesCoOrdinatorHome();
-      } else if (obj?.role == 'Admin') {
-        return AdminHome();
-      } 
+      if(obj != null) {
+        if (obj.role == 'Sales Executive') {
+          return const SalesExecutiveHome();
+        } else if (obj.role == 'Sales Co-Ordinator') {
+          return const SalesCoOrdinatorHome();
+        } else if (obj.role == 'Admin') {
+          return const AdminHome();
+        } 
+      }
 
       if(cust) {
-        return CustomerHome();
+        return const CustomerHome();
       }
     }
-    return Home();
+    return const Home();
   }
 }
