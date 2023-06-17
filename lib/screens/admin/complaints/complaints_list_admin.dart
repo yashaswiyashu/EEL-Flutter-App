@@ -6,6 +6,7 @@ import 'package:flutter_app/models/complaint_details_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/add_new_complaints.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/edit_complaint.dart';
 import 'package:flutter_app/screens/sales%20Executive/complaints/view_complaint_details.dart';
@@ -81,13 +82,13 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Compl. Date')),
+        DataColumn(label: Text('Compl. Date',style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Name')),
+        DataColumn(label: Text('Cust Name',style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Cust Mob.')),
+        DataColumn(label: Text('Cust Mob.',style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Select')),
+        DataColumn(label: Text('Select',style: TextStyle(fontSize: screenHeight / 50),)),
       ];
     }
 
@@ -95,11 +96,11 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
     List<DataRow> _createRows() {
       return details
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.complaintDate)),
+                DataCell(Text(element.complaintDate,style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.customerName)),
+                DataCell(Text(element.customerName,style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.mobileNumber)),
+                DataCell(Text(element.mobileNumber,style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
                 DataCell(
                   RadioListTile(
@@ -128,7 +129,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
     DataTable _createDataTable() {
       return DataTable(
           columnSpacing: 0.0,
-          dataRowHeight: 40.0,
+          dataRowHeight: screenHeight / 16,
           columns: _createColumns(),
           rows: complaintDetailsList.isNotEmpty ? _createRows() : []);
     }
@@ -137,7 +138,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Energy Efficient Lights'),
+          title: Text('Energy Efficient Lights',style: TextStyle(fontSize: screenHeight / 50),),
           backgroundColor: const Color(0xff4d47c3),
           actions: [
             TextButton.icon(
@@ -146,19 +147,20 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                         'authWrapper', (Route<dynamic> route) => false);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.person,
                   color: Colors.white,
+                  size: screenHeight / 50,
                 ),
-                label: const Text(
+                label: Text(
                   'logout',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white,  fontSize: screenHeight / 50),
                 )),
           ],
         ),
         body: SingleChildScrollView(
             child: Container(
-          width: 440,
+          width: screenWidth,
           padding: const EdgeInsets.only(
             top: 10,
             bottom: 0.4,
@@ -169,42 +171,47 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 270,
-                  height: 60,
+                      width: screenWidth / 3,
+                      height: screenHeight / 10,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Image.asset('assets/logotm.jpg'),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 250),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff4d47c3)),
-                    onPressed: () {
-                      if (execID == '') {
-                            setState(() {
-                              status = 'Please select an executive';
-                            });
-                          } else {
-                            setState(() {
-                              status = '';
-                            });
-                            Navigator.pushNamed(
-                                context, AddNewComplaint.routeName,
-                                arguments: Parameter(
-                                  execID,
-                                ));
-                          }
-                    },
-                    child: Text('Add New +'),
-                  ),
+                Row(mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: screenHeight / 20,
+                      margin: EdgeInsets.only(right: screenWidth / 10),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff4d47c3)),
+                        onPressed: () {
+                          if (execID == '') {
+                                setState(() {
+                                  status = 'Please select an executive';
+                                });
+                              } else {
+                                setState(() {
+                                  status = '';
+                                });
+                                Navigator.pushNamed(
+                                    context, AddNewComplaint.routeName,
+                                    arguments: Parameter(
+                                      execID,
+                                    ));
+                              }
+                        },
+                                child: Text('Add New +', style: TextStyle(fontSize: screenHeight / 50),),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10),
                   Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                   SizedBox(
-                    height: 60,
-                    width: 175,
+                    height: screenHeight / 15,
+                    width: screenWidth / 3,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -233,15 +240,15 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                           value: value,
                           child: Text(
                             value,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: screenHeight / 55),
                           ),
                         );
                       }).toList(),
                     ),
                   ),
                   SizedBox(
-                    height: 60,
-                    width: 175,
+                    height: screenHeight / 15,
+                    width: screenWidth / 3,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -273,7 +280,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                           value: value,
                           child: Text(
                             value,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: screenHeight / 55),
                           ),
                         );
                       }).toList(),
@@ -287,7 +294,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                 ),
                 Text(
                   status,
-                  style: const TextStyle(color: Colors.pink, fontSize: 14.0),
+                  style: TextStyle(color: Colors.pink, fontSize: screenHeight / 60),
                 ),
                 SizedBox(
                   height: 20,
@@ -321,8 +328,8 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                           padding: EdgeInsets.zero,
                         ),
                         child: Container(
-                          width: 95.63,
-                          height: 59,
+                          width: screenWidth / 5,
+                          height: screenHeight / 15,
                           decoration: BoxDecoration(
                             color: Color(0xff4d47c3),
                             borderRadius: BorderRadius.circular(9),
@@ -340,7 +347,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: "Poppins",
-                                fontSize: 16,
+                                fontSize: screenHeight / 50,
                                 fontWeight: FontWeight.w500,
                                 height: 1.5,
                                 color: Color(0xffffffff),
@@ -376,8 +383,8 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                           padding: EdgeInsets.zero,
                         ),
                         child: Container(
-                          width: 95.63,
-                          height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                           decoration: BoxDecoration(
                             color: Color(0xff4d47c3),
                             borderRadius: BorderRadius.circular(9),
@@ -395,7 +402,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: "Poppins",
-                                fontSize: 16,
+                                fontSize: screenHeight / 50,
                                 fontWeight: FontWeight.w500,
                                 height: 1.5,
                                 color: Color(0xffffffff),
@@ -414,8 +421,8 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                         padding: EdgeInsets.zero,
                       ),
                       child: Container(
-                        width: 95.63,
-                        height: 59,
+                        width: screenWidth / 5,
+                        height: screenHeight / 15,
                         decoration: BoxDecoration(
                           color: Color(0xff4d47c3),
                           borderRadius: BorderRadius.circular(9),
@@ -433,7 +440,7 @@ class _ComplaintDetailsAdminState extends State<ComplaintDetailsAdmin> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: "Poppins",
-                              fontSize: 16,
+                              fontSize: screenHeight / 50,
                               fontWeight: FontWeight.w500,
                               height: 1.5,
                               color: Color(0xffffffff),

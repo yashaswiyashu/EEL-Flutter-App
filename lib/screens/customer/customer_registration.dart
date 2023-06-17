@@ -692,7 +692,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                                         value: value,
                                         child: Text(
                                           value,
-                                          style: const TextStyle(fontSize: 15),
+                                          style: TextStyle(fontSize: screenHeight / 55),
                                         ),
                                       );
                                     }).toList(),

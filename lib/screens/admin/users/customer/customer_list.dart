@@ -14,6 +14,7 @@ import 'package:flutter_app/screens/admin/users/customer/edit_customer_details.d
 import 'package:flutter_app/screens/admin/users/customer/view_customer_details.dart';
 import 'package:flutter_app/screens/admin/users/executive/edit_sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/view_sales_exec.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/screens/sales%20Executive/customer%20Details/add_new_customer.dart';
 import 'package:flutter_app/shared/loading.dart';
@@ -121,11 +122,11 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Cust. Name')),
+        DataColumn(label: Text('Cust. Name', style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Mob No.')),
+        DataColumn(label: Text('Mob No.', style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Select')),
+        DataColumn(label: Text('Select', style: TextStyle(fontSize: screenHeight / 50),)),
       ];
     }
 
@@ -133,9 +134,9 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
     List<DataRow> _createRows() {
       return custList
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.customerName)),
+                DataCell(Text(element.customerName, style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.mobileNumber)),
+                DataCell(Text(element.mobileNumber, style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
                 DataCell(
                   RadioListTile(
@@ -146,6 +147,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                     groupValue: select,
                     onChanged: (value) {
                       setState(() {
+                        status = '';
                         select = value;
                         custList.forEach((element) {
                           if (element.uid == select) {
@@ -164,7 +166,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
     DataTable _createDataTable() {
       return DataTable(
           columnSpacing: 0.0,
-          dataRowHeight: 40.0,
+          dataRowHeight: screenHeight / 16,
           columns: _createColumns(),
           rows: custList.isNotEmpty ? _createRows() : []);
     }
@@ -174,7 +176,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
         ? const Loading()
         : Scaffold(
             appBar: AppBar(
-              title: const Text('Energy Efficient Lights'),
+              title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50),),
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
@@ -182,19 +184,20 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                       await _auth.signout();
                       Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label: Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white,  fontSize: screenHeight / 50),
                     )),
               ],
             ),
             body: SingleChildScrollView(
                 child: Container(
-              width: 440,
+              width: screenWidth,
               padding: const EdgeInsets.only(
                 top: 10,
                 bottom: 0.4,
@@ -205,33 +208,44 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      width: 270,
-                      height: 60,
+                      width: screenWidth / 3,
+                      height: screenHeight / 10,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 250),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff4d47c3)),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context, AddNewCustomer.routeName,
-                            arguments: Parameter(
-                              execID
-                            ));
-                          },
-                        child: Text('Add New +'),
-                      ),
+                    Row(mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          height: screenHeight / 20,
+                          margin: EdgeInsets.only(right: screenWidth / 10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff4d47c3)),
+                            onPressed: () {
+                              if(salesExec == 'Select Exec') {
+                                setState(() {
+                                  error = 'Select an executive';
+                                });
+                              } else {
+                                Navigator.pushNamed(
+                                  context, AddNewCustomer.routeName,
+                                  arguments: Parameter(
+                                    execID
+                                  ));
+                              }
+                              },
+                            child: Text('Add New +', style: TextStyle(fontSize: screenHeight / 50),),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 10),
                     Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                   SizedBox(
-                    height: 55,
-                    width: 185,
+                    height: screenHeight / 15,
+                    width: screenWidth / 3,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -253,6 +267,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                           salesExec = 'Select Exec';
                           coOrdId = '';
                           execID = '';
+                        
                         });
                       },
                       items: salesCoOrdList
@@ -261,15 +276,15 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                           value: value,
                           child: Text(
                             value,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: screenHeight / 50),
                           ),
                         );
                       }).toList(),
                     ),
                   ),
                   SizedBox(
-                    height: 55,
-                    width: 185,
+                    height: screenHeight / 15,
+                    width: screenWidth / 3,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -289,6 +304,8 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                         setState(() {
                           salesExec = newValue!;
                           execID = '';
+                          error= '';
+                          select = '';
                         });
                       },
                       items: salesExecList
@@ -297,7 +314,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                           value: value,
                           child: Text(
                             value,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: screenHeight / 50),
                           ),
                         );
                       }).toList(),
@@ -306,10 +323,9 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                 ]),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Container(
-                    margin: const EdgeInsets.only(left: 110),
                     child: Text(
                       error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                      style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                     ),
                   ),
                 ]),
@@ -323,7 +339,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                     Text(
                       status,
                       style:
-                          const TextStyle(color: Colors.pink, fontSize: 14.0),
+                          TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                     ),
                     SizedBox(
                       height: 20,
@@ -359,8 +375,8 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                               padding: EdgeInsets.zero,
                             ),
                             child: Container(
-                              width: 95.63,
-                              height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                               decoration: BoxDecoration(
                                 color: Color(0xff4d47c3),
                                 borderRadius: BorderRadius.circular(9),
@@ -378,7 +394,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontWeight: FontWeight.w500,
                                     height: 1.5,
                                     color: Color(0xffffffff),
@@ -415,8 +431,8 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                               padding: EdgeInsets.zero,
                             ),
                             child: Container(
-                              width: 95.63,
-                              height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                               decoration: BoxDecoration(
                                 color: Color(0xff4d47c3),
                                 borderRadius: BorderRadius.circular(9),
@@ -434,7 +450,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontWeight: FontWeight.w500,
                                     height: 1.5,
                                     color: Color(0xffffffff),
@@ -452,8 +468,8 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                             padding: EdgeInsets.zero,
                           ),
                           child: Container(
-                            width: 95.63,
-                            height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                             decoration: BoxDecoration(
                               color: Color(0xff4d47c3),
                               borderRadius: BorderRadius.circular(9),
@@ -471,7 +487,7 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontWeight: FontWeight.w500,
                                   height: 1.5,
                                   color: Color(0xffffffff),

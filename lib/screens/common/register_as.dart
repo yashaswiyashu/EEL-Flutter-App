@@ -26,7 +26,7 @@ class _RegisterAsState extends State<RegisterAs> {
         children:[
             SizedBox(height: screenHeight / 200,),
             SizedBox(
-                width: screenWidth - 100,
+                width: screenWidth /1.4,
                 height: screenHeight / 15,
                 child: Text(
                     "Register as",
@@ -37,7 +37,7 @@ class _RegisterAsState extends State<RegisterAs> {
                     ),
                 ),
             ),
-            SizedBox(height: screenHeight / 200,),
+            const SizedBox(height: 20.0,),
             SizedBox(height: 3, width: screenWidth / 2, child: Container(color: Colors.black,),),
             const SizedBox(height: 20.20),
             TextButton(
@@ -47,7 +47,7 @@ class _RegisterAsState extends State<RegisterAs> {
                         arguments: 'Sales Executive');
               },
               child: Container(
-                  width: screenWidth - 100,
+                  width: screenWidth /1.4,
                   height: screenHeight / 15,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
@@ -88,7 +88,7 @@ class _RegisterAsState extends State<RegisterAs> {
                         arguments: 'Sales Co-Ordinator');
               },
               child: Container(
-                  width: screenWidth - 100,
+                  width: screenWidth /1.4,
                   height: screenHeight / 15,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
@@ -130,7 +130,7 @@ class _RegisterAsState extends State<RegisterAs> {
                         ));
               },
               child: Container(
-                  width: screenWidth - 100,
+                  width: screenWidth / 1.4,
                   height: screenHeight / 15,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),

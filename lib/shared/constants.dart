@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 
-const textInputDecoration = InputDecoration(
+var textInputDecoration = InputDecoration(
+  errorStyle: TextStyle(fontSize: screenHeight / 60),
   fillColor: Color(0xffefefff),
   filled: true,
   border: InputBorder.none,

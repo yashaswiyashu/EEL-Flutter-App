@@ -77,15 +77,15 @@ void confirmation(String uid) {
         context: context,
         builder: (_) {
           return AlertDialog(
-            title: Text('Entered customer is not registerd. Please Register here'),
+            title: Text('Entered customer is not registerd. Please Register here', style: TextStyle(fontSize: screenHeight / 50),),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false), // passing false
-                child: Text('Cancel'),
+                child: Text('Cancel', style: TextStyle(fontSize: screenHeight / 50),),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true), // passing true
-                child: Text('Register'),
+                child: Text('Register', style: TextStyle(fontSize: screenHeight / 50),),
               ),
             ],
           );
@@ -113,15 +113,15 @@ void confirmation(String uid) {
         context: context,
         builder: (_) {
           return AlertDialog(
-            title: Text('Do you want to delete entire document?'),
+            title: Text('Do you want to delete entire document?', style: TextStyle(fontSize: screenHeight / 50),),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false), // passing false
-                child: Text('No'),
+                child: Text('No', style: TextStyle(fontSize: screenHeight / 50),),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true), // passing true
-                child: Text('Yes'),
+                child: Text('Yes', style: TextStyle(fontSize: screenHeight / 50),),
               ),
             ],
           );
@@ -191,7 +191,7 @@ void confirmation(String uid) {
   }
 
   var snackBar = SnackBar(
-  content: Text('Call Details Updated Successfully!!!'),
+  content: Text('Call Details Updated Successfully!!!', style: TextStyle(fontSize: screenHeight / 50),),
   );
 
   var firstTime = true;

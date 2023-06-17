@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/services/auth.dart';
 
 class UserSelection extends StatefulWidget {
@@ -17,7 +18,7 @@ class _UserSelectionState extends State<UserSelection> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-              title: const Text('Energy Efficient Lights'),
+              title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50)),
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
@@ -25,18 +26,19 @@ class _UserSelectionState extends State<UserSelection> {
                       await _auth.signout();
                       Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label: Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white,  fontSize: screenHeight / 50),
                     )),
               ],
             ),
       body: Container(
-      width: 440,
+      width: screenWidth,
       color: Colors.white,
       padding: const EdgeInsets.only(top: 14,),
       child: Column(
@@ -45,21 +47,21 @@ class _UserSelectionState extends State<UserSelection> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
               Container(
-                width: 180,
-                height: 60,
+                width: screenWidth / 3,
+                height: screenHeight / 10,
                 child: Image.asset('assets/logotm.jpg'),
               ),
               const SizedBox(height: 20.0),
               const SizedBox(height: 5,),
-              SizedBox(height: 3, width: 250, child: Container(color: Colors.black,),),
+              SizedBox(height: 3, width: screenWidth / 2, child: Container(color: Colors.black,),),
               const SizedBox(height: 20.20),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, 'salesCoOrdList');
                 },
                 child: Container(
-                    width: 322,
-                    height: 59,
+                    width: screenWidth / 1.4,
+                    height: screenHeight / 15,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(9),
                         boxShadow: const [
@@ -76,13 +78,13 @@ class _UserSelectionState extends State<UserSelection> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children:const [
+                        children: [
                             Text(
                                 "Sales Co-Ordinator",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontFamily: "Poppins",
                                     fontWeight: FontWeight.w500,
                                 ),
@@ -97,8 +99,8 @@ class _UserSelectionState extends State<UserSelection> {
                   Navigator.pushNamed(context, 'salesExecList');
                 },
                 child: Container(
-                    width: 322,
-                    height: 59,
+                    width: screenWidth / 1.4,
+                    height: screenHeight / 15,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(9),
                         boxShadow: const [
@@ -115,12 +117,12 @@ class _UserSelectionState extends State<UserSelection> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children:const [
+                        children: [
                             Text(
                                 "Sales Executive",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontFamily: "Poppins",
                                     fontWeight: FontWeight.w500,
                                 ),
@@ -135,8 +137,8 @@ class _UserSelectionState extends State<UserSelection> {
                   Navigator.pushNamed(context, 'customerListAdmin');
                 },
                 child: Container(
-                    width: 322,
-                    height: 59,
+                    width: screenWidth / 1.4,
+                    height: screenHeight / 15,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(9),
                         boxShadow: const [
@@ -153,12 +155,12 @@ class _UserSelectionState extends State<UserSelection> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children:const [
+                        children: [
                             Text(
                                 "Customer",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontFamily: "Poppins",
                                     fontWeight: FontWeight.w500,
                                 ),

@@ -6,6 +6,7 @@ import 'package:flutter_app/models/customer_model.dart';
 import 'package:flutter_app/models/edit_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/common/location.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/customer_database.dart';
@@ -243,7 +244,7 @@ class _ViewCustomerAdminState extends State<ViewCustomerAdmin> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Energy Efficient Lights'),
+        title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50),),
         backgroundColor: const Color(0xff4d47c3),
         actions: currentUser?.uid != null
             ? [
@@ -253,743 +254,755 @@ class _ViewCustomerAdminState extends State<ViewCustomerAdmin> {
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           'authWrapper', (Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label: Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white,  fontSize: screenHeight / 50),
                     )),
               ]
             : null,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
-        child: Form(
-          key: _formkey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(left: 100),
-                width: 180,
-                height: 60,
-                child: Image.asset('assets/logotm.jpg'),
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                height: 20.0,
-                child: Text(
-                  "Customer Name:",
-                  style: TextStyle(
-                    color: Color(0xff090a0a),
-                    fontSize: 16,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.w500,
-                  ),
+        child: Container(
+          width: screenWidth,
+          child: Form(
+            key: _formkey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: screenWidth / 3,
+                  height: screenHeight / 10,
+                  child: Image.asset('assets/logotm.jpg'),
                 ),
-              ),
-              TextFormField(
-                initialValue: customerName,
-                readOnly: true,
-                decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Customer Name',
-                    fillColor: const Color(0xfff0efff)),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter Customer Name' : null,
-                // onChanged: (val) {
-                //   customerName = val;
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
+                const SizedBox(height: 20.0),
+                SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
-                    'Customer Mobile Number:',
+                    "Customer Name:",
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
-                  )),
-               TextFormField(
-                initialValue: mobileNumber,
-                keyboardType: TextInputType.phone,
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Customer Mobile Number',
-                ),
-                validator: (value) =>
-                    value!.length < 10 ? 'Enter Customer Mobile Number' : null,
-                // onChanged: (val) {
-                //   mobileNumber = val;
-                // },
-              ),
-
-              //[Viru:2/6/23] Added to support customer name search list
-              // TypeAheadFormField(
-              //   textFieldConfiguration: TextFieldConfiguration(
-              //     controller: numberController,
-              //     decoration: textInputDecoration.copyWith(
-              //       hintText: 'Enter Customer Mobile Number',
-              //       fillColor: const Color(0xfff0efff),
-              //     ),
-              //     inputFormatters: [
-              //       FilteringTextInputFormatter.allow(
-              //           RegExp(r'[0-9]')), // Only allow numerical values
-              //     ],
-              //     onChanged: (value) {
-              //       setState(() {
-              //         numError = ''; // Clear the error message
-              //         // numberController.text = value;
-              //       });
-              //     },
-              //   ),
-              //   suggestionsCallback: (pattern) async {
-              //     // Filter the customer list based on the search pattern
-              //     return details
-              //         .where((customer) =>
-              //             customer != null &&
-              //             customer.mobileNumber.contains(pattern))
-              //         .toList();
-              //   },
-              //   itemBuilder: (context, CustomerModel? suggestion) {
-              //     if (suggestion == null) return const SizedBox.shrink();
-              //     return ListTile(
-              //       title: Text(suggestion.mobileNumber),
-              //     );
-              //   },
-              //   onSuggestionSelected: (CustomerModel? suggestion) {
-              //     if (suggestion != null) {
-              //       setState(() {
-              //         numError = 'Customer with this number already exists';
-              //         numberController.clear();
-              //       });
-              //     } else {
-              //       numberController.text.length != 10
-              //           ? 'Enter Customer Mobile Number'
-              //           : null;
-              //       setState(() {
-              //         numError = '';
-              //       });
-              //     }
-              //   },
-              //   validator: (value) {
-              //     if (value != null && value.length != 10) {
-              //       return 'Enter a valid 10-digit mobile number';
-              //     }
-              //     return null;
-              //   },
-              //   onSaved: (value) {
-              //     setState(() {
-              //       numError = ''; // Clear the error message
-              //     });
-              //   },
-              // ),
-              SizedBox(
-                child: Text(
-                  numError,
-                  style: TextStyle(
-                    color: Color.fromARGB(190, 193, 2, 2),
                   ),
                 ),
-              ),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Email:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                initialValue: email,
-                readOnly: true,
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Customer Email',
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: customerName,
+                  readOnly: true,
+                  decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Customer Name',
+                      fillColor: const Color(0xfff0efff)),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Customer Name' : null,
+                  // onChanged: (val) {
+                  //   customerName = val;
+                  // },
                 ),
-                validator: (value) =>
-                    RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                            .hasMatch(value!)
-                        ? null
-                        : 'Enter Valid Email',
-                // onChanged: (val) {
-                //   setState(() {
-                //     email = val;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Password:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                initialValue: password,
-                readOnly: true,
-                keyboardType: TextInputType.text,
-                obscureText: !_passwordVisible,
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Password',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      // Based on passwordVisible state choose the icon
-                      _passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
-                    onPressed: () {
-                      // Update the state i.e. toogle the state of passwordVisible variable
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                  ),
-                ),
-                validator: (value) => value!.length < 6
-                    ? 'Enter a password of more than 6 characters'
-                    : null,
-                // onChanged: (val) {
-                //   setState(() {
-                //     password = val;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Customer Full Address:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: address1,
-                readOnly: true,
-                decoration: textInputDecoration.copyWith(
-                    hintText:
-                        'Please enter the pincode to autofill postal address'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter Customer Full Address' : null,
-                // onChanged: (val) {
-                //   setState(() {
-                //     address1 = val;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: address2,
-                readOnly: true,
-                decoration:
-                    textInputDecoration.copyWith(hintText: 'town, taluk'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter Customer Full Address' : null,
-                // onChanged: (val) {
-                //   setState(() {
-                //     address2 = val;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: city,
-                readOnly: true,
-                decoration: textInputDecoration.copyWith(hintText: 'city'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter Customer Full Address' : null,
-                // onChanged: (val) {
-                //   //updateCity(val);
-                //   setState(() {
-                //     city = val;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: state,
-                readOnly: true,
-                decoration: textInputDecoration.copyWith(hintText: 'state'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter Customer Full Address' : null,
-                // onChanged: (val) {
-                //   //updateCity(val);
-                //   setState(() {
-                //     state = val;
-                //   });
-                // },
-              ),
-              /* DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 0),
-                  ),
-                  filled: true,
-                  fillColor: Color(0xffefefff),
-                ),
-                dropdownColor: const Color(0xffefefff),
-                value: state,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    state = newValue!;
-                  });
-                },
-                items: <String>[
-                  'Select State',
-                  'Karnataka',
-                  'Kerala',
-                  'Tamil Nadu',
-                  'Andra Pradesh'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
+                const SizedBox(height: 20.0),
+                SizedBox(
+                    height: screenHeight / 40,
                     child: Text(
-                      value,
-                      style: const TextStyle(fontSize: 18),
+                      'Customer Mobile Number:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                 TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: mobileNumber,
+                  keyboardType: TextInputType.phone,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Customer Mobile Number',
+                  ),
+                  validator: (value) =>
+                      value!.length < 10 ? 'Enter Customer Mobile Number' : null,
+                  // onChanged: (val) {
+                  //   mobileNumber = val;
+                  // },
+                ),
+        
+                //[Viru:2/6/23] Added to support customer name search list
+                // TypeAheadFormField(
+                //   textFieldConfiguration: TextFieldConfiguration(
+                //     controller: numberController,
+                //     decoration: textInputDecoration.copyWith(
+                //       hintText: 'Enter Customer Mobile Number',
+                //       fillColor: const Color(0xfff0efff),
+                //     ),
+                //     inputFormatters: [
+                //       FilteringTextInputFormatter.allow(
+                //           RegExp(r'[0-9]')), // Only allow numerical values
+                //     ],
+                //     onChanged: (value) {
+                //       setState(() {
+                //         numError = ''; // Clear the error message
+                //         // numberController.text = value;
+                //       });
+                //     },
+                //   ),
+                //   suggestionsCallback: (pattern) async {
+                //     // Filter the customer list based on the search pattern
+                //     return details
+                //         .where((customer) =>
+                //             customer != null &&
+                //             customer.mobileNumber.contains(pattern))
+                //         .toList();
+                //   },
+                //   itemBuilder: (context, CustomerModel? suggestion) {
+                //     if (suggestion == null) return const SizedBox.shrink();
+                //     return ListTile(
+                //       title: Text(suggestion.mobileNumber),
+                //     );
+                //   },
+                //   onSuggestionSelected: (CustomerModel? suggestion) {
+                //     if (suggestion != null) {
+                //       setState(() {
+                //         numError = 'Customer with this number already exists';
+                //         numberController.clear();
+                //       });
+                //     } else {
+                //       numberController.text.length != 10
+                //           ? 'Enter Customer Mobile Number'
+                //           : null;
+                //       setState(() {
+                //         numError = '';
+                //       });
+                //     }
+                //   },
+                //   validator: (value) {
+                //     if (value != null && value.length != 10) {
+                //       return 'Enter a valid 10-digit mobile number';
+                //     }
+                //     return null;
+                //   },
+                //   onSaved: (value) {
+                //     setState(() {
+                //       numError = ''; // Clear the error message
+                //     });
+                //   },
+                // ),
+                SizedBox(
+                  child: Text(
+                    numError,
+                    style: TextStyle(
+                      color: Color.fromARGB(190, 193, 2, 2),
+                      fontSize: screenHeight / 60,
                     ),
-                  );
-                }).toList(),
-              ), */
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: pincode,
-                readOnly: true,
-                keyboardType: TextInputType.phone,
-                decoration: textInputDecoration.copyWith(hintText: 'pincode'),
-                validator: (value) =>
-                    RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
-                        ? null
-                        : 'Enter Valid pincode',
-                onChanged: (val) {
-                  // setState(() {
-                  //   pincode = val;
-                  // });
-                  // if (pincode.length == 6) {
-                  //   updateAddressFields().then((value) {
-                  //     if (!value) {
-                  //       setState(() {
-                  //         pincodeError = 'Please enter valid pincode';
-                  //       });
-                  //     }
+                  ),
+                ),
+                SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Email:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: email,
+                  readOnly: true,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Customer Email',
+                  ),
+                  validator: (value) =>
+                      RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value!)
+                          ? null
+                          : 'Enter Valid Email',
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     email = val;
                   //   });
-                  // }
-                },
-              ),
-              const SizedBox(height: 12.0),
-              Text(
-                pincodeError,
-                style: const TextStyle(color: Colors.red, fontSize: 14.0),
-              ),
-              const SizedBox(height: 10.0),
-              const SizedBox(
-                height: 20.0,
-                child: Text(
-                  'Interested in:',
-                  style: TextStyle(
-                    color: Color(0xff090a0a),
-                    fontSize: 16,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.w500,
-                  ),
+                  // },
                 ),
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-
-              //curousel
-              SizedBox(
-                height: 100,
-                width: 350,
-                child: ListView(children: [
-                  CarouselSlider(
-                    items: [
-                      Container(
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                    initialValue: dropdownInt1,
-                                    readOnly: true,
-                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                    validator: (value) =>
-                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                    // onChanged: (val) {
-                                    //   //updateCity(val);
-                                    //   setState(() {
-                                    //     city = val;
-                                    //   });
-                                    // },
-                                  ),
-                              ),
-                            ],
-                          ),
-                        ),
+                const SizedBox(height: 20.0),
+                SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Password:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
                       ),
-                      Container(
-                        width: 370,
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                  initialValue: dropdownInt2,
-                                  readOnly: true,
-                                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                  validator: (value) =>
-                                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                  // onChanged: (val) {
-                                  //   //updateCity(val);
-                                  //   setState(() {
-                                  //     city = val;
-                                  //   });
-                                  // },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    )),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: password,
+                  readOnly: true,
+                  keyboardType: TextInputType.text,
+                  obscureText: !_passwordVisible,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        // Based on passwordVisible state choose the icon
+                        _passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).primaryColorDark,
                       ),
-                      Container(
-                        width: 370,
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                  initialValue: dropdownInt3,
-                                  readOnly: true,
-                                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                  validator: (value) =>
-                                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                  // onChanged: (val) {
-                                  //   //updateCity(val);
-                                  //   setState(() {
-                                  //     city = val;
-                                  //   });
-                                  // },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 370,
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          width: 350,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                  initialValue: dropdownInt4,
-                                  readOnly: true,
-                                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                  validator: (value) =>
-                                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                  // onChanged: (val) {
-                                  //   //updateCity(val);
-                                  //   setState(() {
-                                  //     city = val;
-                                  //   });
-                                  // },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                    options: CarouselOptions(
-                      height: 100.0,
-                      enlargeCenterPage: true,
-                      autoPlay: false,
-                      aspectRatio: 16 / 9,
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enableInfiniteScroll: false,
-                      autoPlayAnimationDuration: Duration(milliseconds: 800),
-                      viewportFraction: 0.8,
+                      onPressed: () {
+                        // Update the state i.e. toogle the state of passwordVisible variable
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
                     ),
                   ),
-                ]),
-              ),
-              const SizedBox(height: 10.0),
-              const SizedBox(
-                height: 20.0,
-                child: Text(
-                  'Uses at:',
-                  style: TextStyle(
-                    color: Color(0xff090a0a),
-                    fontSize: 16,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.w500,
-                  ),
+                  validator: (value) => value!.length < 6
+                      ? 'Enter a password of more than 6 characters'
+                      : null,
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     password = val;
+                  //   });
+                  // },
                 ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-
-              //curousel
-              SizedBox(
-                height: 100,
-                width: 440,
-                child: ListView(children: [
-                  CarouselSlider(
-                    items: [
-                      Container(
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                  initialValue: dropdownUses1,
-                                  readOnly: true,
-                                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                  validator: (value) =>
-                                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                  // onChanged: (val) {
-                                  //   //updateCity(val);
-                                  //   setState(() {
-                                  //     city = val;
-                                  //   });
-                                  // },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                const SizedBox(height: 20.0),
+                SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Customer Full Address:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
                       ),
-                      Container(
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                  initialValue: dropdownUses2,
-                                  readOnly: true,
-                                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                  validator: (value) =>
-                                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                  // onChanged: (val) {
-                                  //   //updateCity(val);
-                                  //   setState(() {
-                                  //     city = val;
-                                  //   });
-                                  // },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                    initialValue: dropdownUses3,
-                                    readOnly: true,
-                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                    validator: (value) =>
-                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                    // onChanged: (val) {
-                                    //   //updateCity(val);
-                                    //   setState(() {
-                                    //     city = val;
-                                    //   });
-                                    // },
-                                  ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        // margin: const EdgeInsets.only(right: 0.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SizedBox(
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: 250,
-                                child: TextFormField(
-                                  initialValue: dropdownUses4,
-                                  readOnly: true,
-                                  decoration: textInputDecoration.copyWith(hintText: 'city'),
-                                  validator: (value) =>
-                                      value!.isEmpty ? 'Enter Customer Full Address' : null,
-                                  // onChanged: (val) {
-                                  //   //updateCity(val);
-                                  //   setState(() {
-                                  //     city = val;
-                                  //   });
-                                  // },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                    options: CarouselOptions(
-                      height: 100.0,
-                      enlargeCenterPage: true,
-                      autoPlay: false,
-                      aspectRatio: 16 / 9,
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enableInfiniteScroll: false,
-                      autoPlayAnimationDuration: Duration(milliseconds: 800),
-                      viewportFraction: 0.8,
+                    )),
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: address1,
+                  readOnly: true,
+                  decoration: textInputDecoration.copyWith(
+                      hintText:
+                          'Please enter the pincode to autofill postal address'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Customer Full Address' : null,
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     address1 = val;
+                  //   });
+                  // },
+                ),
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: address2,
+                  readOnly: true,
+                  decoration:
+                      textInputDecoration.copyWith(hintText: 'town, taluk'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Customer Full Address' : null,
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     address2 = val;
+                  //   });
+                  // },
+                ),
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: city,
+                  readOnly: true,
+                  decoration: textInputDecoration.copyWith(hintText: 'city'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Customer Full Address' : null,
+                  // onChanged: (val) {
+                  //   //updateCity(val);
+                  //   setState(() {
+                  //     city = val;
+                  //   });
+                  // },
+                ),
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: state,
+                  readOnly: true,
+                  decoration: textInputDecoration.copyWith(hintText: 'state'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Customer Full Address' : null,
+                  // onChanged: (val) {
+                  //   //updateCity(val);
+                  //   setState(() {
+                  //     state = val;
+                  //   });
+                  // },
+                ),
+                /* DropdownButtonFormField(
+                  decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      //<-- SEE HERE
+                      borderSide: BorderSide(color: Colors.black, width: 0),
                     ),
+                    focusedBorder: OutlineInputBorder(
+                      //<-- SEE HERE
+                      borderSide: BorderSide(color: Colors.black, width: 0),
+                    ),
+                    filled: true,
+                    fillColor: Color(0xffefefff),
                   ),
-                ]),
-              ),
-              const SizedBox(height: 12.0),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  dropdownColor: const Color(0xffefefff),
+                  value: state,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      state = newValue!;
+                    });
+                  },
+                  items: <String>[
+                    'Select State',
+                    'Karnataka',
+                    'Kerala',
+                    'Tamil Nadu',
+                    'Andra Pradesh'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    );
+                  }).toList(),
+                ), */
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: pincode,
+                  readOnly: true,
+                  keyboardType: TextInputType.phone,
+                  decoration: textInputDecoration.copyWith(hintText: 'pincode'),
+                  validator: (value) =>
+                      RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
+                          ? null
+                          : 'Enter Valid pincode',
+                  onChanged: (val) {
+                    // setState(() {
+                    //   pincode = val;
+                    // });
+                    // if (pincode.length == 6) {
+                    //   updateAddressFields().then((value) {
+                    //     if (!value) {
+                    //       setState(() {
+                    //         pincodeError = 'Please enter valid pincode';
+                    //       });
+                    //     }
+                    //   });
+                    // }
+                  },
+                ),
+                const SizedBox(height: 12.0),
                 Text(
-                  error,
-                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                  pincodeError,
+                  style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                 ),
-              ]),
-
-              const SizedBox(
-                height: 10.0,
-              ),
-              SizedBox(
-                      height: 59,
-                      width: 420,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff4d47c3),
+                const SizedBox(height: 10.0),
+                SizedBox(
+                  height: screenHeight / 40,
+                  child: Text(
+                    'Interested in:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: screenHeight / 50,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+        
+                //curousel
+                SizedBox(
+                  height: screenHeight / 9,
+                  width: screenWidth - 50,
+                  child: ListView(children: [
+                    CarouselSlider(
+                      items: [
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                      initialValue: dropdownInt1,
+                                      readOnly: true,
+                                      decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                      // onChanged: (val) {
+                                      //   //updateCity(val);
+                                      //   setState(() {
+                                      //     city = val;
+                                      //   });
+                                      // },
+                                    ),
+                                ),
+                              ],
                             ),
-                            child: Container(
-                              width: 100,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    blurRadius: 61,
-                                    offset: Offset(0, 4),
+                          ),
+                        ),
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                    initialValue: dropdownInt2,
+                                    readOnly: true,
+                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                                    // onChanged: (val) {
+                                    //   //updateCity(val);
+                                    //   setState(() {
+                                    //     city = val;
+                                    //   });
+                                    // },
                                   ),
-                                ],
-                                color: const Color(0xff4d47c3),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                    initialValue: dropdownInt3,
+                                    readOnly: true,
+                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                                    // onChanged: (val) {
+                                    //   //updateCity(val);
+                                    //   setState(() {
+                                    //     city = val;
+                                    //   });
+                                    // },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                    initialValue: dropdownInt4,
+                                    readOnly: true,
+                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                                    // onChanged: (val) {
+                                    //   //updateCity(val);
+                                    //   setState(() {
+                                    //     city = val;
+                                    //   });
+                                    // },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                      options: CarouselOptions(
+                        height: screenHeight / 9,
+                        enlargeCenterPage: true,
+                        autoPlay: false,
+                        aspectRatio: 16 / 9,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enableInfiniteScroll: false,
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        viewportFraction: 0.8,
+                      ),
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 10.0),
+               SizedBox(
+                  height: screenHeight / 40,
+                  child: Text(
+                    'Uses at:',
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: screenHeight / 50,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+        
+                //curousel
+                SizedBox(
+                  height: screenHeight / 9,
+                  width: screenWidth - 50,
+                  child: ListView(children: [
+                    CarouselSlider(
+                      items: [
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                    initialValue: dropdownUses1,
+                                    readOnly: true,
+                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                                    // onChanged: (val) {
+                                    //   //updateCity(val);
+                                    //   setState(() {
+                                    //     city = val;
+                                    //   });
+                                    // },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                    initialValue: dropdownUses2,
+                                    readOnly: true,
+                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                                    // onChanged: (val) {
+                                    //   //updateCity(val);
+                                    //   setState(() {
+                                    //     city = val;
+                                    //   });
+                                    // },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                      initialValue: dropdownUses3,
+                                      readOnly: true,
+                                      decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                      validator: (value) =>
+                                          value!.isEmpty ? 'Enter Customer Full Address' : null,
+                                      // onChanged: (val) {
+                                      //   //updateCity(val);
+                                      //   setState(() {
+                                      //     city = val;
+                                      //   });
+                                      // },
+                                    ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          // margin: const EdgeInsets.only(right: 0.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: SizedBox(
+                            child: Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: screenWidth / 2,
+                                  child: TextFormField(
+                                    style: TextStyle(fontSize: screenHeight / 50),
+                                    initialValue: dropdownUses4,
+                                    readOnly: true,
+                                    decoration: textInputDecoration.copyWith(hintText: 'city'),
+                                    validator: (value) =>
+                                        value!.isEmpty ? 'Enter Customer Full Address' : null,
+                                    // onChanged: (val) {
+                                    //   //updateCity(val);
+                                    //   setState(() {
+                                    //     city = val;
+                                    //   });
+                                    // },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                      options: CarouselOptions(
+                        height: screenHeight / 9,
+                        enlargeCenterPage: true,
+                        autoPlay: false,
+                        aspectRatio: 16 / 9,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enableInfiniteScroll: false,
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        viewportFraction: 0.8,
+                      ),
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 12.0),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    error,
+                    style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
+                  ),
+                ]),
+        
+                const SizedBox(
+                  height: 10.0,
+                ),
+                SizedBox(
+                        height: screenHeight / 15,
+                        width: screenWidth,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff4d47c3),
                               ),
-                              padding: const EdgeInsets.only(
-                                top: 18,
-                                bottom: 17,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  SizedBox(
-                                    width: 70,
-                                    child: Text(
-                                      "Back",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: "Poppins",
-                                        fontWeight: FontWeight.w500,
+                              child: Container(
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      blurRadius: 61,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                  color: const Color(0xff4d47c3),
+                                ),
+                                padding: const EdgeInsets.only(
+                                  top: 18,
+                                  bottom: 17,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: screenWidth / 6,
+                                      child: Text(
+                                        "Back",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenHeight / 50,
+                                          fontFamily: "Poppins",
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-              const SizedBox(height: 20.0),
-            ],
+                const SizedBox(height: 20.0),
+              ],
+            ),
           ),
         ),
       ),

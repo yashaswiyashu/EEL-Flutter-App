@@ -58,7 +58,6 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
   Widget build(BuildContext context) {
     return Container(
       width: screenWidth,
-      height: screenHeight / 10,
       padding: EdgeInsets.only(left: 5, right: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -72,7 +71,7 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
             child: Padding(
               padding: EdgeInsets.only(right: 8),
               child: TextFormField(
-                style: TextStyle(fontSize: screenHeight / 50),
+                style: TextStyle(fontSize: screenHeight / 55),
                 initialValue: formattedDate,
                 enabled: false,
                 decoration: InputDecoration(
@@ -145,7 +144,7 @@ Container buildComplaintDetailsContainerView(List<ComplaintDetail> complaintDeta
             detail.updateDate,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: screenHeight / 40,
+              fontSize: screenHeight / 50,
               fontWeight: FontWeight.w500,
               height: 1,
               color: Color(0xff000000),
@@ -170,7 +169,6 @@ Container buildComplaintDetailsContainerView(List<ComplaintDetail> complaintDeta
 
   return Container(
     width: screenWidth,
-    height: screenHeight / 10,
     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),

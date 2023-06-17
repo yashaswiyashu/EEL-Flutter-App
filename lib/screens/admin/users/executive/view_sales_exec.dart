@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/common/location.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
@@ -70,7 +71,7 @@ class _ViewExecutiveDetailsState extends State<ViewExecutiveDetails> {
   }
 
   var snackBar = SnackBar(
-    content: Text('Registered Successfully!!!'),
+    content: Text('Registered Successfully!!!', style: TextStyle(fontSize: screenHeight / 50),),
   );
 
   void showConfirmation() {
@@ -78,11 +79,11 @@ class _ViewExecutiveDetailsState extends State<ViewExecutiveDetails> {
         context: context,
         builder: (_) {
           return AlertDialog(
-            title: Text('Please enter valid email.'),
+            title: Text('Please enter valid email.', style: TextStyle(fontSize: screenHeight / 50),),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, true), // passing true
-                child: Text('Ok'),
+                child: Text('Ok', style: TextStyle(fontSize: screenHeight / 50),),
               ),
             ],
           );
@@ -160,7 +161,7 @@ Future<bool> updateAddressFields() async {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Energy Efficient Lights'),
+        title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50),),
         backgroundColor: const Color(0xff4d47c3),
         actions: [
                 TextButton.icon(
@@ -168,494 +169,513 @@ Future<bool> updateAddressFields() async {
                       await _auth.signout();
                       Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label: Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: screenHeight / 50),
                     )),
               ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(right: 10, left: 10),
-        child: Form(
-          key: _formkey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(left: 75),
-                width: 180,
-                height: 60,
-                child: Image.asset('assets/logotm.jpg'),
-              ),
-              const SizedBox(height: 20.0),
-              Container(
-                margin: EdgeInsets.only(right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                        const SizedBox(
-                            height: 20.0,
-                            child: Text(
-                              'Approve Co-Ordinator:',
-                              style: TextStyle(
-                                color: Color(0xff090a0a),
-                                fontSize: 16,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w500,
-                              ),
-                            )),
-                        Container(
-                          margin: EdgeInsets.only(left: 20),
-                          width: 27.46,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 255, 254, 254),
-                          ),
-                          child: StatefulBuilder(builder:
-                              (BuildContext context, StateSetter setState) {
-                            return Switch(
-                              value: approve,
-                              onChanged: (bool value) {
-                                // setState(() {
-                                //   approve = value;
-                                // });
-                              },
-                            );
-                          }),
-                        ),
-                      ]),
+        child: Container(
+          width: screenWidth,
+          child: Form(
+            key: _formkey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: screenWidth / 3,
+                        height: screenHeight / 10,
+                      child: Image.asset('assets/logotm.jpg'),
                     ),
-                    const SizedBox(height: 10.0),
-              const SizedBox(
-                height: 20.0,
-                child: Text(
-                  "Name:",
-                  style: TextStyle(
-                    color: Color(0xff090a0a),
-                    fontSize: 16,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.w500,
-                  ),
+                  ],
                 ),
-              ),
-              TextFormField(
-                initialValue: name,
-                readOnly: true,
-                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
-                decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Your Name',
-                    fillColor: const Color(0xfff0efff)),
-                // onChanged: (val) {
-                //   name = val;
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Phone Number:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-
-              TextFormField(
-                initialValue: phoneNumber,
-                readOnly: true,
-                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
-                decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Your Number',
-                    fillColor: const Color(0xfff0efff)),
-                // onChanged: (val) {
-                //   name = val;
-                // },
-              ),
-              SizedBox(child: Text(numError,
-                     style: TextStyle(color: Color.fromARGB(190, 193, 2, 2),),),),
-
-
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Education:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                initialValue:  education,
-                readOnly: true,
-                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Education Details',
-                ),
-                // onChanged: (val) {
-                //   education = val;
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Sales Co-Ordinator:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-                  TextFormField(
-                initialValue:  coOrdName,
-                readOnly: true,
-                validator: (value) => value!.isEmpty ? 'Missing Field' : null,
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Education Details',
-                ),
-                // onChanged: (val) {
-                //   education = val;
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Adhaar Number:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                initialValue: adhaarNumber,
-                readOnly: true,
-                keyboardType: TextInputType.phone,
-                validator: (value) =>
-                    value?.length == 12 ? null : 'Enter valid Aadhar number',
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Your Adhaar Number',
-                ),
-                // onChanged: (val) {
-                //   adhaarNumber = val;
-                // },
-              ),
-              const SizedBox(height: 20.0),
-/*               const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Phone Number:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
- */              /* TextFormField(
-                keyboardType: TextInputType.phone,
-                validator: (value) =>
-                    value?.length == 10 ? null : 'Enter valid number',
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Phone Number',
-                ),
-                onChanged: (val) {
-                  phoneNumber = val;
-                },
-              ), */
-
-              //const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Email:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                initialValue: email,
-                readOnly: true,
-                focusNode: myFocusNode,
-                validator: (value) =>
-                    RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                            .hasMatch(value!)
-                        ? null
-                        : 'Missing Field',
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Your Email',
-                ),
-                // onChanged: (val) {
-                //   setState(() {
-                //     authCredEdited = true;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Password:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                initialValue: password,
-                readOnly: true,
-                validator: (value) => value!.length < 6
-                    ? 'Enter a password of more than 6 characters'
-                    : null,
-                keyboardType: TextInputType.text,
-                obscureText: !_passwordVisible,
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Enter Password',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      // Based on passwordVisible state choose the icon
-                      _passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
-                    onPressed: () {
-                      // Update the state i.e. toogle the state of passwordVisible variable
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                  ),
-                ),
-                // onChanged: (val) {
-                //   setState(() {
-                //     authCredEdited = true;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
-                  child: Text(
-                    'Full Address:',
-                    style: TextStyle(
-                      color: Color(0xff090a0a),
-                      fontSize: 16,
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-              TextFormField(
-                initialValue: address1,
-                readOnly: true,
-                validator: (value) =>
-                    value!.isEmpty ? 'Missing address field' : null,
-                decoration: textInputDecoration.copyWith(
-                    hintText:
-                        'Please enter the pincode to autofill postal address'),
-                // onChanged: (val) {
-                //   address1 = val;
-                // },
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: address2,
-                readOnly: true,
-                validator: (value) =>
-                    value!.isEmpty ? 'Missing address field' : null,
-                decoration: textInputDecoration.copyWith(hintText: 'talluk'),
-                // onChanged: (val) {
-                //   address2 = val;
-                // },
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: city,
-                readOnly: true,
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter valid city' : null,
-                decoration: textInputDecoration.copyWith(hintText: 'District'),
-                // onChanged: (val) {
-                //   city = val;
-                // },
-              ),
-              const SizedBox(height: 10.0),
-              // DropdownButtonFormField(
-              //     decoration: const InputDecoration(
-              //       enabledBorder: OutlineInputBorder(
-              //         //<-- SEE HERE
-              //         borderSide:
-              //             BorderSide(color: Colors.black, width: 0),
-              //       ),
-              //       focusedBorder: OutlineInputBorder(
-              //         //<-- SEE HERE
-              //         borderSide:
-              //             BorderSide(color: Colors.black, width: 2),
-              //       ),
-              //       filled: true,
-              //       fillColor: Color(0xffefefff),
-              //     ),
-              //     dropdownColor: const Color(0xffefefff),
-              //     value: state,
-              //     onChanged: (String? newValue) {
-              //       setState(() {
-              //         state = newValue!;
-              //       });
-              //     },
-              //     items: <String>[
-              //       'Select State',
-              //       'Karnataka',
-              //       'Kerala',
-              //       'Tamil Nadu',
-              //       'Andra Pradesh'
-              //     ].map<DropdownMenuItem<String>>((String value) {
-              //       return DropdownMenuItem<String>(
-              //         value: value,
-              //         child: Text(
-              //           value,
-              //           style: const TextStyle(fontSize: 18),
-              //         ),
-              //       );
-              //     }).toList(),
-              //   ),
-              TextFormField(
-                initialValue: state,
-                readOnly: true,
-                decoration: textInputDecoration.copyWith(hintText: 'state'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter Customer Full Address' : null,
-                // onChanged: (val) {
-                //   //updateCity(val);
-                //   setState(() {
-                //     state = val;
-                //   });
-                // },
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                initialValue: pincode,
-                readOnly: true,
-                keyboardType: TextInputType.phone,
-                validator: (value) =>
-                    RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
-                        ? null
-                        : 'Enter Valid pincode',
-                decoration: textInputDecoration.copyWith(hintText: 'pincode'),
-                // onChanged: (val) {
-                //   setState(() {
-                //     pincode = val;
-                //   });
-                //   // if (pincode.length == 6) {
-                //   //   updateAddressFields().then((value) {
-                //   //     if(!value) {
-                //   //       setState(() {
-                //   //         pincodeError = 'Please enter valid pincode';
-                //   //       });
-                //   //     }
-                //   //   });
-                //   // }
-                // },
-              ),
-              const SizedBox(height: 12.0),
-              Text(
-                pincodeError,
-                style: const TextStyle(color: Colors.red, fontSize: 14.0),
-              ),
-              const SizedBox(height: 20.0),
-              Container(
-                margin: EdgeInsets.only(left: 120),
-                child: Text(
-                  error,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 14.0,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              SizedBox(
-                      height: 59,
-                      width: 420,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff4d47c3),
+                const SizedBox(height: 20.0),
+                Container(
+                  margin: EdgeInsets.only(right: screenWidth /10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                         SizedBox(
+                              height: screenHeight / 40,
+                              child: Text(
+                                'Approve Co-Ordinator:',
+                                style: TextStyle(
+                                  color: Color(0xff090a0a),
+                                  fontSize: screenHeight / 50,
+                                  fontFamily: "Inter",
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )),
+                          Container(
+                            margin: EdgeInsets.only(left: 20),
+                          width: screenWidth / 20,
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 255, 254, 254),
                             ),
-                            child: Container(
-                              width: 100,
-                              height: 59,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x664d47c3),
-                                    blurRadius: 61,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                                color: const Color(0xff4d47c3),
+                            child: StatefulBuilder(builder:
+                                (BuildContext context, StateSetter setState) {
+                              return Switch(
+                                value: approve,
+                                onChanged: (bool value) {
+                                  // setState(() {
+                                  //   approve = value;
+                                  // });
+                                },
+                              );
+                            }),
+                          ),
+                        ]),
+                      ),
+                      const SizedBox(height: 10.0),
+                 SizedBox(
+                  height: screenHeight / 40,
+                  child: Text(
+                    "Name:",
+                    style: TextStyle(
+                      color: Color(0xff090a0a),
+                      fontSize: screenHeight /50,
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: name,
+                  readOnly: true,
+                  validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                  decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Your Name',
+                      fillColor: const Color(0xfff0efff)),
+                  // onChanged: (val) {
+                  //   name = val;
+                  // },
+                ),
+                const SizedBox(height: 20.0),
+                 SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Phone Number:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+        
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: phoneNumber,
+                  readOnly: true,
+                  validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                  decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Your Number',
+                      fillColor: const Color(0xfff0efff)),
+                  // onChanged: (val) {
+                  //   name = val;
+                  // },
+                ),
+                SizedBox(child: Text(numError,
+                       style: TextStyle(color: Color.fromARGB(190, 193, 2, 2), fontSize: screenHeight / 60),),),
+        
+        
+                 SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Education:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue:  education,
+                  readOnly: true,
+                  validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Education Details',
+                  ),
+                  // onChanged: (val) {
+                  //   education = val;
+                  // },
+                ),
+                const SizedBox(height: 20.0),
+               SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Sales Co-Ordinator:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                    TextFormField(
+                      style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue:  coOrdName,
+                  readOnly: true,
+                  validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Education Details',
+                  ),
+                  // onChanged: (val) {
+                  //   education = val;
+                  // },
+                ),
+                const SizedBox(height: 20.0),
+               SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Adhaar Number:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: adhaarNumber,
+                  readOnly: true,
+                  keyboardType: TextInputType.phone,
+                  validator: (value) =>
+                      value?.length == 12 ? null : 'Enter valid Aadhar number',
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Your Adhaar Number',
+                  ),
+                  // onChanged: (val) {
+                  //   adhaarNumber = val;
+                  // },
+                ),
+                const SizedBox(height: 20.0),
+        /*               const SizedBox(
+                    height: 20.0,
+                    child: Text(
+                      'Phone Number:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: 16,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+         */              /* TextFormField(
+                  keyboardType: TextInputType.phone,
+                  validator: (value) =>
+                      value?.length == 10 ? null : 'Enter valid number',
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Phone Number',
+                  ),
+                  onChanged: (val) {
+                    phoneNumber = val;
+                  },
+                ), */
+        
+                //const SizedBox(height: 20.0),
+                 SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Email:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: email,
+                  readOnly: true,
+                  focusNode: myFocusNode,
+                  validator: (value) =>
+                      RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value!)
+                          ? null
+                          : 'Missing Field',
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Your Email',
+                  ),
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     authCredEdited = true;
+                  //   });
+                  // },
+                ),
+                const SizedBox(height: 20.0),
+               SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Password:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: password,
+                  readOnly: true,
+                  validator: (value) => value!.length < 6
+                      ? 'Enter a password of more than 6 characters'
+                      : null,
+                  keyboardType: TextInputType.text,
+                  obscureText: !_passwordVisible,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        // Based on passwordVisible state choose the icon
+                        _passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                      onPressed: () {
+                        // Update the state i.e. toogle the state of passwordVisible variable
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     authCredEdited = true;
+                  //   });
+                  // },
+                ),
+                const SizedBox(height: 20.0),
+                SizedBox(
+                    height: screenHeight / 40,
+                    child: Text(
+                      'Full Address:',
+                      style: TextStyle(
+                        color: Color(0xff090a0a),
+                        fontSize: screenHeight / 50,
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: address1,
+                  readOnly: true,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Missing address field' : null,
+                  decoration: textInputDecoration.copyWith(
+                      hintText:
+                          'Please enter the pincode to autofill postal address'),
+                  // onChanged: (val) {
+                  //   address1 = val;
+                  // },
+                ),
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: address2,
+                  readOnly: true,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Missing address field' : null,
+                  decoration: textInputDecoration.copyWith(hintText: 'talluk'),
+                  // onChanged: (val) {
+                  //   address2 = val;
+                  // },
+                ),
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: city,
+                  readOnly: true,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter valid city' : null,
+                  decoration: textInputDecoration.copyWith(hintText: 'District'),
+                  // onChanged: (val) {
+                  //   city = val;
+                  // },
+                ),
+                const SizedBox(height: 10.0),
+                // DropdownButtonFormField(
+                //     decoration: const InputDecoration(
+                //       enabledBorder: OutlineInputBorder(
+                //         //<-- SEE HERE
+                //         borderSide:
+                //             BorderSide(color: Colors.black, width: 0),
+                //       ),
+                //       focusedBorder: OutlineInputBorder(
+                //         //<-- SEE HERE
+                //         borderSide:
+                //             BorderSide(color: Colors.black, width: 2),
+                //       ),
+                //       filled: true,
+                //       fillColor: Color(0xffefefff),
+                //     ),
+                //     dropdownColor: const Color(0xffefefff),
+                //     value: state,
+                //     onChanged: (String? newValue) {
+                //       setState(() {
+                //         state = newValue!;
+                //       });
+                //     },
+                //     items: <String>[
+                //       'Select State',
+                //       'Karnataka',
+                //       'Kerala',
+                //       'Tamil Nadu',
+                //       'Andra Pradesh'
+                //     ].map<DropdownMenuItem<String>>((String value) {
+                //       return DropdownMenuItem<String>(
+                //         value: value,
+                //         child: Text(
+                //           value,
+                //           style: const TextStyle(fontSize: 18),
+                //         ),
+                //       );
+                //     }).toList(),
+                //   ),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: state,
+                  readOnly: true,
+                  decoration: textInputDecoration.copyWith(hintText: 'state'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Customer Full Address' : null,
+                  // onChanged: (val) {
+                  //   //updateCity(val);
+                  //   setState(() {
+                  //     state = val;
+                  //   });
+                  // },
+                ),
+                const SizedBox(height: 10.0),
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  initialValue: pincode,
+                  readOnly: true,
+                  keyboardType: TextInputType.phone,
+                  validator: (value) =>
+                      RegExp(r'^\d+$').hasMatch(pincode) && pincode.length == 6
+                          ? null
+                          : 'Enter Valid pincode',
+                  decoration: textInputDecoration.copyWith(hintText: 'pincode'),
+                  // onChanged: (val) {
+                  //   setState(() {
+                  //     pincode = val;
+                  //   });
+                  //   // if (pincode.length == 6) {
+                  //   //   updateAddressFields().then((value) {
+                  //   //     if(!value) {
+                  //   //       setState(() {
+                  //   //         pincodeError = 'Please enter valid pincode';
+                  //   //       });
+                  //   //     }
+                  //   //   });
+                  //   // }
+                  // },
+                ),
+                const SizedBox(height: 12.0),
+                Text(
+                  pincodeError,
+                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                ),
+                const SizedBox(height: 20.0),
+                Container(
+                  margin: EdgeInsets.only(left: 120),
+                  child: Text(
+                    error,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 14.0,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                SizedBox(
+                        height: screenHeight / 15,
+                        width: screenWidth,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff4d47c3),
                               ),
-                              padding: const EdgeInsets.only(
-                                top: 18,
-                                bottom: 17,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  SizedBox(
-                                    width: 70,
-                                    child: Text(
-                                      "Back",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: "Poppins",
-                                        fontWeight: FontWeight.w500,
+                              child: Container(
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(9),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x664d47c3),
+                                      blurRadius: 61,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                  color: const Color(0xff4d47c3),
+                                ),
+                                padding: const EdgeInsets.only(
+                                  top: 18,
+                                  bottom: 17,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: screenWidth / 6,
+                                      child: Text(
+                                        "Back",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenHeight / 50,
+                                          fontFamily: "Poppins",
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-              const SizedBox(
-                height: 20.0,
-              ),
-            ],
+                const SizedBox(
+                  height: 20.0,
+                ),
+              ],
+            ),
           ),
         ),
       ),

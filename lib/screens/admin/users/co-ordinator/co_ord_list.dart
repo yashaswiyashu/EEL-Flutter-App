@@ -8,6 +8,7 @@ import 'package:flutter_app/screens/admin/products/edit_product_details.dart';
 import 'package:flutter_app/screens/admin/products/view_product_details.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -54,11 +55,11 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Co-Ord Name')),
+        DataColumn(label: Text('Co-Ord Name',style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Mob No.')),
+        DataColumn(label: Text('Mob No.', style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Select')),
+        DataColumn(label: Text('Select',style: TextStyle(fontSize: screenHeight / 50),)),
       ];
     }
 
@@ -66,9 +67,9 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
     List<DataRow> _createRows() {
       return coOrdList
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.name)),
+                DataCell(Text(element.name, style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.phoneNumber)),
+                DataCell(Text(element.phoneNumber, style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
                 DataCell(
                   RadioListTile(
@@ -97,7 +98,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
     DataTable _createDataTable() {
       return DataTable(
           columnSpacing: 0.0,
-          dataRowHeight: 40.0,
+          dataRowHeight: screenHeight / 16,
           columns: _createColumns(),
           rows: coOrdList.isNotEmpty ? _createRows() : []);
     }
@@ -107,7 +108,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
         ? const Loading()
         : Scaffold(
             appBar: AppBar(
-              title: const Text('Energy Efficient Lights'),
+              title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50),),
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
@@ -115,19 +116,20 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                       await _auth.signout();
                       Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label: Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white,  fontSize: screenHeight / 50),
                     )),
               ],
             ),
             body: SingleChildScrollView(
                 child: Container(
-              width: 440,
+              width: screenWidth,
               padding: const EdgeInsets.only(
                 top: 10,
                 bottom: 0.4,
@@ -138,25 +140,31 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      width: 270,
-                      height: 60,
+                      width: screenWidth / 3,
+                      height: screenHeight / 10,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 250),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff4d47c3)),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context, SalesPersonRegistration.routeName,
-                            arguments: 'Sales Co-Ordinator');
-                          },
-                        child: Text('Add New +'),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          height: screenHeight / 20,
+                          margin: EdgeInsets.only(right: screenWidth / 10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff4d47c3)),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context, SalesPersonRegistration.routeName,
+                                arguments: 'Sales Co-Ordinator');
+                              },
+                                    child: Text('Add New +', style: TextStyle(fontSize: screenHeight / 50),),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 10),
                     _createDataTable(),
@@ -166,7 +174,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                     Text(
                       status,
                       style:
-                          const TextStyle(color: Colors.pink, fontSize: 14.0),
+                         TextStyle(color: Colors.pink, fontSize: screenHeight / 60),
                     ),
                     SizedBox(
                       height: 20,
@@ -201,8 +209,8 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                               padding: EdgeInsets.zero,
                             ),
                             child: Container(
-                              width: 95.63,
-                              height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                               decoration: BoxDecoration(
                                 color: Color(0xff4d47c3),
                                 borderRadius: BorderRadius.circular(9),
@@ -220,7 +228,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontWeight: FontWeight.w500,
                                     height: 1.5,
                                     color: Color(0xffffffff),
@@ -256,8 +264,8 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                               padding: EdgeInsets.zero,
                             ),
                             child: Container(
-                              width: 95.63,
-                              height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                               decoration: BoxDecoration(
                                 color: Color(0xff4d47c3),
                                 borderRadius: BorderRadius.circular(9),
@@ -275,7 +283,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontWeight: FontWeight.w500,
                                     height: 1.5,
                                     color: Color(0xffffffff),
@@ -293,8 +301,8 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                             padding: EdgeInsets.zero,
                           ),
                           child: Container(
-                            width: 95.63,
-                            height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                             decoration: BoxDecoration(
                               color: Color(0xff4d47c3),
                               borderRadius: BorderRadius.circular(9),
@@ -312,7 +320,7 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontWeight: FontWeight.w500,
                                   height: 1.5,
                                   color: Color(0xffffffff),

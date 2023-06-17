@@ -10,6 +10,7 @@ import 'package:flutter_app/screens/admin/users/co-ordinator/edit_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/co-ordinator/view_co_ord.dart';
 import 'package:flutter_app/screens/admin/users/executive/edit_sales_exec_list.dart';
 import 'package:flutter_app/screens/admin/users/executive/view_sales_exec.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/sales%20Common/sales_person_registration.dart';
 import 'package:flutter_app/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -87,11 +88,11 @@ class _SalesExecListState extends State<SalesExecList> {
 
     List<DataColumn> _createColumns() {
       return [
-        DataColumn(label: Text('Exec Name')),
+        DataColumn(label: Text('Exec Name',style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Mob No.')),
+        DataColumn(label: Text('Mob No.',style: TextStyle(fontSize: screenHeight / 50),)),
         DataColumn(label: _verticalDivider),
-        DataColumn(label: Text('Select')),
+        DataColumn(label: Text('Select',style: TextStyle(fontSize: screenHeight / 50),)),
       ];
     }
 
@@ -99,9 +100,9 @@ class _SalesExecListState extends State<SalesExecList> {
     List<DataRow> _createRows() {
       return execList
           .map((element) => DataRow(cells: [
-                DataCell(Text(element.name)),
+                DataCell(Text(element.name,style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
-                DataCell(Text(element.phoneNumber)),
+                DataCell(Text(element.phoneNumber,style: TextStyle(fontSize: screenHeight / 50),)),
                 DataCell(_verticalDivider),
                 DataCell(
                   RadioListTile(
@@ -130,7 +131,7 @@ class _SalesExecListState extends State<SalesExecList> {
     DataTable _createDataTable() {
       return DataTable(
           columnSpacing: 0.0,
-          dataRowHeight: 40.0,
+          dataRowHeight: screenHeight / 16,
           columns: _createColumns(),
           rows: execList.isNotEmpty ? _createRows() : []);
     }
@@ -140,7 +141,7 @@ class _SalesExecListState extends State<SalesExecList> {
         ? const Loading()
         : Scaffold(
             appBar: AppBar(
-              title: const Text('Energy Efficient Lights'),
+              title: Text('Energy Efficient Lights', style: TextStyle(fontSize: screenHeight / 50),),
               backgroundColor: const Color(0xff4d47c3),
               actions: [
                 TextButton.icon(
@@ -148,19 +149,20 @@ class _SalesExecListState extends State<SalesExecList> {
                       await _auth.signout();
                       Navigator.of(context).pushNamedAndRemoveUntil('authWrapper',(Route<dynamic> route) => false);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.person,
                       color: Colors.white,
+                      size: screenHeight / 50,
                     ),
-                    label: const Text(
+                    label: Text(
                       'logout',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white,  fontSize: screenHeight / 50),
                     )),
               ],
             ),
             body: SingleChildScrollView(
                 child: Container(
-              width: 440,
+              width: screenWidth,
               padding: const EdgeInsets.only(
                 top: 10,
                 bottom: 0.4,
@@ -171,31 +173,37 @@ class _SalesExecListState extends State<SalesExecList> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      width: 270,
-                      height: 60,
+                      width: screenWidth / 3,
+                      height: screenHeight / 10,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Image.asset('assets/logotm.jpg'),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 250),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff4d47c3)),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context, SalesPersonRegistration.routeName,
-                            arguments: 'Sales Executive');
-                          },
-                        child: Text('Add New +'),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          height: screenHeight / 20,
+                          margin: EdgeInsets.only(right: screenWidth / 10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff4d47c3)),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context, SalesPersonRegistration.routeName,
+                                arguments: 'Sales Executive');
+                              },
+                                    child: Text('Add New +', style: TextStyle(fontSize: screenHeight / 50),),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 10),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   SizedBox(
-                    height: 55,
-                    width: 190,
+                    height: screenHeight / 10,
+                    width: screenWidth / 2.2,
                     child: DropdownButtonFormField(
                       decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -222,22 +230,22 @@ class _SalesExecListState extends State<SalesExecList> {
                           value: value,
                           child: Text(
                             value,
-                            style: const TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: screenHeight / 50),
                           ),
                         );
                       }).toList(),
                     ),
                   ),
                 ]),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 110),
-                    child: Text(
-                      error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                    ),
-                  ),
-                ]),
+                // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                //   Container(
+                //     margin: const EdgeInsets.only(left: 110),
+                //     child: Text(
+                //       error,
+                //       style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                //     ),
+                //   ),
+                // ]),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -248,7 +256,7 @@ class _SalesExecListState extends State<SalesExecList> {
                     Text(
                       status,
                       style:
-                          const TextStyle(color: Colors.pink, fontSize: 14.0),
+                         TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                     ),
                     SizedBox(
                       height: 20,
@@ -283,8 +291,8 @@ class _SalesExecListState extends State<SalesExecList> {
                               padding: EdgeInsets.zero,
                             ),
                             child: Container(
-                              width: 95.63,
-                              height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                               decoration: BoxDecoration(
                                 color: Color(0xff4d47c3),
                                 borderRadius: BorderRadius.circular(9),
@@ -302,7 +310,7 @@ class _SalesExecListState extends State<SalesExecList> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontWeight: FontWeight.w500,
                                     height: 1.5,
                                     color: Color(0xffffffff),
@@ -338,8 +346,8 @@ class _SalesExecListState extends State<SalesExecList> {
                               padding: EdgeInsets.zero,
                             ),
                             child: Container(
-                              width: 95.63,
-                              height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                               decoration: BoxDecoration(
                                 color: Color(0xff4d47c3),
                                 borderRadius: BorderRadius.circular(9),
@@ -357,7 +365,7 @@ class _SalesExecListState extends State<SalesExecList> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    fontSize: 16,
+                                    fontSize: screenHeight / 50,
                                     fontWeight: FontWeight.w500,
                                     height: 1.5,
                                     color: Color(0xffffffff),
@@ -375,8 +383,8 @@ class _SalesExecListState extends State<SalesExecList> {
                             padding: EdgeInsets.zero,
                           ),
                           child: Container(
-                            width: 95.63,
-                            height: 59,
+                              width: screenWidth / 5,
+                              height: screenHeight / 15,
                             decoration: BoxDecoration(
                               color: Color(0xff4d47c3),
                               borderRadius: BorderRadius.circular(9),
@@ -394,7 +402,7 @@ class _SalesExecListState extends State<SalesExecList> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: "Poppins",
-                                  fontSize: 16,
+                                  fontSize: screenHeight / 50,
                                   fontWeight: FontWeight.w500,
                                   height: 1.5,
                                   color: Color(0xffffffff),

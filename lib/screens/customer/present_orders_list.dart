@@ -60,25 +60,25 @@ class _PresentCustomerOrdersListState extends State<PresentCustomerOrdersList> {
             });
 
             return AlertDialog(
-              title: Text(warn),
+              title: Text(warn, style: TextStyle(fontSize: screenHeight / 50),),
               actions: canCancel
                   ? [
                       TextButton(
                         onPressed: () =>
                             Navigator.pop(context, false), // passing false
-                        child: Text('No'),
+                        child: Text('No', style: TextStyle(fontSize: screenHeight / 50),),
                       ),
                       TextButton(
                         onPressed: () =>
                             Navigator.pop(context, true), // passing true
-                        child: Text('Yes'),
+                        child: Text('Yes', style: TextStyle(fontSize: screenHeight / 50),),
                       ),
                     ]
                   : [
                       TextButton(
                         onPressed: () =>
                             Navigator.pop(context, false), // passing false
-                        child: Text('Ok'),
+                        child: Text('Ok', style: TextStyle(fontSize: screenHeight / 50),),
                       ),
                     ],
             );
@@ -108,7 +108,7 @@ class _PresentCustomerOrdersListState extends State<PresentCustomerOrdersList> {
                       element.products)
                   .then((value) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Order cancelled Successfully!!!'),
+                  content: Text('Order cancelled Successfully!!!', style: TextStyle(fontSize: screenHeight / 50),),
                 ));
                 Navigator.pop(context);
               });

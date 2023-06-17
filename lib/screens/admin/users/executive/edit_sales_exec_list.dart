@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/models/call_details_forward_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
+import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/common/location.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
@@ -332,33 +333,35 @@ Future<bool> updateAddressFields() async {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(left: 75),
-                width: 180,
-                height: 60,
-                child: Image.asset('assets/logotm.jpg'),
+              Row(mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                              width: screenWidth / 3,
+                              height: screenHeight / 10,
+                    child: Image.asset('assets/logotm.jpg'),
+                  ),
+                ],
               ),
               const SizedBox(height: 20.0),
               Container(
-                margin: EdgeInsets.only(right: 20),
+                margin: EdgeInsets.only(right: screenWidth / 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                        const SizedBox(
-                            height: 20.0,
+                         SizedBox(
+                            height: screenHeight / 40,
                             child: Text(
                               'Approve Co-Ordinator:',
                               style: TextStyle(
                                 color: Color(0xff090a0a),
-                                fontSize: 16,
+                                fontSize: screenHeight / 50,
                                 fontFamily: "Inter",
                                 fontWeight: FontWeight.w500,
                               ),
                             )),
                         Container(
                           margin: EdgeInsets.only(left: 20),
-                          width: 27.46,
-                          height: 24,
+                          width: screenWidth / 20,
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 255, 254, 254),
                           ),
@@ -377,19 +380,20 @@ Future<bool> updateAddressFields() async {
                       ]),
                     ),
                     const SizedBox(height: 10.0),
-              const SizedBox(
-                height: 20.0,
+               SizedBox(
+                height: screenHeight / 40,
                 child: Text(
                   "Name:",
                   style: TextStyle(
                     color: Color(0xff090a0a),
-                    fontSize: 16,
+                    fontSize: screenHeight / 50,
                     fontFamily: "Inter",
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: nameController,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
@@ -400,19 +404,20 @@ Future<bool> updateAddressFields() async {
                 // },
               ),
               const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
+              SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Phone Number:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
                   )),
 
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: numberController,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
@@ -423,21 +428,22 @@ Future<bool> updateAddressFields() async {
                 // },
               ),
               SizedBox(child: Text(numError,
-                     style: TextStyle(color: Color.fromARGB(190, 193, 2, 2),),),),
+                     style: TextStyle(color: Color.fromARGB(190, 193, 2, 2), fontSize: screenHeight / 60,),),),
 
 
-              const SizedBox(
-                  height: 20.0,
+             SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Education:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
                   )),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: educationController,
                 validator: (value) => value!.isEmpty ? 'Missing Field' : null,
                 decoration: textInputDecoration.copyWith(
@@ -448,19 +454,20 @@ Future<bool> updateAddressFields() async {
                 // },
               ),
               const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
+              SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Role:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
                   )),
                   Container(
-                    height: 60,
+                    height: screenHeight / 15,
+                    width: screenWidth,
                     child: DropdownButtonFormField(
                         decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -489,20 +496,20 @@ Future<bool> updateAddressFields() async {
                             value: value,
                             child: Text(
                               value,
-                              style: const TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: screenHeight / 50),
                             ),
                           );
                         }).toList(),
                       ),
                   ),
-              role == 'Sales Executive' ? const SizedBox(height: 20.0) : const SizedBox(width: 0, height: 0,),
-              role == 'Sales Executive' ? const SizedBox(
-                  height: 20.0,
+              // role == 'Sales Executive' ? const SizedBox(height: 20.0) : const SizedBox(width: 0, height: 0,),
+              role == 'Sales Executive' ? SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Sales Co-Ordinator:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
@@ -511,6 +518,7 @@ Future<bool> updateAddressFields() async {
                 child: TypeAheadFormField(
                   
                   textFieldConfiguration: TextFieldConfiguration(
+                    style: TextStyle(fontSize: screenHeight / 50),
                     controller: coOrdinatorName,
                     decoration: textInputDecoration.copyWith(
                       hintText: 'Enter Co-ordinator Name',
@@ -549,18 +557,19 @@ Future<bool> updateAddressFields() async {
             ),
               ) : const SizedBox(width: 0, height: 0,),
               const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
+               SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Adhaar Number:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
                   )),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: aadharController,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
@@ -597,18 +606,19 @@ Future<bool> updateAddressFields() async {
               ), */
 
               //const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
+               SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Email:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight/ 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
                   )),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: emailController,
                 focusNode: myFocusNode,
                 validator: (value) =>
@@ -626,18 +636,19 @@ Future<bool> updateAddressFields() async {
                 // },
               ),
               const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
+              SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Password:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
                   )),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: passwordController,
                 validator: (value) => value!.length < 6
                     ? 'Enter a password of more than 6 characters'
@@ -669,18 +680,19 @@ Future<bool> updateAddressFields() async {
                 // },
               ),
               const SizedBox(height: 20.0),
-              const SizedBox(
-                  height: 20.0,
+              SizedBox(
+                  height: screenHeight / 40,
                   child: Text(
                     'Full Address:',
                     style: TextStyle(
                       color: Color(0xff090a0a),
-                      fontSize: 16,
+                      fontSize: screenHeight / 50,
                       fontFamily: "Inter",
                       fontWeight: FontWeight.w500,
                     ),
                   )),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: address1Controller,
                 validator: (value) =>
                     value!.isEmpty ? 'Missing address field' : null,
@@ -693,6 +705,7 @@ Future<bool> updateAddressFields() async {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: talukController,
                 validator: (value) =>
                     value!.isEmpty ? 'Missing address field' : null,
@@ -703,6 +716,7 @@ Future<bool> updateAddressFields() async {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: cityController,
                 validator: (value) =>
                     value!.isEmpty ? 'Enter valid city' : null,
@@ -751,6 +765,7 @@ Future<bool> updateAddressFields() async {
               //     }).toList(),
               //   ),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: stateController,
                 decoration: textInputDecoration.copyWith(hintText: 'state'),
                 validator: (value) =>
@@ -764,6 +779,7 @@ Future<bool> updateAddressFields() async {
               ),
               const SizedBox(height: 10.0),
               TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 controller: pincodeController,
                 keyboardType: TextInputType.phone,
                 validator: (value) =>
@@ -789,18 +805,20 @@ Future<bool> updateAddressFields() async {
                             const SizedBox(height: 12.0),
               Text(
                 pincodeError,
-                style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
               ),
               const SizedBox(height: 20.0),
-              Container(
-                margin: EdgeInsets.only(left: 120),
-                child: Text(
-                  error,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 14.0,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    error,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: screenHeight / 60,
+                    ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(
                 height: 20.0,
@@ -808,8 +826,8 @@ Future<bool> updateAddressFields() async {
               loading
                   ? CircularProgressIndicator()
                   : SizedBox(
-                      height: 59,
-                      width: 420,
+                      height: screenHeight / 15,
+                      width: screenWidth,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -903,8 +921,8 @@ Future<bool> updateAddressFields() async {
                                     backgroundColor: Color(0xff4d47c3),
                                   ),
                                   child: Container(
-                                    width: 70,
-                                    height: 59,
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(9),
                                       boxShadow: const [
@@ -926,15 +944,15 @@ Future<bool> updateAddressFields() async {
                                           MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
-                                      children: const [
+                                      children: [
                                         SizedBox(
-                                          width: 90,
+                                          width: screenWidth / 6,
                                           child: Text(
                                             "Register",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 16,
+                                              fontSize: screenHeight / 50,
                                               fontFamily: "Poppins",
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -953,8 +971,8 @@ Future<bool> updateAddressFields() async {
                                 padding: EdgeInsets.zero,
                               ),
                               child: Container(
-                                width: 110,
-                                height: 59,
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
                                 decoration: BoxDecoration(
                                   color: Color(0xff4d47c3),
                                   borderRadius: BorderRadius.circular(9),
@@ -972,7 +990,7 @@ Future<bool> updateAddressFields() async {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: "Poppins",
-                                      fontSize: 16,
+                                      fontSize: screenHeight / 50,
                                       fontWeight: FontWeight.w500,
                                       height: 1.5,
                                       color: Color(0xffffffff),
@@ -989,8 +1007,8 @@ Future<bool> updateAddressFields() async {
                               backgroundColor: Color(0xff4d47c3),
                             ),
                             child: Container(
-                              width: 70,
-                              height: 59,
+                                width: screenWidth / 6,
+                                height: screenHeight / 15,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),
                                 boxShadow: const [
@@ -1010,15 +1028,15 @@ Future<bool> updateAddressFields() async {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
+                                children: [
                                   SizedBox(
-                                    width: 70,
+                                    width: screenWidth / 6,
                                     child: Text(
                                       "Cancel",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 16,
+                                        fontSize: screenHeight / 50,
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w500,
                                       ),
