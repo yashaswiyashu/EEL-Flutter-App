@@ -679,9 +679,9 @@ Future<bool> updateAddressFields() async {
                   children: [Container(
                     child: Text(
                       error,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.red,
-                        fontSize: 14.0,
+                        fontSize: screenHeight / 60,
                       ),
                     ),
                   ),]

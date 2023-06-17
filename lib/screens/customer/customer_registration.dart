@@ -1163,7 +1163,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Text(
                     error,
-                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                   ),
                 ]),
         
