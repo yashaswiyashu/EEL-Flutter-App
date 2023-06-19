@@ -547,7 +547,7 @@ void showConfirmation(String uid) {
                   margin: const EdgeInsets.only(left: 110),
                   child: Text(
                     status,
-                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                   ),
                 ),
                 const SizedBox(height: 5.0),

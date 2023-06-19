@@ -305,7 +305,7 @@ Future<bool> updateAddressFields() async {
                     itemBuilder: (context, SalesPersonModel? suggestion) {
                       if (suggestion == null) return const SizedBox.shrink();
                       return ListTile(
-                        title: Text(suggestion.phoneNumber),
+                        title: Text(suggestion.phoneNumber, style: TextStyle(fontSize: screenHeight / 50),),
                       );
                     },
         
@@ -336,7 +336,7 @@ Future<bool> updateAddressFields() async {
         
                 ),
                 SizedBox(child: Text(numError,
-                       style: TextStyle(color: Color.fromARGB(190, 193, 2, 2),),),),
+                       style: TextStyle(color: Color.fromARGB(190, 193, 2, 2), fontSize: screenHeight / 60),),),
         
         
                 SizedBox(
@@ -399,7 +399,7 @@ Future<bool> updateAddressFields() async {
                     itemBuilder: (context, String? suggestion) {
                       if (suggestion == null) return const SizedBox.shrink();
                       return ListTile(
-                        title: Text(suggestion),
+                        title: Text(suggestion, style: TextStyle(fontSize: screenHeight / 50),),
                       );
                     },
         
@@ -671,7 +671,7 @@ Future<bool> updateAddressFields() async {
                               const SizedBox(height: 12.0),
                 Text(
                   pincodeError,
-                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                  style: TextStyle(color: Colors.red, fontSize: screenHeight / 60),
                 ),
                 const SizedBox(height: 20.0),
                 Row(
@@ -708,7 +708,21 @@ Future<bool> updateAddressFields() async {
                                           loading = true;
                                           coOrdNameErr = '';
                                           numError = '';
+                                          pincodeError = '';
                                         });
+                                        var cred;
+                                        salesTable.forEach((element) {
+                                          if(currentUser?.uid == element!.uid) {
+                                            if(element.role == 'Admin') {
+                                              cred = element;
+                                            } 
+                                          }
+                                        });
+                                        AuthCredential credential =
+                                            EmailAuthProvider.credential(
+                                          email: cred!.email,
+                                          password: cred.password,
+                                        );
                                         dynamic result = await _auth
                                             .registerWithEmailAndPassword(
                                                 email, password);
@@ -741,8 +755,19 @@ Future<bool> updateAddressFields() async {
                                               setState(() {
                                                 loading = false;
                                               });
-                                              Navigator.pushNamed(
-                                                  context, 'authWrapper');
+                                              salesTable.forEach((element) async {
+                                                if(currentUser?.uid == element!.uid) {
+                                                  if(element.role != 'Admin') {
+                                                    Navigator.of(context).pushNamedAndRemoveUntil(
+                                                      'authWrapper', (Route<dynamic> route) => false);
+                                                  } else {
+                                                    await FirebaseAuth.instance.signOut();
+                                                    await FirebaseAuth.instance
+                                                        .signInWithCredential(credential);
+                                                    Navigator.pop(context);
+                                                  }
+                                                }
+                                              });
                                             });
                                           }
                                         }

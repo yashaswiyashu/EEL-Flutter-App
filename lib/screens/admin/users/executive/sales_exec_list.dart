@@ -49,6 +49,19 @@ class _SalesExecListState extends State<SalesExecList> {
     String coOrdId = '';
     List<String> salesCoOrdList = ['Select Co-Ordinator',];
 
+    var count = 0;
+    salesTable.forEach((element) {
+      if(element?.uid == select) {
+        count++;
+      }
+    });
+
+    if(count == 0) {
+      setState(() {
+        select = '';
+      });
+    }
+
     salesTable.forEach((element) {
       if (element!.name == salesCoOrdinator) {
         setState(() {

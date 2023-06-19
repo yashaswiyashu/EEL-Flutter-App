@@ -181,7 +181,7 @@ class _PastCustomerOrdersListState extends State<PastCustomerOrdersList> {
                     SizedBox(height: 20,),
                     Text(
                       status,
-                      style: const TextStyle(color: Colors.pink, fontSize: 14.0),
+                      style: TextStyle(color: Colors.pink, fontSize: screenHeight / 60),
                     ),
                     SizedBox(height: 20,),
                     Row(

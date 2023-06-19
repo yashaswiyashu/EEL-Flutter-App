@@ -189,6 +189,44 @@ class _EditCustomerAdminState extends State<EditCustomerAdmin> {
 
   // var isDupNum = false;
 
+void showConfirmation(String uid) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Do you want to delete entire document?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // passing false
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // passing true
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        }).then((exit) {
+      if (exit == null) return;
+      if (exit) {
+        // user pressed Yes button
+        CustomerDatabaseService(docid: uid).deleteUserData();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(
+          content: Text(
+              'Customer details deleted Successfully!!!'),
+        ));
+        Navigator.pop(context);
+      } else {
+        // user pressed No button
+        // Navigator.pop(context);
+        return;
+      }
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     if(prevEmail != email || prevPassword != password) {
@@ -1310,6 +1348,43 @@ class _EditCustomerAdminState extends State<EditCustomerAdmin> {
                                 ),
                               ),
                             ),
+                            ElevatedButton(
+                                // autogroupqdj5BoM (UPthV8mGmAE7wuU648qDj5)
+                                onPressed: () {
+                                  showConfirmation(args.uid);
+                                },
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                ),
+                                child: Container(
+                                  width: screenWidth / 6,
+                                  height: screenHeight / 15,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff4d47c3),
+                                    borderRadius: BorderRadius.circular(9),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x664d47c3),
+                                        offset: Offset(0, 4),
+                                        blurRadius: 30.5,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Delete',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: "Poppins",
+                                        fontSize: screenHeight / 50,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.5,
+                                        color: Color(0xffffffff),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);

@@ -479,6 +479,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
+                      errorStyle: TextStyle(fontSize: screenHeight / 60)
                     ),
                   ),
                 ),

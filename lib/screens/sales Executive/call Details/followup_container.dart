@@ -50,7 +50,7 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
   }
 
   var snackBar = SnackBar(
-    content: Text('FollowUp Details Added!!!'),
+    content: Text('FollowUp Details Added!!!', style: TextStyle(fontSize: screenHeight / 50),),
     );
 
   @override
@@ -70,6 +70,7 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
             child: Padding(
               padding: EdgeInsets.only(right: 8),
               child: TextFormField(
+                style: TextStyle(fontSize: screenHeight / 50),
                 initialValue: formattedDate,
                 enabled: false,
                 decoration: InputDecoration(
@@ -81,6 +82,7 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
           Expanded(
             flex: 3,
             child: TextFormField(
+              style: TextStyle(fontSize: screenHeight / 50),
               controller: detailsController,
               maxLines: null,
               decoration: InputDecoration(

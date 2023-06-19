@@ -36,10 +36,23 @@ class _SalesCoOrdinatorListState extends State<SalesCoOrdinatorList> {
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     var obj;
     var coOrdList = [];
+    var count = 0;
+    salesTable.forEach((element) {
+      if(element?.uid == select) {
+        count++;
+      }
+    });
+
+    if(count == 0) {
+      setState(() {
+        select = '';
+      });
+    }
 
     salesTable.forEach((element) {
       if(element?.role == 'Sales Co-Ordinator'){

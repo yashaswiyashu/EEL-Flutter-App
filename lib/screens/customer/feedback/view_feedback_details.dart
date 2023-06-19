@@ -387,6 +387,8 @@ class _ViewCustomerFeedbackState extends State<ViewCustomerFeedback>
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
+                      errorStyle: TextStyle(fontSize: screenHeight / 60)
+                      
                     ),
                   ),
                 ),

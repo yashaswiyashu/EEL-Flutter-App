@@ -58,6 +58,19 @@ class _CustomerListAdminState extends State<CustomerListAdmin> {
     List<String> salesCoOrdList = ['Select Co-Ord',];
     List<String> salesExecList = ['Select Exec',];
 
+    // var count = 0;
+    // custList.forEach((element) {
+    //   if(element.uid == select) {
+    //     count++;
+    //   }
+    // });
+
+    // if(count == 0) {
+    //   setState(() {
+    //     select = '';
+    //   });
+    // }
+
     salesTable.forEach((element) {
       if (element!.name == salesCoOrdinator) {
         setState(() {

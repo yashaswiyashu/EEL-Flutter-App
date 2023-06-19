@@ -58,7 +58,7 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainerEdit>
   }
 
   var snackBar = SnackBar(
-    content: Text('FollowUp Details Added!!!'),
+    content: Text('FollowUp Details Added!!!', style: TextStyle(fontSize: screenHeight / 50),),
     );
 
 Container buildFollowUpDetailsContainerEdit() {

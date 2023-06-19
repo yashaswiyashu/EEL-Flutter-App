@@ -21,6 +21,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
 
     globalcontext = context;
+    screenHeight = MediaQuery.of(globalcontext).size.height;
+    screenWidth =  MediaQuery.of(globalcontext).size.width;
 
     return Scaffold(
       appBar: AppBar(
