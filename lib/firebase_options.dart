@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDCHOxZA9r2NH_dKJdvh5hCerLHJzc36C4',
-    appId: '1:206468790018:android:c4a4327890f8920435f41b',
+    appId: '1:206468790018:android:81cb78874774062b35f41b',
     messagingSenderId: '206468790018',
     projectId: 'energyefficientlightsproject',
     storageBucket: 'energyefficientlightsproject.appspot.com',
@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
     projectId: 'energyefficientlightsproject',
     storageBucket: 'energyefficientlightsproject.appspot.com',
     iosClientId: '206468790018-mml1rtktmj8762ca2ges521i592gjg1b.apps.googleusercontent.com',
-    iosBundleId: 'com.example.flutterApp',
+    iosBundleId: 'com.rscsys.energyEfficientLights',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -78,6 +78,6 @@ class DefaultFirebaseOptions {
     projectId: 'energyefficientlightsproject',
     storageBucket: 'energyefficientlightsproject.appspot.com',
     iosClientId: '206468790018-mml1rtktmj8762ca2ges521i592gjg1b.apps.googleusercontent.com',
-    iosBundleId: 'com.example.flutterApp',
+    iosBundleId: 'com.rscsys.energyEfficientLights',
   );
 }
