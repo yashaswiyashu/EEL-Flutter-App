@@ -5,6 +5,8 @@ import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/common/globals.dart';
 import 'package:flutter_app/screens/common/location.dart';
+import 'package:flutter_app/screens/sales%20CoOrdinator/sales_co_ordinator_home.dart';
+import 'package:flutter_app/screens/sales%20Executive/sales_executive_home.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/sales_database.dart';
 
@@ -43,6 +45,7 @@ class _SalesPersonRegistrationState extends State<SalesPersonRegistration> {
   String pincodeError = '';
   String coOrdNameErr = '';
   String salesCoordId = '';
+  bool isAdmin = false;
 
   String error = '';
   bool _passwordVisible = false;
@@ -187,6 +190,9 @@ Future<bool> updateAddressFields() async {
         }
       });
     }
+    salesCoOrd.map((e){
+      print(e);
+    });
 
     salesTable.forEach((element) {
       if(element?.phoneNumber == numberController.text){
@@ -715,14 +721,20 @@ Future<bool> updateAddressFields() async {
                                           if(currentUser?.uid == element!.uid) {
                                             if(element.role == 'Admin') {
                                               cred = element;
+                                              setState(() {
+                                                isAdmin = true;
+                                              });
                                             } 
                                           }
                                         });
-                                        AuthCredential credential =
-                                            EmailAuthProvider.credential(
-                                          email: cred!.email,
-                                          password: cred.password,
-                                        );
+                                        AuthCredential? credential;
+                                        if(cred != null){
+                                          credential =
+                                              EmailAuthProvider.credential(
+                                            email: cred?.email,
+                                            password: cred?.password,
+                                          );
+                                        }
                                         dynamic result = await _auth
                                             .registerWithEmailAndPassword(
                                                 email, password);
@@ -751,23 +763,33 @@ Future<bool> updateAddressFields() async {
                                                     state,
                                                     pincode,
                                                     false)
-                                                .then((value) {
+                                                .then((value) async {
                                               setState(() {
                                                 loading = false;
                                               });
-                                              salesTable.forEach((element) async {
-                                                if(currentUser?.uid == element!.uid) {
-                                                  if(element.role != 'Admin') {
-                                                    Navigator.of(context).pushNamedAndRemoveUntil(
-                                                      'authWrapper', (Route<dynamic> route) => false);
-                                                  } else {
+                                                if(isAdmin){
+                                                  if(credential != null) {
                                                     await FirebaseAuth.instance.signOut();
                                                     await FirebaseAuth.instance
                                                         .signInWithCredential(credential);
-                                                    Navigator.pop(context);
+                                                  Navigator.pop(context);
                                                   }
+                                                } else {
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    content: Text('Your account has been registered. Please wait for approval!!'),
+                                                  ));
+                                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                                      'authWrapper', (Route<dynamic> route) => false);
                                                 }
-                                              });
+
+                                                // if(result?.uid == element!.uid) {
+                                                //   if(element.role != 'Admin') {
+                                                    
+                                                //   } else {
+                                                    
+                                                //   }
+                                                // }
+                                                
                                             });
                                           }
                                         }
