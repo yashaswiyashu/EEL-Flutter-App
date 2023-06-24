@@ -33,8 +33,8 @@ SaleOrderDashBoard getSalesOrderCountAmtThisMonth(List orderDetailsList) {
   SaleOrderDashBoard sdb = SaleOrderDashBoard(0, 0.0);
   DateTime now = DateTime.now();
   orderDetailsList.forEach((element) {
-      DateTime deliveredDate = DateFormat('dd/MM/yy').parse(element.deliveryDate);
-        if ((element.dropdown == 'Delivered') && (now.month == deliveredDate.month && now.year == deliveredDate.year)) {
+      DateTime deliveryDate = DateFormat('dd/MM/yy').parse(element.deliveryDate);
+        if ((element.dropdown == 'Delivered') && (now.month == deliveryDate.month && now.year == deliveryDate.year)) {
           sdb.salesCount++;
           sdb.salesAmount += double.parse(element.totalAmount);
         }
@@ -201,4 +201,10 @@ int getTotalfeedback(List<FeedbackDetailsModel> feedbackList) {
     }
   });
   return totalFeedback;
+}
+
+String calculateFutureDate(int numberOfDays) {
+  DateTime currentDate = DateTime.now();
+  DateTime futureDate = currentDate.add(Duration(days: numberOfDays));
+  return '${futureDate.day}/${futureDate.month}/${futureDate.year}';
 }

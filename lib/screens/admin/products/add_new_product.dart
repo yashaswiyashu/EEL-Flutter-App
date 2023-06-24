@@ -36,6 +36,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
   String offers = '';
   String description = '';
   String status = '';
+  String numOfDays = '';
 
     final controllerOffer = TextEditingController();
 
@@ -307,6 +308,34 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                          }, */
                       ),
                       const SizedBox(height: 20.0),
+                      SizedBox(
+                        height: screenHeight / 40,
+                        child: Text(
+                          "Deliverable In:",
+                          style: TextStyle(
+                            color: Color(0xff090a0a),
+                            fontSize: screenHeight/50,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
+                        keyboardType: TextInputType.number,
+                        validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(offers) && double.tryParse(offers)! < 100
+                          ? null
+                              : 'Enter number of days',
+                        decoration: textInputDecoration.copyWith(
+                            hintText: 'Enter Number of Days',
+                            fillColor: const Color(0xfff0efff)),
+                         onChanged: (val) {
+                           setState(() {
+                             numOfDays = val;//'$val%';
+                           });
+                         }, 
+                      ),
+                      const SizedBox(height: 20.0),
                        SizedBox(
                         height: screenHeight / 40,
                         child: Text(
@@ -394,6 +423,7 @@ class _AddProductAdminState extends State<AddProductAdmin> {
                                           price,
                                           offers,
                                           description,
+                                          numOfDays,
                                         )
                                         .then((value) => setState(() {
                                           loading = false;

@@ -36,12 +36,14 @@ class _EditProductAdminState extends State<EditProductAdmin> {
   final controllerPrice = TextEditingController();
   final controllerOffers = TextEditingController();
   final controllerDescription = TextEditingController();
+  final numOfDaysController = TextEditingController();
 
   String name = '';
   String imageUrl = '';
   String price = '';
   String offers = '';
   String description = '';
+  String numOfDays = '';  
   String status = '';
 
   @override
@@ -53,6 +55,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
     controllerPrice.addListener(_savePrice);
     controllerOffers.addListener(_saveOffers);
     controllerDescription.addListener(_saveDescription);
+    numOfDaysController.addListener(_saveNumOfDays);
   }
 
   @override
@@ -63,6 +66,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
     controllerPrice.dispose();
     controllerOffers.dispose();
     controllerDescription.dispose();
+    numOfDaysController.dispose();
     super.dispose();
   }
 
@@ -76,6 +80,10 @@ class _EditProductAdminState extends State<EditProductAdmin> {
 
   void _saveOffers() {
     offers = controllerOffers.text;
+  }
+ 
+  void _saveNumOfDays() {
+    numOfDays = numOfDaysController.text;
   }
 
   void _saveDescription() {
@@ -138,6 +146,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
       controllerPrice.text = obj.price;
       controllerOffers.text = obj.offers;
       controllerDescription.text = obj.description;
+      numOfDaysController.text = obj.numOfDays;
     }
 
     return Scaffold(
@@ -408,6 +417,37 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                       ),
                       const SizedBox(height: 20.0),
                        SizedBox(
+                        height: screenHeight / 40,
+                        child: Text(
+                          "Deliverable In:",
+                          style: TextStyle(
+                            color: Color(0xff090a0a),
+                            fontSize: screenHeight / 50,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
+                        controller: numOfDaysController,
+                        /* validator: (value) => value!.isEmpty
+                          ? 'Enter Product Price'
+                              : null, */
+                        validator: (value) => RegExp(r'^\d+(\.\d+)?$').hasMatch(price) && price != '0'
+                          ? null
+                              : 'Enter Number of Days',                            
+                        decoration: textInputDecoration.copyWith(
+                            hintText: 'Enter Number of Days',
+                            fillColor: const Color(0xfff0efff)),
+                        // onChanged: (val) {
+                        //   setState(() {
+                        //     price = val;
+                        //   });
+                        // },
+                      ),
+                      const SizedBox(height: 20.0),
+                       SizedBox(
                         height: screenHeight /40,
                         child: Text(
                           "Product Description:",
@@ -495,6 +535,7 @@ class _EditProductAdminState extends State<EditProductAdmin> {
                                           price,
                                           offers,
                                           description,
+                                          numOfDays,
                                         )
                                         .then((value) => setState(() {
                                           loading = false;

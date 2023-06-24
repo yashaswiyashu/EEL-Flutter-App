@@ -38,6 +38,7 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
   String offers = '';
   String description = '';
   String status = '';
+  String numOfDays = '';
 
 
 
@@ -65,6 +66,7 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
       price = obj.price;
       offers = obj.offers;
       description = obj.description;
+      numOfDays = obj.numOfDays;
     }
 
     return Scaffold(
@@ -257,6 +259,61 @@ class _ViewProductAdminState extends State<ViewProductAdmin> {
                         // onChanged: (val) {
                         //   setState(() {
                         //     offers = '$val%';
+                        //   });
+                        // },
+                      ),
+                      const SizedBox(height: 20.0),
+                     SizedBox(
+                        height: screenHeight / 40,
+                        child: Text(
+                          "Product Price(In Rs.):",
+                          style: TextStyle(
+                            color: Color(0xff090a0a),
+                            fontSize: screenHeight / 50,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
+                        initialValue: price,
+                        readOnly: true,
+                        validator: (value) => value!.isEmpty
+                          ? 'Enter Product Price'
+                              : null,
+                        decoration: textInputDecoration.copyWith(
+                            hintText: 'Enter Product Price',
+                            fillColor: const Color(0xfff0efff)),
+                        // onChanged: (val) {
+                        //   setState(() {
+                        //     price = val;
+                        //   });
+                        // },
+                      ),
+                      const SizedBox(height: 20.0),
+                     SizedBox(
+                        height: screenHeight / 40,
+                        child: Text(
+                          "Deliverable In:",
+                          style: TextStyle(
+                            color: Color(0xff090a0a),
+                            fontSize: screenHeight / 50,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        style: TextStyle(fontSize: screenHeight / 50),
+                        initialValue: numOfDays,
+                        readOnly: true,
+                        decoration: textInputDecoration.copyWith(
+                            hintText: 'Enter Product Price',
+                            fillColor: const Color(0xfff0efff)),
+                        // onChanged: (val) {
+                        //   setState(() {
+                        //     price = val;
                         //   });
                         // },
                       ),

@@ -195,12 +195,31 @@ Future<bool> updateAddressFields() async {
     });
 
     salesTable.forEach((element) {
+      if(element?.phoneNumber == phoneNumber){
+        setState(() {
+          isDupNum = true;
+        });
+      }
+    });
+
+    salesTable.forEach((element) {
       if(element?.phoneNumber == numberController.text){
         setState(() {
           isDupNum = true;
         });
       }
     });
+
+    salesTable.forEach((element) {
+      if(currentUser?.uid == element!.uid) {
+        if(element.role == 'Admin') {
+          setState(() {
+            isAdmin = true;
+          });
+        } 
+      }
+    });
+    print(isDupNum);
 
     return Scaffold(
       appBar: AppBar(
@@ -264,7 +283,10 @@ Future<bool> updateAddressFields() async {
                       hintText: 'Enter Your Name',
                       fillColor: const Color(0xfff0efff)),
                   onChanged: (val) {
-                    name = val;
+                    phoneNumber = val;
+                    setState(() {
+                      isDupNum = false;
+                    });
                   },
                 ),
                 const SizedBox(height: 20.0),
@@ -279,8 +301,34 @@ Future<bool> updateAddressFields() async {
                         fontWeight: FontWeight.w500,
                       ),
                     )),
-        
-                TypeAheadFormField(
+                TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  validator: (value) {
+                  if (value != null && value.length != 10) {
+                  return 'Enter a valid 10-digit mobile number';
+                  }
+                  return null;
+                  },
+                  decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Your Name',
+                      fillColor: const Color(0xfff0efff)),
+                  onChanged: (val) {
+                    phoneNumber = val;
+                    setState(() {
+                      isDupNum = false;
+                      numError='';
+                    });
+                    salesTable.forEach((element) {
+                      if(element?.phoneNumber == phoneNumber){
+                        setState(() {
+                          isDupNum = true;
+                          numError = "SalesPerson with this number already exists";
+                        });
+                      }
+                    });
+                  },
+                ),
+                isAdmin ? TypeAheadFormField(
                     textFieldConfiguration: TextFieldConfiguration(
                       style: TextStyle(fontSize: screenHeight / 50),
                       controller: numberController,
@@ -340,7 +388,7 @@ Future<bool> updateAddressFields() async {
                   });
                 },
         
-                ),
+                ) : const SizedBox(height: 0,),
                 SizedBox(child: Text(numError,
                        style: TextStyle(color: Color.fromARGB(190, 193, 2, 2), fontSize: screenHeight / 60),),),
         

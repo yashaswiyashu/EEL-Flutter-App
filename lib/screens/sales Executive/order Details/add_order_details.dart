@@ -10,6 +10,7 @@ import 'package:flutter_app/models/product_details_model.dart';
 import 'package:flutter_app/models/sales_person_model.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:flutter_app/screens/common/globals.dart';
+import 'package:flutter_app/screens/common/utility_functions.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/order_database.dart';
 import 'package:flutter_app/shared/constants.dart';
@@ -110,7 +111,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   String error = '';
   String dateError = '';
   String productError = '';
-
+  var numberOfDays = [];
 
   String subTotal = '0';
   String cgst = '0.09';
@@ -278,6 +279,26 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
       productDetails.forEach((element) {
         products.add(element.name);
       });
+    }
+
+    if(selectedOptions.isNotEmpty) {
+      selectedOptions.forEach((option) {  
+        productDetails.forEach((element) {
+          if(option == element.name) {
+            numberOfDays.add(element.numOfDays);
+          }
+        });
+      });
+    } 
+
+    if(numberOfDays.isNotEmpty) {
+      int highest= int.parse(numberOfDays[0]);
+      numberOfDays.forEach((element) {
+        if(highest < int.parse(element)) {
+          highest = int.parse(element);
+        }
+      }); 
+      callDate = calculateFutureDate(highest).toString();
     }
 
     if (customerNamesList.length != customerList.length + 1) {
@@ -807,6 +828,10 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                                   .toList(),
                                               onChanged: (String? value) {
                                                 select[rowIndex] = value!;
+                                                setState(() {
+                                                  numberOfDays = [];
+                                                  callDate = 'Select Date';
+                                                });
                                                 var count = 0;
                                                 for (var k = 0;
                                                     k < rowIndex;

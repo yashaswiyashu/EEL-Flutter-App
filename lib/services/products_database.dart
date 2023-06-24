@@ -18,6 +18,7 @@ class ProductDatabaseService {
    String price,
    String offers,
    String description,
+   String numOfDays,
 
     ) async {
       var uniqid = userCollection.doc().id;
@@ -28,7 +29,7 @@ class ProductDatabaseService {
       'price': price,
       'offers': offers,
       'description': description,
- 
+      'numOfDays': numOfDays,
     });
   }
 
@@ -38,7 +39,7 @@ class ProductDatabaseService {
    String price,
    String offers,
    String description,
-
+   String numOfDays,
     ) async {
     return await userCollection.doc(docid).set({
       'uid': docid,
@@ -47,6 +48,7 @@ class ProductDatabaseService {
       'price': price,
       'offers': offers,
       'description': description,
+      'numOfDays': numOfDays,
     });
   }
 
@@ -65,6 +67,7 @@ class ProductDatabaseService {
         price: (doc.data() as Map<String, dynamic>)['price']?.toString() ?? '',
         offers: (doc.data() as Map<String, dynamic>)['offers']?.toString() ?? '',
         description: (doc.data() as Map<String, dynamic>)['description']?.toString() ?? '',
+        numOfDays: (doc.data() as Map<String, dynamic>)['numOfDays']?.toString() ?? '',
       );
     }).toList();
   }

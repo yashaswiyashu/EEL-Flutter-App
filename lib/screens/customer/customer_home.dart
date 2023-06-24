@@ -156,7 +156,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                   ),
                   label: Text(
                     'logout',
-                    style: TextStyle(color: Colors.white, fontSize: screenWidth / 40),
+                    style: TextStyle(color: Colors.white, fontSize: screenWidth / 35),
                   )),
             ],
           ),
@@ -331,7 +331,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                                 ),
                               ),
                               title: Text('Price(in Rs.): \n ${productDetails[index].price}', style: TextStyle(fontSize: screenHeight / 50),),
-                              subtitle: Text('Offer : ${productDetails[index].offers}%', style: TextStyle(fontSize: screenHeight / 50),),
+                              subtitle: Text('Offer : ${productDetails[index].offers}% \n Delivered In: ${productDetails[index].numOfDays} Days', style: TextStyle(fontSize: screenHeight / 50),),
                             ),
                           ),
                                               ),

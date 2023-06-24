@@ -134,6 +134,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
   }
 
   var isDupNum = false;
+  var isCust = true;
   String execNameErr = '';
   String execId = '';
   @override
@@ -176,20 +177,41 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
     if (salesTable != null && args.uid == '') {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
-          salesExecutive = element;
+          setState(() {
+            salesExecutive = element;  
+          });
         }
       });
     } else {
       salesTable.forEach((element) {
         if (element?.uid == args.uid) {
-          salesExecutive = element;
+          setState(() {  
+            salesExecutive = element;
+          });
         }
       });
     }
 
     customerList.forEach((element) {
       if(element.mobileNumber == numberController.text) {
-        isDupNum = true;
+        setState(() {
+          isDupNum = true;
+        });
+      }
+    });
+    customerList.forEach((element) {
+      if(element.mobileNumber == mobileNumber) {
+        setState(() {
+          isDupNum = true;
+        });
+      }
+    });
+
+    customerList.forEach((element) {
+      if(element.uid == currentUser?.uid) {
+        setState(() {  
+          isCust = true;
+        });
       }
     });
 
@@ -271,20 +293,35 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         fontWeight: FontWeight.w500,
                       ),
                     )),
-        /*               TextFormField(
+                   TextFormField(
                   keyboardType: TextInputType.phone,
                   decoration: textInputDecoration.copyWith(
                     hintText: 'Enter Customer Mobile Number',
                   ),
-                  validator: (value) =>
-                      value!.length < 10 ? 'Enter Customer Mobile Number' : null,
+                  validator: (value) {
+                  if (value != null && value.length != 10) {
+                  return 'Enter a valid 10-digit mobile number';
+                  }
+                  return null;
+                  },
                   onChanged: (val) {
                     mobileNumber = val;
+                    setState(() {
+                      isDupNum = false;
+                      numError='';
+                    });
+                    customerList.forEach((element) {
+                      if(element.mobileNumber == mobileNumber) {
+                        setState(() {
+                          isDupNum = true;
+                          numError = "SalesPerson with this number already exists";
+                        });
+                      }
+                    });
                   },
                 ),
-         */
                 //[Viru:2/6/23] Added to support customer name search list
-                TypeAheadFormField(
+                !isCust ? TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
                     style: TextStyle(fontSize: screenHeight / 50),
                     controller: numberController,
@@ -343,7 +380,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       numError = ''; // Clear the error message
                     });
                   },
-                ),
+                ) : const SizedBox(height: 0,),
                 SizedBox(
                   child: Text(
                     numError,
