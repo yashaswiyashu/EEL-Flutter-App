@@ -283,10 +283,7 @@ Future<bool> updateAddressFields() async {
                       hintText: 'Enter Your Name',
                       fillColor: const Color(0xfff0efff)),
                   onChanged: (val) {
-                    phoneNumber = val;
-                    setState(() {
-                      isDupNum = false;
-                    });
+                    name = val;
                   },
                 ),
                 const SizedBox(height: 20.0),
