@@ -334,9 +334,12 @@ class _EditCustomerDetailsState extends State<EditCustomerDetails> {
                         decoration: textInputDecoration.copyWith(
                           hintText: 'Enter Customer Mobile Number',
                         ),
-                        validator: (value) => value!.length < 10
-                            ? 'Enter Customer Mobile Number'
-                            : null,
+                        validator: (value) {
+                          if (value != null && value.length != 10) {
+                            return 'Enter a valid 10-digit mobile number';
+                          }
+                          return null;
+                        },
                         // onChanged: (val) {
                         //   mobileNumber = val;
                         // },

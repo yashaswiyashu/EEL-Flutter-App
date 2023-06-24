@@ -634,8 +634,6 @@ class _EditOrderState extends State<EditOrder> with RestorationMixin {
                     decoration: textInputDecoration.copyWith(
                       hintText: 'Enter Shipment ID',
                     ),
-                    validator: (value) =>
-                        value!.isEmpty ? 'Enter Shipment Id' : null,
                     // onChanged: (val) {
                     //   shipmentID = val;
                     // },

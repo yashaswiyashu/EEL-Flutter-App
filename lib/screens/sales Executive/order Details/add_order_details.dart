@@ -250,6 +250,8 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
   var isDupName = false;
   var dupOrder = false;
   var isCust = false;
+  String? execId = '';
+  bool isExec = false;
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
@@ -378,6 +380,14 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
+          setState(() {
+            isExec = true;
+          }); 
+        }
+      });
+      customerList.forEach((element) {
+        if(element.uid == currentUser?.uid) {
+          execId = element.salesExecutiveId;
         }
       });
     }  else {
@@ -1063,7 +1073,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                         await OrderDetailsDatabaseService(
                                                 docid: '')
                                             .setOrderData(
-                                                args.uid == '' ? currentUser!.uid : args.uid,
+                                                (args.uid == '' ? (isExec ? currentUser?.uid : execId) : args.uid)!,
                                                 customerId,
                                                 customerName,
                                                 shipmentID,

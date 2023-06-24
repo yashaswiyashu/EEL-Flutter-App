@@ -82,6 +82,7 @@ class _FollowUpDetailsContainerState extends State<FollowUpDetailsContainer> {
           Expanded(
             flex: 3,
             child: TextFormField(
+              validator: (value) => value!.isEmpty ? 'Missing Field' : null,
               style: TextStyle(fontSize: screenHeight / 50),
               controller: detailsController,
               maxLines: null,

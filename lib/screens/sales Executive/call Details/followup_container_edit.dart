@@ -128,6 +128,7 @@ Container buildFollowUpDetailsContainerEdit() {
           Expanded(
             flex: 3,
             child: TextFormField(
+              validator: (value) => value!.isEmpty ? 'Missing Field' : null,
               //controller: detailsController,
               maxLines: null,
               decoration: InputDecoration(

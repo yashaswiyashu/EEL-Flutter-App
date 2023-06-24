@@ -83,6 +83,7 @@ class _ComplaintDetailsContainerState extends State<ComplaintDetailsContainer> {
           Expanded(
             flex: 3,
             child: TextFormField(
+              validator: (value) => value!.isEmpty ? 'Missing Field' : null,
               style: TextStyle(fontSize: screenHeight / 50),
               controller: detailsController,
               maxLines: null,

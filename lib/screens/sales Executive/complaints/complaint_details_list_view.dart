@@ -66,7 +66,6 @@ class _ComplaintDetailsListState extends State<ComplaintDetailsList> {
       complaintDetailsList.forEach((e) => ((e.salesExecutiveId == args.uid) && (e.complaintResult != 'Closed')) ? details.add(e) : []);
     }
 
-
     Widget _verticalDivider = const VerticalDivider(
       color: Colors.black,
       thickness: 0.5,

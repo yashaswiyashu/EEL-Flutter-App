@@ -798,7 +798,7 @@ class _ViewOrderState extends State<ViewOrder>{
                                       SizedBox(
                                         width: screenWidth / 6,
                                         child: Text(
-                                          "Cancel",
+                                          "Back",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Colors.white,

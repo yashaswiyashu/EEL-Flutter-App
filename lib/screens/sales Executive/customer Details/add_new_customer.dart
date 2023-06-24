@@ -1128,7 +1128,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
         
                                     AuthCredential credential =
                                         EmailAuthProvider.credential(
-                                      email: cred!.email,
+                                      email: cred.email,
                                       password: cred.password,
                                     );
         

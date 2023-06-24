@@ -64,7 +64,7 @@ class _CustomerComplaintDetailsListState extends State<CustomerComplaintDetailsL
         custName = element.customerName;
       }
     });
-
+print(args.uid);
     var details = [];
     var obj;
 

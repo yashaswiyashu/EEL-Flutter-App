@@ -189,7 +189,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
     });
   }
 
-
+  bool isExec = false;
   @override
   Widget build(BuildContext context) {
     //[Viru:27/5/23] Added to support customer name search list
@@ -197,6 +197,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
     List<CustomerModel> details = [];
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
     final currentUser = Provider.of<UserModel?>(context);
+    final customerList = Provider.of<List<CustomerModel>>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     final feedbackDetailsList =
         Provider.of<List<FeedbackDetailsModel>>(context);
@@ -210,6 +211,14 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
+          setState(() {
+            isExec = true;
+          }); 
+        }
+      });
+      customerList.forEach((element) {
+        if(element.uid == currentUser?.uid) {
+          execId = element.salesExecutiveId!;
         }
       });
     } else {
@@ -222,7 +231,6 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
 
 
     //[Viru:27/5/23] Added to support customer name search list
-    final customerList = Provider.of<List<CustomerModel>>(context);
 
     customerList.forEach(
         (e) => details.add(e));
@@ -522,7 +530,7 @@ class _CustomerFeedbackState extends State<CustomerFeedback>
                                   await FeedBackDatabaseService(docid: '')
                                       .setUserData(
                                           (args.uid == ''
-                                              ? currentUser?.uid
+                                              ? (isExec ? currentUser?.uid : execId)
                                               : args.uid)!,
                                           customerName,
                                           customerNumber,

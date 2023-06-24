@@ -181,7 +181,8 @@ void showConfirmation(String uid) {
   }
 
   String complaintdate = DateFormat('dd/MM/yy').format(DateTime.now());
-
+  String? execId = '';
+  bool isExec = false;
 
   @override
   Widget build(BuildContext context) {
@@ -189,6 +190,7 @@ void showConfirmation(String uid) {
     //final customerList = Provider.of<List<CustomerModel>>(context);
     List<CustomerModel> details = [];
     final args = ModalRoute.of(context)!.settings.arguments as Parameter;
+    final customerList = Provider.of<List<CustomerModel>>(context);
     final currentUser = Provider.of<UserModel?>(context);
     final salesTable = Provider.of<List<SalesPersonModel?>>(context);
     final complaintDetailsList = Provider.of<List<ComplaintDetailsModel>>(context);
@@ -199,6 +201,14 @@ void showConfirmation(String uid) {
       salesTable.forEach((element) {
         if (element?.uid == currentUser?.uid) {
           salesExecutive = element;
+          setState(() {
+            isExec = true;
+          }); 
+        }
+      });
+      customerList.forEach((element) {
+        if(element.uid == currentUser?.uid) {
+          execId = element.salesExecutiveId;
         }
       });
     } else {
@@ -211,7 +221,6 @@ void showConfirmation(String uid) {
 
 
     //[Viru:27/5/23] Added to support customer name search list
-    final customerList = Provider.of<List<CustomerModel>>(context);
     if(args.uid == '') {
       customerList.forEach((e) => e.salesExecutiveId == currentUser?.uid ? details.add(e) : []);
     } else {
@@ -566,6 +575,7 @@ void showConfirmation(String uid) {
                           children: [
                             ElevatedButton(
                               onPressed: () async {
+                                print(currentUser?.uid);
                                 setState(() {
                                   nameErr = '';
                                 });
@@ -582,9 +592,10 @@ void showConfirmation(String uid) {
                                   setState(() {
                                     loading = true;
                                   });
+                                  print(execId);
                                   await ComplaintDetailsDatabaseService(docid: '')
                                       .setUserData(
-                                    (args.uid == '' ? currentUser?.uid : args.uid)!,
+                                    (args.uid == '' ? (isExec ? currentUser?.uid : execId) : args.uid)!,
                                     customerName,
                                     customerNumber,
                                     complaintdate,
