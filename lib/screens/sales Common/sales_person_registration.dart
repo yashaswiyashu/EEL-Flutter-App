@@ -298,33 +298,6 @@ Future<bool> updateAddressFields() async {
                         fontWeight: FontWeight.w500,
                       ),
                     )),
-                TextFormField(
-                  style: TextStyle(fontSize: screenHeight / 50),
-                  validator: (value) {
-                  if (value != null && value.length != 10) {
-                  return 'Enter a valid 10-digit mobile number';
-                  }
-                  return null;
-                  },
-                  decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Your Name',
-                      fillColor: const Color(0xfff0efff)),
-                  onChanged: (val) {
-                    phoneNumber = val;
-                    setState(() {
-                      isDupNum = false;
-                      numError='';
-                    });
-                    salesTable.forEach((element) {
-                      if(element?.phoneNumber == phoneNumber){
-                        setState(() {
-                          isDupNum = true;
-                          numError = "SalesPerson with this number already exists";
-                        });
-                      }
-                    });
-                  },
-                ),
                 isAdmin ? TypeAheadFormField(
                     textFieldConfiguration: TextFieldConfiguration(
                       style: TextStyle(fontSize: screenHeight / 50),
@@ -385,7 +358,33 @@ Future<bool> updateAddressFields() async {
                   });
                 },
         
-                ) : const SizedBox(height: 0,),
+                ) : TextFormField(
+                  style: TextStyle(fontSize: screenHeight / 50),
+                  validator: (value) {
+                  if (value != null && value.length != 10) {
+                  return 'Enter a valid 10-digit mobile number';
+                  }
+                  return null;
+                  },
+                  decoration: textInputDecoration.copyWith(
+                      hintText: 'Enter Your Name',
+                      fillColor: const Color(0xfff0efff)),
+                  onChanged: (val) {
+                    phoneNumber = val;
+                    setState(() {
+                      isDupNum = false;
+                      numError='';
+                    });
+                    salesTable.forEach((element) {
+                      if(element?.phoneNumber == phoneNumber){
+                        setState(() {
+                          isDupNum = true;
+                          numError = "SalesPerson with this number already exists";
+                        });
+                      }
+                    });
+                  },
+                ),
                 SizedBox(child: Text(numError,
                        style: TextStyle(color: Color.fromARGB(190, 193, 2, 2), fontSize: screenHeight / 60),),),
         

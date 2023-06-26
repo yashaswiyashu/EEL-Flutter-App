@@ -586,7 +586,7 @@ void confirmation(String uid) {
                           // This callback will be triggered when an existing follow-up detail is edited
                         },
                         followUpDetails : followUpDetls,
-
+                        followUp: followUp,
                       ),
 
 /*                       Container(

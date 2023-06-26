@@ -293,33 +293,7 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                         fontWeight: FontWeight.w500,
                       ),
                     )),
-                   TextFormField(
-                  keyboardType: TextInputType.phone,
-                  decoration: textInputDecoration.copyWith(
-                    hintText: 'Enter Customer Mobile Number',
-                  ),
-                  validator: (value) {
-                  if (value != null && value.length != 10) {
-                  return 'Enter a valid 10-digit mobile number';
-                  }
-                  return null;
-                  },
-                  onChanged: (val) {
-                    mobileNumber = val;
-                    setState(() {
-                      isDupNum = false;
-                      numError='';
-                    });
-                    customerList.forEach((element) {
-                      if(element.mobileNumber == mobileNumber) {
-                        setState(() {
-                          isDupNum = true;
-                          numError = "SalesPerson with this number already exists";
-                        });
-                      }
-                    });
-                  },
-                ),
+                
                 //[Viru:2/6/23] Added to support customer name search list
                 !isCust ? TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
@@ -380,7 +354,33 @@ class _CustomerRegistrationState extends State<CustomerRegistration> {
                       numError = ''; // Clear the error message
                     });
                   },
-                ) : const SizedBox(height: 0,),
+                ) : TextFormField(
+                  keyboardType: TextInputType.phone,
+                  decoration: textInputDecoration.copyWith(
+                    hintText: 'Enter Customer Mobile Number',
+                  ),
+                  validator: (value) {
+                  if (value != null && value.length != 10) {
+                  return 'Enter a valid 10-digit mobile number';
+                  }
+                  return null;
+                  },
+                  onChanged: (val) {
+                    mobileNumber = val;
+                    setState(() {
+                      isDupNum = false;
+                      numError='';
+                    });
+                    customerList.forEach((element) {
+                      if(element.mobileNumber == mobileNumber) {
+                        setState(() {
+                          isDupNum = true;
+                          numError = "SalesPerson with this number already exists";
+                        });
+                      }
+                    });
+                  },
+                ),
                 SizedBox(
                   child: Text(
                     numError,

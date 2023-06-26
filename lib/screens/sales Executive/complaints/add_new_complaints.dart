@@ -595,7 +595,7 @@ void showConfirmation(String uid) {
                                   print(execId);
                                   await ComplaintDetailsDatabaseService(docid: '')
                                       .setUserData(
-                                    (args.uid == '' ? (isExec ? currentUser?.uid : execId) : args.uid)!,
+                                    (args.uid == '' ? (isCust ? execId : currentUser?.uid) : args.uid)!,
                                     customerName,
                                     customerNumber,
                                     complaintdate,

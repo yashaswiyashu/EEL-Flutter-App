@@ -547,6 +547,7 @@ class _AddCallDetailsState extends State<AddCallDetails> with RestorationMixin {
                                           }); */
                                         },
                                         followUpDetails : followUpDetls,
+                                        followUp: followUp,
                                       ))
                                     : const SizedBox(height: 0.0),
                     ])),

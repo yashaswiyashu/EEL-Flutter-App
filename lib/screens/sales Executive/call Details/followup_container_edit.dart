@@ -8,7 +8,8 @@ class FollowUpDetailsContainerEdit extends StatefulWidget {
   final Function(FollowUpDetail) onChanged;
   final List<FollowUpDetail> followUpDetails;
 
-  const FollowUpDetailsContainerEdit({Key? key, required this.onChanged, required this.followUpDetails}) : super(key: key);
+  const FollowUpDetailsContainerEdit({Key? key, required this.onChanged, required this.followUpDetails, required this.followUp}) : super(key: key);
+  final bool followUp;
 
   @override
   _FollowUpDetailsContainerState createState() => _FollowUpDetailsContainerState();
@@ -128,7 +129,7 @@ Container buildFollowUpDetailsContainerEdit() {
           Expanded(
             flex: 3,
             child: TextFormField(
-              validator: (value) => value!.isEmpty ? 'Missing Field' : null,
+              validator: (value) => value!.isEmpty || widget.followUp ? 'Missing Field' : null,
               //controller: detailsController,
               maxLines: null,
               decoration: InputDecoration(

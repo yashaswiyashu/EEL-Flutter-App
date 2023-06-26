@@ -1073,7 +1073,7 @@ class _AddNewOrderState extends State<AddNewOrder> with RestorationMixin {
                                         await OrderDetailsDatabaseService(
                                                 docid: '')
                                             .setOrderData(
-                                                (args.uid == '' ? (isExec ? currentUser?.uid : execId) : args.uid)!,
+                                                (args.uid == '' ? (isCust ? execId : currentUser?.uid) : args.uid)!,
                                                 customerId,
                                                 customerName,
                                                 shipmentID,
