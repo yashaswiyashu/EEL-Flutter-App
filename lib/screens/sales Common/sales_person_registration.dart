@@ -367,7 +367,7 @@ Future<bool> updateAddressFields() async {
                   return null;
                   },
                   decoration: textInputDecoration.copyWith(
-                      hintText: 'Enter Your Name',
+                      hintText: 'Enter Your Number',
                       fillColor: const Color(0xfff0efff)),
                   onChanged: (val) {
                     phoneNumber = val;
