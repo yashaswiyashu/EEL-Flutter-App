@@ -359,6 +359,7 @@ Future<bool> updateAddressFields() async {
                 },
         
                 ) : TextFormField(
+                  keyboardType: TextInputType.phone,
                   style: TextStyle(fontSize: screenHeight / 50),
                   validator: (value) {
                   if (value != null && value.length != 10) {
